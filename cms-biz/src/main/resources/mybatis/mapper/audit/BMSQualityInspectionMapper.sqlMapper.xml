@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.audit.impl.BMSQualityInspectionDaoImpl">
+	<select id="queryQualityInsInfo" parameterType="Map"
+		resultType="com.ymkj.cms.biz.entity.audit.BMSQualityInspectionEntity">
+		select
+		bap.`name` personName,
+		bap.id_no IDNo,
+		blb.OWNING_BRANCH_ID owningBranceId,
+		blb.OWNING_BRANCH owningBrance,
+		blb.APP_NO appNo,
+		blb.AUDIT_END_TIME applyDate,
+		blb.APPLY_TYPE applyType,
+		bla.CHECK_PERSON_CODE checkPersonCd,
+		bla.CHECK_PERSON checkPerson,
+		bla.FINAL_PERSON_CODE finalPersonCd,
+		bla.FINAL_PERSON finalPerson,
+		blb.loan_no loanNo,
+		bla.ACC_DATE accDate,
+		blb.RTF_NODE_STATE rtfNodeState
+		from bms_app_person bap 
+		INNER JOIN bms_loan_base blb on bap.id=blb.person_id
+		INNER JOIN bms_loan_audit bla on bla.loan_no=blb.loan_no
+		INNER JOIN bms_loan_product blp on blp.loan_base_id=bla.loan_base_id
+		INNER JOIN bms_loan_ext ble on ble.loan_no=blb.loan_no
+		<where>
+			<if test="status == 1"><!--终审通过 -->
+				<if test="startDate!=null and startDate!=''">
+					 bla.ACC_DATE &gt;=#{startDate}
+				</if>
+				<if test="endDate!=null and endDate!=''">
+					and bla.ACC_DATE &lt;=#{endDate}
+				</if>
+				<if test="department!=null and department!=''">
+					and blb.OWNING_BRANCH_ID = #{department}
+				</if>
+				<if test="productType!=null and productType!=''">
+					and blp.product_cd = #{productType}
+				</if>
+				<if test="auditIdList !=null and auditIdList.size() > 0">
+					and bla.FINAL_PERSON_CODE IN(
+					<foreach item="auditId" index="index" collection="auditIdList"
+						separator=",">
+						#{auditId}
+					</foreach>
+					)
+				</if>
+				and blb.RTF_NODE_STATE='XSZS-PASS' and blb.RTF_STATE='XSZS'
+			</if>
+			<if test="status ==2"><!-- 初审拒绝 -->
+				<if test="startDate!=null and startDate!=''">
+					 bla.ACC_DATE &gt;=#{startDate}
+				</if>
+				<if test="endDate!=null and endDate!=''">
+					and bla.ACC_DATE &lt;=#{endDate}
+				</if>
+				<if test="department!=null and department!=''">
+					and blb.OWNING_BRANCH_ID = #{department}
+				</if>
+				<if test="productType!=null and productType!=''">
+					and blp.product_cd = #{productType}
+				</if>
+				<if test="refuseReasonLevelOneCd!=null and refuseReasonLevelOneCd!=''">
+					and ble.FIRST_LEVLE_REASONS_CODE = #{refuseReasonLevelOneCd}
+				</if>
+				<if test="refuseReasonLevelTwoCd!=null and refuseReasonLevelTwoCd!=''">
+					and ble.TWO_LEVLE_REASONS_CODE = #{refuseReasonLevelTwoCd}
+				</if>
+				<if test="auditIdList !=null and auditIdList.size() > 0">
+					and bla.FINAL_PERSON_CODE IN(
+					<foreach item="auditId" index="index" collection="auditIdList"
+						separator=",">
+						#{auditId}
+					</foreach>
+					)
+				</if>
+					and blb.RTF_NODE_STATE ='XSCS-REJECT' and blb.RTF_STATE='XSCS'
+			</if>
+			<if test="status==3">
+				<if test="startDate!=null and startDate!=''">
+					 bla.ACC_DATE &gt;=#{startDate}
+				</if>
+				<if test="endDate!=null and endDate!=''">
+					and bla.ACC_DATE &lt;=#{endDate}
+				</if>
+				<if test="department!=null and department!=''">
+					and blb.OWNING_BRANCH_ID = #{department}
+				</if>
+				<if test="productType!=null and productType!=''">
+					and blp.product_cd = #{productType}
+				</if>
+				<if test="refuseReasonLevelOn!=null and refuseReasonLevelOn!=''">
+					and ble.PRIMARY_REASON = #{refuseReasonLevelOn}
+				</if>
+				<if test="refuseReasonLevelTwo!=null and refuseReasonLevelTwo!=''">
+					and ble.SECOND_REASON = #{refuseReasonLevelTwo}
+				</if>
+				<if test="auditIdList !=null and auditIdList.size() > 0">
+					and bla.FINAL_PERSON_CODE IN(
+					<foreach item="auditId" index="index" collection="auditIdList"
+						separator=",">
+						#{auditId}
+					</foreach>
+					)
+				</if>
+					and blb.RTF_NODE_STATE='XSZS-PASS' and blb.RTF_STATE='XSZS'
+			</if>
+			<if test="status ==4">
+				<if test="personName!=null and personName!=''">
+					bap.`name`=#{personName}
+				</if>
+				<if test="iDNo!=null and iDNo!=''">
+					and bap.id_no=#{iDNo}
+				</if>
+				<if test="loanNoList !=null and loanNoList.size() > 0">
+					and blb.LOAN_NO IN(
+					<foreach item="loanNo" index="index" collection="loanNoList"
+						separator=",">
+						#{loanNo}
+					</foreach>
+					)
+				</if>
+				<if test="departmentId!=null and departmentId!=''">
+					and blb.OWNING_BRANCH_ID=#{departmentId}
+				</if>
+				<if test="rtfNodeState!=null and rtfNodeState!=''">
+					and blb.RTF_NODE_STATE=#{rtfNodeState}
+				</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="checkLoanIsNowReject" parameterType="Map" resultType="int">
+		select 
+		count(1) 
+		from bms_loan_log 
+		where loan_no=#{loanNo} 
+		and OPERATION_TIME &gt;=#{startDate} and OPERATION_TIME &lt;=#{endDate}
+		and RTF_NODE_STATE =#{rtfNodeState} and RTF_STATE=#{rtfState}
+	</select>
+	
+	
+	
+	
+	<!-- 申请件信息查询 -->
+	<select id="listPage" parameterType="Map" resultType="com.ymkj.cms.biz.entity.audit.BMSApplicationPartEntity">
+		select
+		blb.LOAN_NO loanNo,
+		blb.APPLY_DATE applyDate,
+		blb.OWNING_BRANCH_ID owningBanchId,
+		blb.OWNING_BRANCH owningBanchName,
+		blb.STATUS status,
+		blb.RTF_STATE rtfStatus,
+		blb.RTF_NODE_STATE rtfNodeStatus,
+		bla.ACC_LMT accLmt,
+		bla.ACC_TERM accTerm,
+		bla.CHECK_PERSON checkPerson,
+		bla.FINAL_PERSON finalPerson,
+		bla.ACC_DATE accDate,
+		blp.PRODUCT_CD productCode,
+		blp.PRODUCT_NAME productName,
+		blb.`name` customerName,
+		blb.ID_NO cdNo,
+		ble.PRIMARY_REASON primaryReason,
+		ble.SECODE_REASON secodeReason,
+		ble.FIRST_LEVLE_REASONS_CODE primaryReasonCode,
+		ble.TWO_LEVLE_REASONS_CODE secodeReasonCode,
+		bla.CREATED_TIME auditEndTime,
+		blb.VERSION version,
+  		bla.CHECK_PERSON checkPersonName, <!-- 初审人 -->
+  		bla.FINAL_PERSON finalPersonName, <!-- 终审人 -->
+  		bla.APPROVAL_PERSON approvalPersonName,<!-- 协审人 -->
+  		
+  		bla.CHECK_PERSON_CODE checkPersonCode, <!-- 初审人 -->
+  		bla.FINAL_PERSON_CODE finalPersonCode, <!-- 终审人 -->
+  		bla.APPROVAL_PERSON_CODE approvalPersonCode,<!-- 协审人 -->
+  		
+  		<!-- 最后拒绝人-->
+  		(SELECT ll.OPERATOR FROM bms_Loan_log ll 
+  			WHERE ll.loan_No = blb.loan_no 
+  			and ll.OPERATION_TYPE in ('115','1150','121','131')
+  			ORDER BY ll.OPERATION_TIME DESC LIMIT 1) rejectPersonName,
+  		<!-- 最后拒绝时间 -->
+  		(SELECT ll.OPERATION_TIME FROM bms_Loan_log ll 
+  			WHERE ll.loan_No = blb.loan_no 
+  			and ll.OPERATION_TYPE in ('115','1150','121','131')
+  			ORDER BY ll.OPERATION_TIME DESC LIMIT 1) rejectPersonDate
+		from bms_loan_base blb
+		left join bms_loan_audit bla on blb.LOAN_NO=bla.loan_no
+		left join bms_loan_product blp on blp.LOAN_NO=blb.LOAN_NO
+		left join bms_loan_ext ble on ble.loan_no=blb.loan_no
+		<where>
+			1=1
+			<if test="flag==1">
+				and blb.loan_no in (
+					SELECT DISTINCT l.LOAN_NO FROM bms_loan_log l WHERE 1=1
+					<if test="startDate!=null">
+						and l.OPERATION_TIME &gt;=#{startDate}
+					</if>
+					<if test="endDate!=null">
+						and l.OPERATION_TIME &lt;=#{endDate}
+					</if>
+					
+					<if test="rtfNodeStatusList !=null and rtfNodeStatusList.size() > 0">
+							AND l.RTF_NODE_STATE IN(
+							<foreach item="rtfNodeStatus" index="index" collection="rtfNodeStatusList"
+								separator=",">
+								#{rtfNodeStatus}
+							</foreach>
+							)
+					</if>
+				)
+			</if>
+			
+			<if test="flag==2">
+				and blb.loan_no in (
+					SELECT DISTINCT l.LOAN_NO FROM bms_loan_log l WHERE 1=1
+					<if test="startDate!=null">
+						and l.OPERATION_TIME &gt;=#{startDate}
+					</if>
+					<if test="endDate!=null">
+						and l.OPERATION_TIME &lt;=#{endDate}
+					</if>
+					
+					<if test="rtfNodeStatusList !=null and rtfNodeStatusList.size() > 0">
+							AND l.RTF_NODE_STATE IN(
+							<foreach item="rtfNodeStatus" index="index" collection="rtfNodeStatusList"
+								separator=",">
+								#{rtfNodeStatus}
+							</foreach>
+							)
+					</if>
+				)
+			</if>
+		
+			<if test="loanNo!=null and loanNo!=''">
+				and blb.loan_no=#{loanNo}
+			</if> 
+			<if test="customerName!=null and customerName!=''">
+				 and blb.`name` = #{customerName}
+			</if>
+			<if test="cdNo!=null and cdNo!=''">
+				and blb.id_no=#{cdNo}
+			</if>
+			<if test="rtfNodeStatusList !=null and rtfNodeStatusList.size() > 0">
+					and blb.RTF_NODE_STATE IN(
+					<foreach item="rtfNodeStatus" index="index" collection="rtfNodeStatusList"
+						separator=",">
+						#{rtfNodeStatus}
+					</foreach>
+					)
+			</if>
+				
+			<if test="checkNodeStatusList !=null and checkNodeStatusList.size() > 0">
+					and bla.CHECK_NODE_STATE IN(
+					<foreach item="checkNodeStatus" index="index" collection="checkNodeStatusList"
+						separator=",">
+						#{checkNodeStatus}
+					</foreach>
+					)
+			</if>
+		</where>
+		order by ${sortValue}
+	</select>
+	<select id="countByPageParam" parameterType="Map" resultType="int">
+		select count(1) from bms_loan_base blb
+		left join bms_loan_audit bla on blb.LOAN_NO=bla.loan_no
+		left join bms_loan_product blp on blp.LOAN_NO=blb.LOAN_NO
+		left join bms_loan_ext ble on ble.loan_no=blb.loan_no
+		<where>
+		1=1
+		
+			<if test="flag==1">
+				and blb.loan_no in (
+					SELECT DISTINCT l.LOAN_NO FROM bms_loan_log l WHERE 1=1
+					<if test="startDate!=null">
+						and l.OPERATION_TIME &gt;=#{startDate}
+					</if>
+					<if test="endDate!=null">
+						and l.OPERATION_TIME &lt;=#{endDate}
+					</if>
+					
+					<if test="rtfNodeStatusList !=null and rtfNodeStatusList.size() > 0">
+							AND l.RTF_NODE_STATE IN(
+							<foreach item="rtfNodeStatus" index="index" collection="rtfNodeStatusList"
+								separator=",">
+								#{rtfNodeStatus}
+							</foreach>
+							)
+					</if>
+				)
+			</if>
+			
+			<if test="flag==2">
+				and blb.loan_no in (
+					SELECT DISTINCT l.LOAN_NO FROM bms_loan_log l WHERE 1=1
+					<if test="startDate!=null">
+						and l.OPERATION_TIME &gt;=#{startDate}
+					</if>
+					<if test="endDate!=null">
+						and l.OPERATION_TIME &lt;=#{endDate}
+					</if>
+					
+					<if test="rtfNodeStatusList !=null and rtfNodeStatusList.size() > 0">
+							AND l.RTF_NODE_STATE IN(
+							<foreach item="rtfNodeStatus" index="index" collection="rtfNodeStatusList"
+								separator=",">
+								#{rtfNodeStatus}
+							</foreach>
+							)
+					</if>
+				)
+			</if>
+			
+			
+			<if test="loanNo!=null and loanNo!=''">
+				and blb.loan_no=#{loanNo}
+			</if> 
+			<if test="customerName!=null and customerName!=''">
+				 and blb.`name` = #{customerName}
+			</if>
+			<if test="cdNo!=null and cdNo!=''">
+				and blb.id_no=#{cdNo}
+			</if>
+			<if test="rtfNodeStatusList !=null and rtfNodeStatusList.size() > 0">
+					and blb.RTF_NODE_STATE IN(
+					<foreach item="rtfNodeStatus" index="index" collection="rtfNodeStatusList"
+						separator=",">
+						#{rtfNodeStatus}
+					</foreach>
+					)
+			</if>
+			
+			<if test="checkNodeStatusList !=null and checkNodeStatusList.size() > 0">
+					and bla.CHECK_NODE_STATE IN(
+					<foreach item="checkNodeStatus" index="index" collection="checkNodeStatusList"
+						separator=",">
+						#{checkNodeStatus}
+					</foreach>
+					)
+			</if>
+		</where>
+	</select>
+</mapper>

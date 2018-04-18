@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.audit.impl.AduitPersonDaoImpl">
+	<resultMap id="aduitPersonMap"
+		type="com.ymkj.cms.biz.entity.audit.BMSAduitPersonEntity">
+		<result property="dataType" column="DATA_TYPE" />
+		<result property="bizType" column="BIZ_TYPE" />
+		<result property="bizNo" column="BIZ_NO" />
+		<result property="appProductNum" column="APP_PRODUCT_NUM" />
+		<result property="frdProductNum" column="FRD_PRODUCT_NUM" />
+		<result property="applySate" column="APPLY_DATE" />
+		<result property="idType" column="ID_TYPE" />
+		<result property="idNum" column="ID_NUM" />
+		<result property="name" column="NAME" />
+		<result property="cellphone" column="CELLPHONE" />
+		<result property="email" column="EMAIL" />
+		<result property="address" column="ADDRESS" />
+		<result property="homeTel" column="HOME_TEL" />
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="companyAddress" column="COMPANY_ADDRESS" />
+		<result property="companyPhone" column="COMPANY_PHONE" />
+		<result property="salesManNo" column="SALES_MAN_NO" />
+		<result property="carId" column="CAR_ID" />
+		<result property="imei" column="IMEI" />
+		<result property="imsi" column="IMSI" />
+		<result property="ipaddr" column="IPADDR" />
+		<result property="mac" column="MAC" />
+		<result property="wifiMac" column="WIFI_MAC" />
+		<result property="contactName1" column="CONTACT_NAME1" />
+		<result property="contactPhone1" column="CONTACT_PHONE1" />
+		<result property="contactRelationship1" column="CONTACT_RELATIONSHIP1" />
+		<result property="contactName2" column="CONTACT_NAME2" />
+		<result property="contactPhone2" column="CONTACT_PHONE2" />
+		<result property="contactRelationship2" column="CONTACT_RELATIONSHIP2" />
+		<result property="gender" column="GENDER" />
+		<result property="marriage" column="MARRIAGE" />
+		<result property="education" column="EDUCATION" />
+		<result property="bizCity" column="BIZ_CITY" />
+		<result property="houseStatus" column="HOUSE_STATUS" />
+		<result property="currWorkYear" column="CURR_WORK_YEAR" />
+	</resultMap>
+	<select id="findAduitPersonInfo" parameterType="java.util.Map" resultMap="aduitPersonMap">
+		SELECT
+		9 AS DATA_TYPE,
+		1 AS BIZ_TYPE,
+		P.APP_NO AS BIZ_NO,
+		'A01' AS APP_PRODUCT_NUM,
+		'AFP1000,AFP1010' AS FRD_PRODUCT_NUM,
+		DATE_FORMAT(NOW(), '%Y-%C-%D %H:%I:%S') AS APPLY_DATE,
+		0 AS ID_TYPE,
+		P.ID_NO AS ID_NUM,
+		P.NAME AS NAME,
+		P.CELLPHONE AS CELLPHONE,
+		'' AS EMAIL,
+		P.HOME_STATE || P.HOME_CITY || P.HOME_ZONE || P.HOME_ADDRESS AS ADDRESS,
+		P.HOME_PHONE1 AS HOME_TEL,
+		P.CORP_NAME AS COMPANY_NAME,
+		P.CORP_PROVINCE || P.CORP_CITY || P.CORP_ZONE || P.CORP_ADDRESS AS COMPANY_ADDRESS,
+		P.CORP_PHONE AS COMPANY_PHONE,
+		'' AS SALES_MAN_NO,
+		'' AS CAR_ID,
+		'' AS IMEI,
+		'' AS IMSI,
+		'' AS IPADDR,
+		'' AS MAC,
+		'' AS WIFI_MAC,
+		'' AS CONTACT_NAME1,
+		C.CONTACT_CELLPHONE AS CONTACT_PHONE1,
+		'' AS CONTACT_RELATIONSHIP1,
+		'' AS CONTACT_NAME2,
+		'' AS CONTACT_PHONE2,
+		'' AS CONTACT_RELATIONSHIP2,
+		'' AS GENDER,
+		'' AS MARRIAGE,
+		'' AS EDUCATION,
+		'' AS BIZ_CITY,
+		'' AS HOUSE_STATUS,
+		'' AS CURR_WORK_YEAR ,
+		P.IS_DELETE|C.IS_DELETE = 0
+		FROM
+		BMS_APP_PERSON_INFO P
+		LEFT JOIN BMS_TM_APP_CONTACT_INFO C
+		ON C.LOAN_NO = P.LOAN_NO AND C.IS_DELETE = 0
+		AND C.SEQUENCE_NUM = 1
+		WHERE P.IS_DELETE = 0
+		<if test="loanNo != null and loanNo != ''">
+        	AND P.LOAN_NO = #{loanNo}
+        </if>
+		LIMIT 1
+	</select>
+
+</mapper> 
+
+
+
+
+
+
+
+
+
+
+

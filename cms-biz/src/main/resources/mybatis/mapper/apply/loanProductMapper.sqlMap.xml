@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.LoanProductDaoImpl">
+   <resultMap id="loanProductMap" type="com.ymkj.cms.biz.entity.apply.LoanProductEntity">
+		<id property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="loanNo" column="LOAN_NO"/>
+		<result property="repayDate" column="REPAY_DATE" />
+		<result property="ifGrey" column="IF_GREY" />
+		<result property="ifOldOrNewLogo" column="IF_OLD_OR_NEW_LOGO" />
+		<result property="initProductCd" column="INIT_PRODUCT_CD" />
+		<result property="initProductName" column="INIT_PRODUCT_NAME" />
+		<result property="productCd" column="PRODUCT_CD" />
+		<result property="productName" column="PRODUCT_NAME" />
+		
+		<result property="applyLmt" column="APPLY_LMT" />
+		<result property="applyTerm" column="APPLY_TERM" />
+		<result property="initApplyLmt" column="INIT_APPLY_LMT" />
+		<result property="initApplyTerm" column="INIT_APPLY_TERM" />
+		
+	    <result property="ifEnd" column="IF_END" />
+		<result property="ifSuspectCheat" column="IF_SUSPECT_CHEAT" />
+		<result property="ifLoanAgain" column="IF_LOAN_AGAIN" />
+		<result property="ifRefuse" column="IF_REFUSE" />
+		<result property="applyRate" column="APPLY_RATE" />
+		<result property="ifPatchBolt" column="IF_PATCH_BOLT" />
+		<result property="ifPri" column="IF_PRI" />
+		<result property="ifUrgent" column="IF_URGENT" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+	</resultMap>
+ 	 
+ 
+	 
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+          <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+   <sql id="sqlnotCreaator">
+  	id, LOAN_BASE_ID,APP_NO,LOAN_NO
+         				, REPAY_DATE,IF_GREY,IF_OLD_OR_NEW_LOGO, INIT_PRODUCT_CD,INIT_PRODUCT_NAME,PRODUCT_CD,PRODUCT_NAME,APPLY_LMT,APPLY_TERM
+         				,IF_END ,IF_SUSPECT_CHEAT,IF_LOAN_AGAIN,IF_REFUSE,APPLY_RATE,IF_PATCH_BOLT
+         				,IF_PRI,IF_URGENT 
+         				,CREATOR_ID,CREATOR,CREATED_TIME,VERSION
+   </sql>
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.LoanProductEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_LOAN_PRODUCT(LOAN_BASE_ID,APP_NO,LOAN_NO
+         				, REPAY_DATE,IF_GREY,IF_OLD_OR_NEW_LOGO, INIT_PRODUCT_CD,INIT_PRODUCT_NAME,PRODUCT_CD,PRODUCT_NAME,APPLY_LMT,APPLY_TERM
+         				,IF_END ,IF_SUSPECT_CHEAT,IF_LOAN_AGAIN,IF_REFUSE,APPLY_RATE,IF_PATCH_BOLT
+         				,IF_PRI,IF_URGENT 
+         				,CREATOR_ID,CREATOR,CREATED_TIME,INIT_APPLY_LMT,INIT_APPLY_TERM)
+         	 VALUES(#{loanBaseId},  #{appNo},#{loanNo}, #{repayDate}, #{ifGrey}, #{ifOldOrNewLogo}, #{initProductCd},#{initProductName},
+         	 #{productCd},#{productName}, #{applyLmt}, #{applyTerm}, #{ifEnd},#{ifSuspectCheat}, #{ifLoanAgain}, #{ifRefuse}, #{applyRate},
+         	 #{ifPatchBolt}, #{ifPri},  #{ifUrgent},  
+         	  #{creatorId}, #{creator}, #{createdTime},#{initApplyLmt},#{initApplyTerm})
+    </insert >
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="loanProductMap">
+		select  <include refid="sqlnotCreaator"></include>  from BMS_LOAN_PRODUCT
+		where id = #{id}
+	</select>
+         <select id="listBy" parameterType="java.util.Map" resultMap="loanProductMap">
+		select * from  BMS_LOAN_PRODUCT
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+    
+    
+    <!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.LoanProductEntity">
+		update  BMS_LOAN_PRODUCT
+ 			set 	
+
+ 	    <if test="repayDate != null and repayDate != ''">
+        	REPAY_DATE = #{repayDate},
+        </if>
+        <if test="ifGrey != null and ifGrey != ''">
+        	IF_GREY = #{ifGrey},
+        </if>
+         <if test="ifOldOrNewLogo != null and ifOldOrNewLogo != ''">
+        	IF_OLD_OR_NEW_LOGO = #{ifOldOrNewLogo},
+        </if>
+        <if test="productCd != null and productCd != ''">
+        	PRODUCT_CD = #{productCd},
+        </if>
+        <if test="productName != null and productName != ''">
+        	PRODUCT_NAME = #{productName},
+        </if>
+        
+        <if test="applyLmt != null and applyLmt != ''">
+        	APPLY_LMT = #{applyLmt},
+        </if>
+         <if test="applyTerm != null and applyTerm != ''">
+        	APPLY_TERM = #{applyTerm},
+        </if>
+         <if test="ifEnd != null and ifEnd != ''">
+        	IF_END = #{ifEnd},
+        </if>
+	 
+	   <if test="ifSuspectCheat != null">
+        	IF_SUSPECT_CHEAT = #{ifSuspectCheat},
+        </if>
+        <if test="ifLoanAgain != null and ifLoanAgain != ''">
+        	IF_LOAN_AGAIN = #{ifLoanAgain},
+        </if>
+         <if test="ifRefuse != null and ifRefuse != ''">
+        	IF_REFUSE = #{ifRefuse},
+        </if>
+         <if test="applyRate != null and applyRate != ''">
+        	APPLY_RATE = #{applyRate},
+        </if>
+	 
+	   <if test="ifPatchBolt != null and ifPatchBolt != ''">
+        	IF_PATCH_BOLT = #{ifPatchBolt},
+        </if>
+        <if test="ifPri != null">
+        	IF_PRI = #{ifPri},
+        </if>
+         <if test="ifUrgent != null and ifUrgent != ''">
+        	IF_URGENT = #{ifUrgent},
+        </if>
+	  
+	  	<if test="initProductCd != null">
+        	INIT_PRODUCT_CD = #{initProductCd},
+        </if>
+        <if test="initProductName != null">
+        	INIT_PRODUCT_NAME = #{initProductName},
+        </if>
+        <if test="initApplyLmt != null">
+        	INIT_APPLY_LMT = #{initApplyLmt},
+        </if>
+        <if test="initApplyTerm != null">
+        	INIT_APPLY_TERM = #{initApplyTerm},
+        </if>
+		
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	<!--根据借款编号查询渠道号-->
+	<select id="getChannelCodeByLoans" parameterType="java.util.List" resultType="string">
+		select distinct CONTRACT_SOURCE contractSource from BMS_LOAN_PRODUCT
+		where LOAN_NO in
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+    
+    <select id="getContractType" parameterType="java.lang.String" resultType="String">
+		select contract_type as contractType from BMS_LOAN_PRODUCT where loan_no=#{loanNo}
+	</select>
+	<select id="findProductData" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.master.BMSProduct">
+		select PRODUCT_ID as productId,RATE as rate,DEBT_RADIO as debtRadio,PREFERENTIAL_RATE as preferentialRate from BMS_PRODUCT where code=#{productCd}
+	</select>
+</mapper> 

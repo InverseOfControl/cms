@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSLoanExtEntityDaoImpl">
+   <resultMap id="BMSLoanExtMap" type="com.ymkj.cms.biz.entity.master.BMSLoanExt">
+  
+     <!-- 借款扩展表 -->
+        <!-- 主键Id -->
+        <id property="id" column="ID" />
+	    <!-- LOAN_BASE_ID -->
+	    <result property="loanBaseId" column="LOAN_BASE_ID" />
+       <!-- 借款编号 -->
+	    <result property="loanNo" column="LOAN_NO" />
+	    <!-- 申请件编号 -->
+        <result property="appNo" column="APP_NO" />
+        <!-- 机构 -->
+        <result property="specialOrg" column="SPECIAL_ORG" />
+        <!-- 规则状态 -->
+		<result property="regularState" column="REGULAR_STATE" />
+		<!-- 方案 -->
+		<result property="specialPlan" column="SPECIAL_PLAN" /> 
+		<!-- 数信推送时间 -->
+		<result property="pushDate" column="PUSH_DATE" /> 
+		<!-- 数信拒绝原因 -->
+		<result property="reasonShuxin" column="REASON_SHUXIN" /> 
+		<!--  贷款用途-->
+		<result property="creditApplication" column="CREDIT_APPLICATION" />
+		<!-- 系统建议额度 -->
+		<result property="sugLmt" column="SUG_LMT" />
+		<!-- 机构名称 -->
+		<result property="appOrgName" column="APP_ORG_NAME" />
+		<!-- 客户等级 -->
+		<result property="priority" column="PRIORITY" />
+		<!-- 第三方Id -->
+		<result property="thirdId" column="THIRD_ID" />
+	    <!-- 借款计划 -->
+		<result property="appLoanPlan" column="APP_LOAN_PLAN" />
+		<!-- 保证金 -->
+		<result property="ensureAmtAmount" column="ENSURE_AMT_AMOUNT" />
+		<!-- 客户类型 -->
+		<result property="clientType" column="CLIENT_TYPE" />
+		<!-- 一级原因 -->
+		<result property="primaryReason" column="PRIMARY_REASON" />
+		<!-- 二级原因 -->
+		<result property="secodeReason" column="SECODE_REASON" />
+		 <!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="createdTime" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modifier" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedTime" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifierId" column="MODIFIER_ID" />
+	    <!-- 版本号 -->
+	    <result property="version" column="VERSION" />
+	    <!-- 是否删除 -->
+	    <result property="isDelete" column="IS_DELETE" />
+	   <!-- 业务申请流水号 -->
+	    <result property="busNumber" column="BUS_NUMBER" />
+	   <!--包银状态值-->
+	    <result property="byState" column="BY_STATE" />
+	   <!--黑名单拒绝原因-->
+	    <result property="byRefusalResult" column="BY_REFUSAL_RESULT" />
+	   <!--授信信息推送时间-->
+	    <result property="windControlDate" column="WIND_CONTROL_DATE" />
+	   <!--风控结果-->
+	    <result property="windControlResult" column="WIND_CONTROL_RESULT" />
+	   <!--人工审核状态-->
+	    <result property="auditingState" column="AUDITING_STATE" />
+		
+		 <result property="rejectPersonName" column="REJECT_PERSON_NAME" />
+		 <result property="rejectPersonCode" column="REJECT_PERSON_CODE" />
+		<result property="applyStartTime" column="APPLY_START_TIME" />
+		<result property="applyEndTime" column="APPLY_END_TIME" />
+		
+		<result property="blacklistId" column="BLACKLIST_ID" />
+		<result property="loggedArea" column="LOGGED_AREA" />
+		<result property="loggedAreaName" column="LOGGED_AREA_NAME" />
+		<result property="reviewSnapVersion" column="REVIEW_SNAP_VERSION" />
+		<result property="auditSnapVersion" column="AUDIT_SNAP_VERSION" />
+		<result property="antiFraudScore" column="ANTI_FRAUD_SCORE" />
+		<result property="antiFraudWarning" column="ANTI_FRAUD_WARNING" />
+		<result property="antiRiskRate" column="ANTI_RISK_RATE" />
+		<result property="auditBackSnapVersion" column="AUDIT_BACK_SNAP_VERSION" />
+		<result property="finalauditBackSnapVersion" column="FINALAUDIT_BACK_SNAP_VERSION" />
+		<result property="primaryReason" column="PRIMARY_REASON" />
+		<result property="secodeReason" column="SECODE_REASON" />
+		<result property="lujsName" column="lujs_name"/>
+		<result property="lujsApplyNo" column="lujs_apply_no"/>
+		<result property="lujsLoanReqId" column="lujs_loan_req_id"/>
+		<result property="orgAuditState" column="ORG_AUDIT_STATE"/>
+		<result property="appAverageFlag" column="APP_AVERAGE_FLAG"/>
+		<!-- <result property="sysAccTrem" column="IS_DELETE" /> -->
+		<!-- <result property="branchManager" column="MANAGE_BRANCH_ID" /> -->
+		<!-- <result property="jpaVersion" column="VERSION" /> -->
+	    <!-- 	<result property="proNum" column="IS_DELETE" /> -->
+		<!-- <result property="createUser" column="CREATOR" /> -->
+	    <!--  <result property="updateUser" column="MODIFIER_ID" /> -->
+	    <!--    <result property="clientType" column="IS_DELETE" /> -->
+	    <!--  <result property="sysCheckLmt" column="SUG_LMT" />-->
+	    <!-- <result property="org" column="APP_ORG_NAME" /> -->
+	    <!--  <result property="proName" column="IS_DELETE" /> -->
+	    <!--  <result property="createDate" column="CREATED_TIME" /> -->
+	    <!--   <result property="repayDate" column="REPAY_DATE" /> -->
+	    <!-- <result property="updateDate" column="MODIFIED_TIME" /> -->
+	    <!--    <result property="sysAccLmt" column="SUG_LMT" /> -->
+	</resultMap> 
+    
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSLoanExtMap">
+		SELECT
+		e.ID,
+		e.LOAN_BASE_ID,
+	    e.LOAN_NO,
+		e.APP_NO,
+		e.SPECIAL_ORG,
+		e.REGULAR_STATE,
+		e.SPECIAL_PLAN,
+		e.PUSH_DATE,
+		e.REASON_SHUXIN,
+		e.CREDIT_APPLICATION,
+		e.SUG_LMT,
+		e.APP_ORG_NAME,
+		e.PRIORITY,
+		e.THIRD_ID,
+		e.APP_LOAN_PLAN,
+		e.ENSURE_AMT_AMOUNT,
+		e.CLIENT_TYPE,
+		e.CREATOR,
+		e.CREATED_TIME,
+		e.CREATOR_ID,
+		e.MODIFIER,
+		e.MODIFIED_TIME,
+		e.MODIFIER_ID,
+		e.VERSION,
+		e.IS_DELETE,
+		e.BUS_NUMBER,
+		e.BY_STATE,
+		e.BY_REFUSAL_RESULT,
+		e.WIND_CONTROL_DATE,
+		e.WIND_CONTROL_RESULT,
+		e.AUDITING_STATE,
+		e.REJECT_PERSON_NAME,   <!--  拒绝人姓名 -->
+		e.REJECT_PERSON_CODE,     <!-- 拒绝人编码 -->
+		e.APPLY_START_TIME,   <!-- 申请开始时间 -->
+		e.APPLY_END_TIME,    <!-- 申请结束时间 -->
+		e.AUDIT_START_TIME,  <!-- 复核开始时间 -->
+		e.AUDIT_END_TIME,     <!-- 复核结束 -->
+		e.BLACKLIST_ID,     <!--  灰黑名单ID -->
+		e.LOGGED_AREA,      <!-- 录入区域 -->
+		e.LOGGED_AREA_NAME,   <!-- 录入区域名称 -->
+		e.REVIEW_SNAP_VERSION,   <!--  复核快照版本 -->
+		e.AUDIT_SNAP_VERSION,    <!-- 初审审核快照版本 -->
+		e.ANTI_FRAUD_SCORE,      <!-- 反欺诈评分 -->
+		e.ANTI_FRAUD_WARNING,     <!-- 反欺诈预警 -->
+		e.ANTI_RISK_RATE,      <!--   欺诈风险评估 -->
+		e.AUDIT_BACK_SNAP_VERSION,    <!-- 初审退回快照版本 -->
+		e.FINALAUDIT_BACK_SNAP_VERSION,   <!--  终审退回快照版本 -->
+		e.BUS_NUMBER,    <!--  业务流水号 -->
+		e.BY_STATE,    <!-- 包银状态值 0黑名单拒绝 1黑名单通过 2银行卡鉴权拒绝 3鉴权通过 4风控信息推送失败 5风控信息推送成功 -->
+		e.BY_REFUSAL_RESULT,   <!--  包银黑名单拒绝原因 -->
+		e.WIND_CONTROL_DATE,    <!-- 授信信息推送时间 -->
+		e.WIND_CONTROL_RESULT, <!-- 风控结果 -->
+		e.AUDITING_STATE,  <!-- 人工审核状态 0审核中 1通过 2拒绝 3是图像资料待上传 4是补件 -->
+		e.PRIMARY_REASON,
+		e.SECODE_REASON,
+		e.lujs_name,
+		e.lujs_loan_req_id,
+		e.lujs_apply_no,
+		e.ORG_AUDIT_STATE,
+		e.APP_AVERAGE_FLAG
+		FROM  bms_loan_ext e 
+		where e.IS_DELETE = 0
+		<if test="appNo != null and appNo != ''">
+        
+        	and  e.APP_NO =#{appNo}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        
+        	and  e.LOAN_NO =#{loanNo}
+		</if>
+		<if test="version != null and version !=''">
+			and e.VERSION = #{version}
+		</if>
+		<if test="loanBaseId != null and loanBaseId !=''">
+			and e.LOAN_BASE_ID = #{loanBaseId}
+		</if>
+		<![CDATA[ order by e.CREATED_TIME desc]]>
+		
+	</select>
+	
+	
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1)
+		FROM  bms_loan_ext e 
+		where e.IS_DELETE = 0
+		<if test="appNo != null and appNo != ''">
+        
+        	and  e.APP_NO =#{appNo}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        
+        	and  e.LOAN_NO =#{loanNo}
+		</if>
+		<if test="version != null and version !=''">
+			and e.VERSION = #{version}
+		</if>
+		<if test="loanBaseId != null and loanBaseId !=''">
+			and e.LOAN_BASE_ID = #{loanBaseId}
+		</if>
+		<![CDATA[ order by e.CREATED_TIME desc]]>
+	</select>
+
+	<select id="findLoanExtByLoanNo" parameterType="java.util.Map" resultMap="BMSLoanExtMap">
+		SELECT
+		e.ID,
+		e.LOAN_BASE_ID,
+		e.LOAN_NO,
+		e.APP_NO,
+		e.SPECIAL_ORG,
+		e.REGULAR_STATE,
+		e.SPECIAL_PLAN,
+		e.PUSH_DATE,
+		e.REASON_SHUXIN,
+		e.CREDIT_APPLICATION,
+		e.SUG_LMT,
+		e.APP_ORG_NAME,
+		e.PRIORITY,
+		e.THIRD_ID,
+		e.APP_LOAN_PLAN,
+		e.ENSURE_AMT_AMOUNT,
+		e.CLIENT_TYPE,
+		e.CREATOR,
+		e.CREATED_TIME,
+		e.CREATOR_ID,
+		e.MODIFIER,
+		e.MODIFIED_TIME,
+		e.MODIFIER_ID,
+		e.VERSION,
+		e.IS_DELETE,
+		e.BUS_NUMBER,
+		e.BY_STATE,
+		e.BY_REFUSAL_RESULT,
+		e.WIND_CONTROL_DATE,
+		e.WIND_CONTROL_RESULT,
+		e.AUDITING_STATE
+		FROM  bms_loan_ext e
+		where e.IS_DELETE = 0
+		<if test="busNumber != null and busNumber != ''">
+			and  e.BUS_NUMBER =#{busNumber}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+			and  e.LOAN_NO =#{loanNo}
+		</if>
+		<if test="version != null and version !=''">
+			and e.VERSION = #{version}
+		</if>
+		<if test="loanBaseId != null and loanBaseId !=''">
+			and e.LOAN_BASE_ID = #{loanBaseId}
+		</if>
+	</select>
+
+	<update id="updateBySatus" parameterType="java.util.Map">
+		update bms_loan_ext
+		<set>
+			<if test="busNumber != null and busNumber != ''">
+				BUS_NUMBER = #{busNumber},
+			</if>
+			<if test="byState != null and byState != ''">
+				BY_STATE = #{byState},
+			</if>
+			<if test="byRefusalResult != null and byRefusalResult != ''">
+				BY_REFUSAL_RESULT=#{byRefusalResult},
+			</if>
+			<if test="windControlDate != null">
+				WIND_CONTROL_DATE=#{windControlDate},
+			</if>
+			<if test="windControlResult != null and windControlResult != ''">
+				WIND_CONTROL_RESULT=#{windControlResult},
+			</if>
+			<if test="auditingState != null and auditingState != ''">
+				AUDITING_STATE=#{auditingState},
+			</if>
+			<if test="orgAuditState != null and orgAuditState != ''">
+				ORG_AUDIT_STATE=#{orgAuditState},
+			</if>
+			<if test="channelPushFrequency != null">
+				CHANNEL_PUSH_FREQUENCY=#{channelPushFrequency},
+			</if>
+			IS_DELETE = 0
+		</set>
+		<where>
+			LOAN_NO=#{loanNo}
+		</where>
+	</update>
+	<!--包银撤销接口调用成功后置空包银相关字段-->
+	<update id="updateByStatusNull" parameterType="java.util.Map">
+		update bms_loan_ext
+		<set>
+				BUS_NUMBER = NULL ,
+				BY_STATE = NULL ,
+				BY_REFUSAL_RESULT=NULL ,
+				WIND_CONTROL_DATE=NULL ,
+				WIND_CONTROL_RESULT=NULL ,
+				AUDITING_STATE=NULL,
+				ORG_AUDIT_STATE=NULL
+		</set>
+		<where>
+			LOAN_NO=#{loanNo}
+		</where>
+	</update>
+</mapper> 

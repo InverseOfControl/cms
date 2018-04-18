@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.sign.impl.UploadFileInfoDaoImpl">
+
+	<sql id="table">BMS_FILE_UPLOAD_INFO</sql>
+	<resultMap id="uploadFileInfoMap"
+		type="com.ymkj.cms.biz.entity.sign.BMSUploadFileInfo">
+		<result property="id" column="ID" />
+		<result property="fileId" column="FILE_ID" />
+		<result property="fileName" column="FILE_NAME" />
+		<result property="url" column="URL" />
+		<result property="owerCode" column="OWER_CODE" />
+		<result property="loanNo" column="LOAN_NO" />
+		<result property="sysCode" column="SYS_CODE" />
+		<result property="nodeKey" column="NODE_KEY" />
+		<result property="creator" column="CREATOR" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creatorDate" column="CREATOR_DATE" />
+		<result property="modified" column="MODIFIED" />
+		<result property="modifiedId" column="MODIFIED_ID" />
+		<result property="modifiedDate" column="MODIFIED_DATE" />
+		<result property="version" column="VERSION" />
+		<result property="isDeleted" column="IS_DELETED" />
+	</resultMap>
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.sign.BMSUploadFileInfo"
+		keyProperty="id" useGeneratedKeys="true">
+		insert into
+		<include refid="table" />
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="fileId != null">
+				FILE_ID,
+			</if>
+			<if test="fileName != null and fileName != ''">
+				FILE_NAME,
+			</if>
+			<if test="url != null and url != ''">
+				URL,
+			</if>
+			<if test="owerCode != null and owerCode != ''">
+				OWER_CODE,
+			</if>
+			<if test="loanNo != null and loanNo != ''">
+				LOAN_NO,
+			</if>
+			<if test="sysCode != null and sysCode != ''">
+				SYS_CODE,
+			</if>
+			<if test="nodeKey != null and nodeKey != ''">
+				NODE_KEY,
+			</if>
+			<if test="creator != null and creator != ''">
+				CREATOR,
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID,
+			</if>
+			<if test="creatorDate != null">
+				CREATOR_DATE,
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED,
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID,
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE,
+			</if>
+			IS_DELETED,
+			VERSION
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="fileId != null">
+				#{fileId},
+			</if>
+			<if test="fileName != null and fileName != ''">
+				#{fileName},
+			</if>
+			<if test="url != null and url != ''">
+				#{url},
+			</if>
+			<if test="owerCode != null and owerCode != ''">
+				#{owerCode},
+			</if>
+			<if test="loanNo != null and loanNo != ''">
+				#{loanNo},
+			</if>
+			<if test="sysCode != null and sysCode != ''">
+				#{sysCode},
+			</if>
+			<if test="nodeKey != null and nodeKey != ''">
+				#{nodeKey},
+			</if>
+			<if test="creator != null and creator != ''">
+				#{creator},
+			</if>
+			<if test="creatorId != null">
+				#{creatorId},
+			</if>
+			<if test="creatorDate != null">
+				#{creatorDate},
+			</if>
+			<if test="modified != null and modified != ''">
+				#{modified},
+			</if>
+			<if test="modifiedId != null">
+				#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				#{modifiedDate},
+			</if>
+			0,
+			1
+		</trim>
+
+	</insert>
+	<select id="listBy" parameterType="Map" resultMap="uploadFileInfoMap">
+		SELECT 
+		  ID,
+		  FILE_ID,
+		  FILE_NAME,
+		  URL,
+		  OWER_CODE,
+		  LOAN_NO,
+		  SYS_CODE,
+		  NODE_KEY,
+		  CREATOR,
+		  CREATOR_ID,
+		  CREATOR_DATE,
+		  MODIFIED,
+		  MODIFIED_ID,
+		  MODIFIED_DATE,
+		  VERSION,
+		  IS_DELETED 
+		FROM
+		  BMS_FILE_UPLOAD_INFO bfui 
+		WHERE bfui.IS_DELETED = 0 		
+		<if test="owerCode != null and owerCode != ''">
+			and OWER_CODE = #{owerCode}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+			and LOAN_NO = #{loanNo}
+		</if>
+		<if test="sysCode != null and sysCode != ''">
+			and SYS_CODE = #{sysCode}
+		</if>
+		<if test="nodeKey != null and nodeKey != ''">
+			and NODE_KEY = #{nodeKey}
+		</if>
+	
+	</select>
+	<sql id="set_sql">
+			<if test="fileId != null">
+				FILE_ID=#{fileId},
+			</if>
+			<if test="fileName != null and fileName != ''">
+				FILE_NAME=#{fileName},
+			</if>
+			<if test="url != null and url != ''">
+				URL=#{url},
+			</if>
+			<if test="owerCode != null and owerCode != ''">
+				OWER_CODE=#{owerCode},
+			</if>
+			<if test="loanNo != null and loanNo != ''">
+				LOAN_NO=#{loanNo},
+			</if>
+			<if test="sysCode != null and sysCode != ''">
+				SYS_CODE=#{sysCode},
+			</if>
+			<if test="nodeKey != null and nodeKey != ''">
+				NODE_KEY=#{nodeKey},
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED=#{modified},
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID=#{owerCode},
+			</if>
+			<if test="isDeleted != null">
+				IS_DELETED=#{isDeleted},
+			</if>
+				MODIFIED_DATE=NOW(),
+	</sql>
+	
+	<sql id="condition_sql">
+		<if test="owerCode != null and owerCode != ''">
+			and OWER_CODE = #{owerCode}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+			and LOAN_NO = #{loanNo}
+		</if>
+		<if test="sysCode != null and sysCode != ''">
+			and SYS_CODE = #{sysCode}
+		</if>
+		<if test="nodeKey != null and nodeKey != ''">
+			and NODE_KEY = #{nodeKey}
+		</if>
+	</sql>
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.sign.BMSUploadFileInfo">
+		update
+		<include refid="table" />
+		<set>
+			<trim prefix="" suffixOverrides=",">
+				<include refid="set_sql" />
+			</trim>
+		</set>
+		<where>
+			<include refid="condition_sql"/>
+		</where>
+	</update>
+	
+	
+</mapper> 

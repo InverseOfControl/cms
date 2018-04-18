@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.app.impl.SaveApplyInfoDaoImpl">
+
+	<!-- 插入客户主表 -->
+	<insert id="insertAppPerson" parameterType="com.ymkj.cms.biz.entity.app.input.AppAppPersonEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_app_person
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			person_no, name, id_no, id_type, creator_id, creator, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{personNo}, #{name}, #{idNo}, #{idType}, #{creatorId}, #{creator}, now()
+		</trim>
+	</insert>
+
+	<!-- 插入申请信息 -->
+	<insert id="insertLoanBase" parameterType="com.ymkj.cms.biz.entity.app.input.AppLoanBaseEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_loan_base
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="loanNo != null and loanNo != '' "> loan_no, </if>
+			 <if test="personId != null and personId != '' or personId ==0 "> person_id, </if>
+			<if test="branchManagerCode != null and branchManagerCode != '' "> branch_manager_code, </if>
+			<if test="branchManagerName != null and branchManagerName != '' "> branch_manager_name, </if>
+			<if test="owningBranchId != null and owningBranchId != '' "> owning_branch_id, </if>
+			<if test="owningBranch != null and owningBranch != '' "> owning_branch, </if>
+			<if test="applyType != null and applyType != '' "> apply_type, </if>
+			<if test="applyInputFlag != null and applyInputFlag != '' "> apply_input_flag, </if>
+			<if test="name != null and name != '' "> name, </if>
+			<if test="idNo != null and idNo != '' "> id_no, </if>
+			<if test="creator != null and creator != '' "> creator, </if>
+			<if test="creatorId != null and creatorId != '' "> creator_id, </if>
+			<if test="remark != null and remark != '' "> remark, </if>
+			<if test="serviceCode != null and serviceCode != '' "> service_code, </if>
+			<if test="serviceName != null and serviceName != '' "> service_name, </if>
+			<if test="owningBranchId != null and owningBranchId != '' "> contract_branch_id, </if>
+			<if test="owningBranch != null and owningBranch != '' "> contract_branch, </if>
+			<if test="isAppClaim!= null and isAppClaim != '' "> is_app_claim, </if>
+			<if test="director != null and director != '' "> director, </if>
+			<if test="directorCode != null and directorCode != '' "> director_code, </if>
+			status,rtf_state,rtf_node_state,app_input_flag,app_apply_date,apply_date,created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="loanNo != null and loanNo != '' "> #{loanNo}, </if>
+			<if test="personId != null and personId != '' or personId ==0 "> #{personId}, </if>
+			<if test="branchManagerCode != null and branchManagerCode != '' "> #{branchManagerCode}, </if>
+			<if test="branchManagerName != null and branchManagerName != '' "> #{branchManagerName}, </if>
+			<if test="owningBranchId != null and owningBranchId != '' "> #{owningBranchId}, </if>
+			<if test="owningBranch != null and owningBranch != '' "> #{owningBranch}, </if>
+			<if test="applyType != null and applyType != '' "> #{applyType}, </if>
+			<if test="applyInputFlag != null and applyInputFlag != '' "> #{applyInputFlag}, </if>
+			<if test="name != null and name != '' "> #{name}, </if>
+			<if test="idNo != null and idNo != '' "> #{idNo}, </if>
+			<if test="creator != null and creator != '' "> #{creator}, </if>
+			<if test="creatorId != null and creatorId != '' "> #{creatorId}, </if>
+			<if test="remark != null and remark != '' "> #{remark}, </if>
+			<if test="serviceCode != null and serviceCode != '' "> #{serviceCode}, </if>
+			<if test="serviceName != null and serviceName != '' "> #{serviceName}, </if>
+			<if test="owningBranchId != null and owningBranchId != '' "> #{owningBranchId}, </if>
+			<if test="owningBranch != null and owningBranch != '' "> #{owningBranch}, </if>
+			<if test="isAppClaim!= null and isAppClaim != '' "> #{isAppClaim}, </if>
+			<if test="director != null and director != '' "> #{director}, </if>
+			<if test="directorCode != null and directorCode != '' "> #{directorCode}, </if>
+			#{status},#{rtfState},#{rtfNodeState},'app_input',#{appApplyDate},now(),now()
+		</trim>
+	</insert>
+
+ 	<!-- 更新申请信息 -->
+	 <update id="updateLoanBaseInfo" parameterType="com.ymkj.cms.biz.entity.app.input.AppLoanBaseEntity">
+	 	update bms_loan_base set
+        	<if test="loanNo != null and loanNo != '' "> loan_no = #{loanNo},</if>
+			<if test="personId != null and personId != '' or personId ==0 "> person_id=#{personId}, </if>
+			<if test="owningBranchId != null and owningBranchId != '' "> owning_branch_id=#{owningBranchId},  </if>
+			<if test="owningBranch != null and owningBranch != '' "> owning_branch=#{owningBranch},</if>
+			<if test="applyType != null and applyType != '' "> apply_type=#{applyType}, </if>
+			<if test="applyInputFlag != null and applyInputFlag != '' "> apply_input_flag=#{applyInputFlag}, </if>
+			<if test="name != null and name != '' "> name=#{name}, </if>
+			<if test="idNo != null and idNo != '' "> id_no= #{idNo},</if>
+			<if test="creator != null and creator != '' "> creator=#{creator}, </if>
+			<if test="creatorId != null and creatorId != '' "> creator_id=#{creatorId},</if>
+			<if test="remark != null and remark != '' "> remark= #{remark}, </if>
+			<if test="serviceCode != null and serviceCode != '' "> service_code=#{serviceCode}, </if>
+			<if test="serviceName != null and serviceName != '' "> service_name=#{serviceName}, </if>
+			<if test="owningBranchId != null and owningBranchId != '' "> contract_branch_id= #{owningBranchId}, </if>
+			<if test="owningBranch != null and owningBranch != '' "> contract_branch=#{owningBranch}, </if>
+			<if test="isAppClaim!= null and isAppClaim != '' "> is_app_claim=#{isAppClaim}, </if>
+			<if test="director != null and director != '' "> director=#{director}, </if>
+			<if test="directorCode  != null and directorCode != '' "> director_code=#{directorCode}, </if>
+			status=#{status},rtf_state=#{rtfState},rtf_node_state=#{rtfNodeState},
+			modified_time=SYSDATE() 
+        <where>
+            loan_no = #{loanNo}
+        </where>
+    </update>
+
+	<!-- 根据借款编号查询iD -->
+	 <select id="findIdByLoanNo" parameterType="java.lang.String" resultType="long">
+	 	select id from bms_loan_base where loan_no = #{loanNo}
+    </select>
+
+	<!-- 插入产品信息 -->
+	<insert id="insertLoanProduct" parameterType="com.ymkj.cms.biz.entity.app.input.AppLoanProductEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_loan_product
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="loanBaseId != null and loanBaseId != '' "> loan_base_id, </if>
+			<if test="loanNo != null and loanNo != '' "> loan_no, </if>
+			<if test="productCd != null and productCd != '' "> product_cd, </if>
+			<if test="productName != null and productName != '' "> product_name, </if>
+			<if test="productCd != null and productCd != '' "> init_product_cd, </if>
+			<if test="productName != null and productName != '' "> init_product_name, </if>
+			<if test="applyLmt != null and applyLmt != '' "> apply_lmt, </if>
+			<if test="applyTerm != null and applyTerm != '' "> apply_term, </if>
+			<if test="applyRate != null and applyRate != '' "> apply_rate, </if>
+			<if test="creator != null and creator != '' "> creator, </if>
+			<if test="creatorId != null and creatorId != '' "> creator_id, </if>
+			created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="loanBaseId != null and loanBaseId != '' "> #{loanBaseId}, </if>
+			<if test="loanNo != null and loanNo != '' "> #{loanNo}, </if>
+			<if test="productCd != null and productCd != '' "> #{productCd}, </if>
+			<if test="productName != null and productName != '' "> #{productName}, </if>
+			<if test="productCd != null and productCd != '' "> #{productCd}, </if>
+			<if test="productName != null and productName != '' "> #{productName}, </if>
+			<if test="applyLmt != null and applyLmt != '' "> #{applyLmt}, </if>
+			<if test="applyTerm != null and applyTerm != '' "> #{applyTerm}, </if>
+			<if test="applyRate != null and applyRate != '' "> #{applyRate}, </if>
+			<if test="creator != null and creator != '' "> #{creator}, </if>
+			<if test="creatorId != null and creatorId != '' "> #{creatorId}, </if>
+			now()
+		</trim>
+	</insert>
+	
+	<!-- 插入申请扩展表信息 -->
+	<insert id="insertLoanExt" parameterType="com.ymkj.cms.biz.entity.app.input.AppLoanExtEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_loan_ext
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			loan_base_id,loan_no,credit_application, creator, creator_id, created_time, apply_start_time,
+			<if test="rejectPersonCode != null and rejectPersonCode != '' "> reject_person_code, </if>
+			<if test="primaryReason != null and primaryReason != '' "> primary_reason, </if>
+			<if test="loggedArea != null and loggedArea != '' "> logged_area, </if>
+			<if test="loggedAreaName != null and loggedAreaName != '' "> logged_area_name, </if>
+			<if test="customerSource != null and customerSource != '' "> customer_source, </if>
+			<if test="appAverageFlag != null and appAverageFlag != '' "> app_average_flag, </if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{loanBaseId},#{loanNo},#{creditApplication}, #{creator}, #{creatorId}, now(), now(),
+			<if test="rejectPersonCode != null and rejectPersonCode != '' "> #{rejectPersonCode}, </if>
+			<if test="primaryReason != null and primaryReason != '' "> #{primaryReason}, </if>
+			<if test="loggedArea != null and loggedArea != '' "> #{loggedArea}, </if>
+			<if test="loggedAreaName != null and loggedAreaName != '' "> #{loggedAreaName}, </if>
+			<if test="customerSource != null and customerSource != '' "> #{customerSource}, </if>
+			<if test="appAverageFlag != null and appAverageFlag != '' "> #{appAverageFlag}, </if>
+		</trim>
+	</insert>
+	
+	<!-- 插入客户信息表 -->
+	<insert id="insertAppPersonInfo" parameterType="com.ymkj.cms.biz.entity.app.input.AppAppPersonInfoEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_app_person_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<!-- 个人信息 -->
+			loan_base_id, loan_no, apply_person_id, org,
+			<if test="maritalStatus != null and maritalStatus != '' "> marital_status, </if>                 <!-- 婚姻状况 -->
+			<if test="childrenNum != null and childrenNum != '' "> children_num, </if>                       <!-- 子女数 -->
+			<if test="qualification != null and qualification != '' "> qualification, </if>                  <!-- 最高学历 -->
+			<if test="graduationDate != null and graduationDate != '' "> graduation_date, </if>              <!-- 毕业时间 -->
+			<if test="issuerStateId != null and issuerStateId != '' ">                                       <!-- 户籍省市区 -->
+				issuer_state_id,issuer_city_id,issuer_zone_id,issuer_state,issuer_city,issuer_zone,
+			</if>
+			<if test="idIssuerAddress != null and idIssuerAddress != '' "> id_issuer_address, </if>          <!-- 户籍地址 -->
+			<if test="issuerPostcode != null and issuerPostcode != '' "> issuer_postcode, </if>              <!-- 户籍邮编 -->
+			<if test="homeStateId != null and homeStateId != '' ">                                           <!-- 家庭省市区 -->
+				home_state_id,home_city_id,home_zone_id,home_state,home_city,home_zone,
+			</if>
+			<if test="homeAddress != null and homeAddress != '' "> home_address, </if>                       <!-- 家庭地址 -->
+			<if test="homeSameIdIssuerAddress != null and homeSameIdIssuerAddress != '' "> home_same_registered, </if>
+			<if test="homePostcode != null and homePostcode != '' "> home_postcode, </if>                    <!-- 家庭住址邮编 -->
+			<if test="houseType != null and houseType != '' "> house_type, </if>                             <!-- 住宅类型 -->
+			<if test="houseRent != null and houseRent != '' "> house_rent, </if>                             <!-- 租金/元 -->
+			<if test="familyMonthPay != null and familyMonthPay != '' "> family_month_pay, </if>             <!-- 每月家庭支出 -->
+			<if test="monthMaxRepay != null and monthMaxRepay != '' "> month_max_repay, </if>                <!-- 可接受的月最高还款 -->
+			<if test="cellphone != null and cellphone != '' "> cellphone, </if>                              <!-- 手机1 -->
+			<if test="cellphoneSec != null and cellphoneSec != '' "> cellphone_sec, </if>                    <!-- 手机2 -->
+			<if test="homePhone1 != null and homePhone1 != '' "> home_phone1, </if>                          <!-- 宅电1 -->
+			<if test="qqNum != null and qqNum != '' "> qq_num, </if>                                         <!-- QQ号 -->
+			<if test="wechatNum != null and wechatNum != '' "> wechat_num, </if>                             <!-- 微信号 -->
+			<if test="email != null and email != '' "> email, </if>                                          <!-- 邮箱 -->
+			<if test="birthday != null and birthday != '' "> birthday, </if>
+			<if test="gender != null and gender != '' "> gender, </if>
+			<if test="age != null and age != '' "> age, </if>
+			<if test="name != null and name != '' "> name, </if>
+			<if test="idNo != null and idNo != '' "> id_no, </if>
+			
+			<!-- 工作信息 -->	
+			<if test="corpName != null and corpName != '' "> corp_name, </if>                                <!-- 公司名称 -->
+			<if test="privateOwnersFlag != null and privateOwnersFlag != '' "> private_owners_flag, </if>    <!-- 是否私营业主 -->
+			<if test="corpProvinceId != null and corpProvinceId != '' ">                                     <!-- 公司省市区 -->
+				corp_province_id,corp_city_id,corp_zone_id,corp_province,corp_city,corp_zone,
+			</if>
+			<if test="cusWorkType != null and cusWorkType != '' "> cus_work_type, </if>                      <!-- 客户工作类型 -->
+			<if test="corpAddress != null and corpAddress != '' "> corp_address, </if>                       <!-- 公司地址 -->
+			<if test="corpPostcode != null and corpPostcode != '' "> corp_postcode, </if>                    <!-- 公司邮编 -->
+			<if test="businessNetWork != null and businessNetWork != '' "> business_net_work, </if>          <!-- 工商网信息 -->
+			<if test="corpStructure != null and corpStructure != '' "> corp_structure, </if>                 <!-- 公司性质 -->
+			<if test="corpType != null and corpType != '' "> corp_type, </if>                                <!-- 公司行业类别-->
+			<if test="corpDepapment != null and corpDepapment != '' "> corp_depapment, </if>                 <!-- 任职部门 -->
+			<if test="corpPost != null and corpPost != '' "> corp_post, </if>                                <!-- 职务 -->
+			<if test="occupation != null and occupation != '' "> occupation, </if>                           <!-- 职业 -->
+			<if test="corpPhone != null and corpPhone != '' "> corp_phone, </if>                             <!-- 单位电话1 -->
+			<if test="corpPhoneSec != null and corpPhoneSec != '' "> corp_phone_sec, </if>                   <!-- 公司电话2-->
+			<if test="corpStandFrom != null and corpStandFrom != '' "> corp_stand_from, </if>                <!-- 入职时间-->
+			<if test="corpPayWay != null and corpPayWay != '' "> corp_pay_way, </if>                      	 <!-- 发薪方式-->
+			<if test="monthSalary != null and monthSalary != '' "> month_salary, </if>                       <!-- 单位月收入/远-->
+			<if test="otherIncome != null and otherIncome != '' "> other_income, </if>                       <!-- 其它月收入/元-->
+			
+			<!-- 私营业主信息 -->
+			<if test="setupDate != null and setupDate != '' "> setup_date, </if>     
+			<if test="sharesScale != null and sharesScale != '' "> shares_scale, </if> 
+			<if test="registerFunds != null and registerFunds != '' "> register_funds, </if> 
+			<if test="priEnterpriseType != null and priEnterpriseType != '' "> pri_enterprise_type, </if> 
+			<if test="monthAmt != null and monthAmt != '' "> month_amt, </if>
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<!-- 个人信息 -->
+			#{loanBaseId}, #{loanNo}, #{personId}, #{org},
+			<if test="maritalStatus != null and maritalStatus != '' "> #{maritalStatus}, </if>               <!-- 婚姻状况 -->
+			<if test="childrenNum != null and childrenNum != '' "> #{childrenNum}, </if>                     <!-- 子女数 -->
+			<if test="qualification != null and qualification != '' "> #{qualification}, </if>               <!-- 最高学历 -->
+			<if test="graduationDate != null and graduationDate != '' "> #{graduationDate}, </if>            <!-- 毕业时间 -->
+			<if test="issuerStateId != null and issuerStateId != '' ">                                       <!-- 户籍省市区 -->
+				#{issuerStateId},#{issuerCityId},#{issuerZoneId},#{issuerState},#{issuerCity},#{issuerZone},
+			</if>
+			<if test="idIssuerAddress != null and idIssuerAddress != '' "> #{idIssuerAddress}, </if>         <!-- 户籍地址 -->
+			<if test="issuerPostcode != null and issuerPostcode != '' "> #{issuerPostcode}, </if>            <!-- 户籍邮编 -->
+			<if test="homeStateId != null and homeStateId != '' ">                                           <!-- 家庭省市区 -->
+				#{homeStateId},#{homeCityId},#{homeZoneId},#{homeState},#{homeCity},#{homeZone},
+			</if>
+			<if test="homeAddress != null and homeAddress != '' "> #{homeAddress}, </if>                     <!-- 家庭地址 -->
+			<if test="homeSameIdIssuerAddress != null and homeSameIdIssuerAddress != '' "> #{homeSameIdIssuerAddress}, </if>
+			<if test="homePostcode != null and homePostcode != '' "> #{homePostcode}, </if>                  <!-- 家庭住址邮编 -->
+			<if test="houseType != null and houseType != '' "> #{houseType}, </if>                           <!-- 住宅类型 -->
+			<if test="houseRent != null and houseRent != '' "> #{houseRent}, </if>                           <!-- 租金/元 -->
+			<if test="familyMonthPay != null and familyMonthPay != '' "> #{familyMonthPay}, </if>            <!-- 每月家庭支出 -->
+			<if test="monthMaxRepay != null and monthMaxRepay != '' "> #{monthMaxRepay}, </if>               <!-- 可接受的月最高还款 -->
+			<if test="cellphone != null and cellphone != '' "> #{cellphone}, </if>                           <!-- 手机1 -->
+			<if test="cellphoneSec != null and cellphoneSec != '' "> #{cellphoneSec}, </if>                  <!-- 手机2 -->
+			<if test="homePhone1 != null and homePhone1 != '' "> #{homePhone1}, </if>                        <!-- 宅电1 -->
+			<if test="qqNum != null and qqNum != '' "> #{qqNum}, </if>                                       <!-- QQ号 -->
+			<if test="wechatNum != null and wechatNum != '' "> #{wechatNum}, </if>                           <!-- 微信号 -->
+			<if test="email != null and email != '' "> #{email}, </if>                                       <!-- 邮箱 -->
+			<if test="birthday != null and birthday != '' "> #{birthday}, </if>
+			<if test="gender != null and gender != '' "> #{gender}, </if>
+			<if test="age != null and age != '' "> #{age}, </if>
+			<if test="name != null and name != '' "> #{name}, </if>
+			<if test="idNo != null and idNo != '' "> #{idNo}, </if>
+			
+			<!-- 工作信息 -->	
+			<if test="corpName != null and corpName != '' "> #{corpName}, </if>                              <!-- 公司名称 -->
+			<if test="privateOwnersFlag != null and privateOwnersFlag != '' "> #{privateOwnersFlag}, </if>   <!-- 是否私营业主 -->
+			<if test="corpProvinceId != null and corpProvinceId != '' ">                                     <!-- 公司省市区 -->
+				#{corpProvinceId},#{corpCityId},#{corpZoneId},#{corpProvince},#{corpCity},#{corpZone},                                     
+			</if>
+			<if test="cusWorkType != null and cusWorkType != '' "> #{cusWorkType}, </if>                     <!-- 客户工作类型 -->
+			<if test="corpAddress != null and corpAddress != '' "> #{corpAddress}, </if>                     <!-- 公司地址 -->
+			<if test="corpPostcode != null and corpPostcode != '' "> #{corpPostcode}, </if>                  <!-- 公司邮编 -->
+			<if test="businessNetWork != null and businessNetWork != '' "> #{businessNetWork}, </if>         <!-- 工商网信息 -->
+			<if test="corpStructure != null and corpStructure != '' "> #{corpStructure}, </if>               <!-- 公司性质 -->
+			<if test="corpType != null and corpType != '' "> #{corpType}, </if>                              <!-- 公司行业类别-->
+			<if test="corpDepapment != null and corpDepapment != '' "> #{corpDepapment}, </if>               <!-- 任职部门 -->
+			<if test="corpPost != null and corpPost != '' "> #{corpPost}, </if>                              <!-- 职务 -->
+			<if test="occupation != null and occupation != '' "> #{occupation}, </if>                        <!-- 职业 -->
+			<if test="corpPhone != null and corpPhone != '' "> #{corpPhone}, </if>                           <!-- 单位电话1 -->
+			<if test="corpPhoneSec != null and corpPhoneSec != '' "> #{corpPhoneSec}, </if>                  <!-- 公司电话2-->
+			<if test="corpStandFrom != null and corpStandFrom != '' "> #{corpStandFrom}, </if>               <!-- 入职时间-->
+			<if test="corpPayWay != null and corpPayWay != '' "> #{corpPayWay}, </if>                      	 <!-- 发薪方式-->
+			<if test="monthSalary != null and monthSalary != '' "> #{monthSalary}, </if>                     <!-- 单位月收入/远-->
+			<if test="otherIncome != null and otherIncome != '' "> #{otherIncome}, </if>                     <!-- 其它月收入/元-->
+			
+			<!-- 私营业主信息 -->
+			<if test="setupDate != null and setupDate != '' "> #{setupDate}, </if>                           <!-- 成立时间 -->    
+			<if test="sharesScale != null and sharesScale != '' "> #{sharesScale}, </if>                     <!-- 占股比例/% -->
+			<if test="registerFunds != null and registerFunds != '' "> #{registerFunds}, </if> 				 <!-- 注册资本/万元 -->					
+			<if test="priEnterpriseType != null and priEnterpriseType != '' "> #{priEnterpriseType}, </if>   <!-- 私营企业类型 --> 
+			<if test="monthAmt != null and monthAmt != '' "> #{monthAmt}, </if>		                         <!-- 每月净利润额/万元 -->
+			#{creator}, #{creatorId}, now()
+		</trim>
+	</insert>
+	
+	<!-- 插入联系人主表 -->
+	<insert id="insertContactHead" parameterType="com.ymkj.cms.biz.entity.app.input.AppAppContactHeadEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_tm_app_contact_head
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			loan_base_id, loan_no, person_id, creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{loanBaseId},#{loanNo},#{personId},#{creator},#{creatorId},now()
+		</trim>
+	</insert>
+	
+	<!-- 插入联系人信息表 -->
+	<insert id="insertContactInfo" parameterType="com.ymkj.cms.biz.entity.app.input.AppAppContactInfoEntity"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_tm_app_contact_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			head_id, loan_base_id, loan_no, person_id, org, sequence_num,
+			<if test="contactName != null and contactName != '' "> contact_name, </if>
+			<if test="contactRelation != null and contactRelation != '' "> contact_relation, </if>
+			<if test="idNo != null and idNo != '' "> contact_id_no, </if>
+			<if test="ifForeignPenple != null and ifForeignPenple != '' "> if_foreign_penple, </if>
+			<if test="contactCellphone1 != null and contactCellphone1 != '' "> contact_cellphone, </if>
+			<if test="ifKnowLoan != null and ifKnowLoan != '' "> if_know_loan, </if>
+			<if test="contactEmpName != null and contactEmpName != '' "> contact_emp_name, </if>
+			<if test="contactCorpPhone != null and contactCorpPhone != '' "> contact_corp_phone, </if>
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{headId},#{loanBaseId},#{loanNo},#{personId},#{org},#{sequenceNum},
+			<if test="contactName != null and contactName != '' "> #{contactName}, </if>
+			<if test="contactRelation != null and contactRelation != '' "> #{contactRelation}, </if>
+			<if test="idNo != null and idNo != '' "> #{idNo}, </if>
+			<if test="ifForeignPenple != null and ifForeignPenple != '' "> #{ifForeignPenple}, </if>
+			<if test="contactCellphone1 != null and contactCellphone1 != '' "> #{contactCellphone1}, </if>
+			<if test="ifKnowLoan != null and ifKnowLoan != '' "> #{ifKnowLoan}, </if>
+			<if test="contactEmpName != null and contactEmpName != '' "> #{contactEmpName}, </if>
+			<if test="contactCorpPhone != null and contactCorpPhone != '' "> #{contactCorpPhone}, </if>
+			#{creator},#{creatorId},now()
+		</trim>
+	</insert>
+	
+	<!-- 插入随薪贷信息 -->
+	<insert id="insertsalaryLoanInfo" parameterType="com.ymkj.cms.biz.entity.app.asset.AppAalaryLoanInfo" 
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_tm_app_salary_loan_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			loan_base_id,loan_no,org,
+			<if test="conditionType != null and conditionType != '' "> condition_type, </if>
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{loanBaseId},#{loanNo},#{org},
+			<if test="conditionType != null and conditionType != '' "> #{conditionType}, </if>
+			#{creator},#{creatorId},now()
+		</trim>;
+	</insert>
+	
+	<!-- 插入房产信息 -->
+	<insert id="insertEstateInfo" parameterType="com.ymkj.cms.biz.entity.app.asset.AppEstateInfo" 
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_tm_app_estate_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			person_id,loan_base_id,loan_no,estate_id,org,
+			<if test="estateType != null and estateType != '' "> estate_type, </if>
+			<if test="estateHouseAddrSameFamilyAddr != null and estateHouseAddrSameFamilyAddr != '' "> eatate_same_homeaddr, </if>
+			<if test="estateStateId != null and estateStateId != '' ">
+				estate_state_id,estate_city_id,estate_zone_id,estate_state,estate_city,estate_zone,
+			</if>
+			<if test="estateAddress != null and estateAddress != '' "> estate_address, </if>
+			<if test="estateLoan != null and estateLoan != '' "> estate_loan, </if>
+			<if test="estateBuyDate != null and estateBuyDate != '' "> estate_buy_date, </if>
+			<if test="estateReferenceAmt != null and estateReferenceAmt != '' "> reference_amt, </if>
+			<if test="estateMonthPaymentAmt != null and estateMonthPaymentAmt != '' "> month_payment_amt, </if>
+			<if test="estateMortgageGrantDate != null and estateMortgageGrantDate != '' "> estate_loan_issue_date, </if>
+			<if test="estateEquityRate != null and estateEquityRate != '' "> equity_rate, </if>
+			<if test="estateIfMe != null and estateIfMe != '' "> if_me, </if>
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{personId},#{loanBaseId},#{loanNo},#{estateId},#{org},
+			<if test="estateType != null and estateType != '' "> #{estateType}, </if>
+			<if test="estateHouseAddrSameFamilyAddr != null and estateHouseAddrSameFamilyAddr != '' "> #{estateHouseAddrSameFamilyAddr}, </if>
+			<if test="estateStateId != null and estateStateId != '' ">
+				#{estateStateId},#{estateCityId},#{estateZoneId},#{estateState},#{estateCity},#{estateZone},
+			</if>
+			<if test="estateAddress != null and estateAddress != '' "> #{estateAddress}, </if>
+			<if test="estateLoan != null and estateLoan != '' "> #{estateLoan}, </if>
+			<if test="estateBuyDate != null and estateBuyDate != '' "> #{estateBuyDate}, </if>
+			<if test="estateReferenceAmt != null and estateReferenceAmt != '' "> #{estateReferenceAmt}, </if>
+			<if test="estateMonthPaymentAmt != null and estateMonthPaymentAmt != '' "> #{estateMonthPaymentAmt}, </if>
+			<if test="estateMortgageGrantDate != null and estateMortgageGrantDate != '' "> #{estateMortgageGrantDate}, </if>
+			<if test="estateEquityRate != null and estateEquityRate != '' "> #{estateEquityRate}, </if>
+			<if test="estateIfMe != null and estateIfMe != '' "> #{estateIfMe}, </if>
+			#{creator},#{creatorId},now()
+		</trim>
+	</insert>
+	
+	<!-- 插入车辆信息 -->
+	<insert id="insertCarInfo" parameterType="com.ymkj.cms.biz.entity.app.asset.AppCarInfo" 
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_tm_app_car_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			person_id,loan_base_id,loan_no,org,check_id,
+			<if test="carLoan != null and carLoan != '' "> car_loan, </if>
+			<if test="carBuyDate != null and carBuyDate != '' "> car_buy_date, </if>
+			<if test="carBuyPrice != null and carBuyPrice != '' "> car_buy_price, </if>
+			<if test="carLoanDate != null and carLoanDate != '' "> car_loan_issue_date, </if>
+			<if test="carMonthPaymentAmt != null and carMonthPaymentAmt != '' "> month_payment_amt, </if>
+			<if test="carNo != null and carNo != '' "> plate_num, </if>
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{personId},#{loanBaseId},#{loanNo},#{org},#{checkId},
+			<if test="carLoan != null and carLoan != '' "> #{carLoan}, </if>
+			<if test="carBuyDate != null and carBuyDate != '' "> #{carBuyDate}, </if>
+			<if test="carBuyPrice != null and carBuyPrice != '' "> #{carBuyPrice}, </if>
+			<if test="carLoanDate != null and carLoanDate != '' "> #{carLoanDate}, </if>
+			<if test="carLoanTerm != null and carLoanTerm != '' "> #{carLoanTerm}, </if>
+			<if test="carMonthPaymentAmt != null and carMonthPaymentAmt != '' "> #{carMonthPaymentAmt}, </if>
+			<if test="carNo != null and carNo != '' "> #{carNo}, </if>
+			#{creator},#{creatorId},now()
+		</trim>
+	</insert>	
+	
+	<!-- 插入保单信息 -->
+	<insert id="insertPolicyInfo" parameterType="com.ymkj.cms.biz.entity.app.asset.AppPolicyInfo" 
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_tm_app_policy_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			person_id,loan_base_id,loan_no,org,policy_id,
+			<if test="insuranceAmt != null and insuranceAmt != '' "> insurance_amt, </if>
+			<if test="insuranceTerm != null and insuranceTerm != '' "> insurance_term, </if>
+			<if test="paidTerm != null and paidTerm != '' "> paid_term, </if>
+			<if test="yaerPaymentAmt != null and yaerPaymentAmt != '' "> year_payment_amt, </if>
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{personId},#{loanBaseId},#{loanNo},#{org},#{policyId},
+			<if test="insuranceAmt != null and insuranceAmt != '' "> #{insuranceAmt}, </if>
+			<if test="insuranceTerm != null and insuranceTerm != '' "> #{insuranceTerm}, </if>
+			<if test="paidTerm != null and paidTerm != '' "> #{paidTerm}, </if>
+			<if test="yaerPaymentAmt != null and yaerPaymentAmt != '' "> #{yaerPaymentAmt}, </if>
+			#{creator},#{creatorId},now()
+		</trim>
+	</insert>	
+	
+	<!-- 插入公积金信息 -->
+	<insert id="insertProvidentInfo" parameterType="com.ymkj.cms.biz.entity.app.asset.AppProvidentInfo" 
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_tm_app_provident_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			person_id,loan_base_id,loan_no,org,provident_id,
+			<if test="depositRate != null and depositRate != '' "> deposit_rate, </if>
+			<if test="monthDepositAmt != null and monthDepositAmt != '' "> month_deposit_amt, </if>
+			<if test="depositBase != null and depositBase != '' "> deposit_base, </if>
+			<if test="providentInfo != null and providentInfo != '' "> provident_info, </if>
+			<if test="paymentUnit != null and paymentUnit != '' "> payment_unit, </if>
+			<if test="paymentMonthNum != null and paymentMonthNum != '' "> payment_month_num, </if>
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{personId},#{loanBaseId},#{loanNo},#{org},#{providentId},
+			<if test="depositRate != null and depositRate != '' "> #{depositRate}, </if>
+			<if test="monthDepositAmt != null and monthDepositAmt != '' "> #{monthDepositAmt}, </if>
+			<if test="depositBase != null and depositBase != '' "> #{depositBase}, </if>
+			<if test="providentInfo != null and providentInfo != '' "> #{providentInfo}, </if>
+			<if test="paymentUnit != null and paymentUnit != '' "> #{paymentUnit}, </if>
+			<if test="paymentMonthNum != null and paymentMonthNum != '' "> #{paymentMonthNum}, </if>
+			#{creator},#{creatorId},now()
+		</trim>
+	</insert>
+	
+	<!-- 插入卡友贷信息 -->
+	<insert id="insertCardLoanInfo" parameterType="com.ymkj.cms.biz.entity.app.asset.AppCardLoanInfo" 
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_tm_app_card_loan_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			loan_base_id,loan_no,org,
+			<if test="issuerData != null and issuerData != '' "> issuer_date, </if>
+			<if test="creditLimit != null and creditLimit != '' "> credit_limit, </if>
+			<if test="billAmt1 != null and billAmt1 != '' "> bill_amt1, </if>
+			<if test="billAmt2 != null and billAmt2 != '' "> bill_amt2, </if>
+			<if test="billAmt3 != null and billAmt3 != '' "> bill_amt3, </if>
+			<if test="billAmt4 != null and billAmt4 != '' "> bill_amt4, </if>
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{loanBaseId},#{loanNo},#{org},
+			<if test="issuerData != null and issuerData != '' "> #{issuerData}, </if>
+			<if test="creditLimit != null and creditLimit != '' "> #{creditLimit}, </if>
+			<if test="billAmt1 != null and billAmt1 != '' "> #{billAmt1}, </if>
+			<if test="billAmt2 != null and billAmt2 != '' "> #{billAmt2}, </if>
+			<if test="billAmt3 != null and billAmt3 != '' "> #{billAmt3}, </if>
+			<if test="billAmt4 != null and billAmt4 != '' "> #{billAmt4}, </if>
+			#{creator},#{creatorId},now()
+		</trim>
+	</insert>	
+	
+	<!-- 网购达人信息 -->
+	<insert id="insertMasterLoanInfo" parameterType="com.ymkj.cms.biz.entity.app.asset.AppMasterLoanInfo" 
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_tm_app_master_loan_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			loan_base_id,loan_no,person_id,org,master_load_id,
+			<if test="jiDongUserLevel != null and jiDongUserLevel != '' "> ji_dong_user_level, </if>
+			<if test="whiteCreditValue != null and whiteCreditValue != '' "> white_credit_value, </if>
+			<if test="pastYearShoppingAmount != null and pastYearShoppingAmount != '' "> past_year_shopping_amount, </if>
+			
+			<if test="buyerCreditLevel != null and buyerCreditLevel != '' "> buyer_credit_level, </if>
+			<if test="buyerCreditType != null and buyerCreditType != '' "> buyer_credit_type, </if>
+			<if test="lastYearPayAmt != null and lastYearPayAmt != '' "> last_year_pay_amt, </if>
+			<if test="sesameCreditValue != null and sesameCreditValue != '' "> sesame_credit_value, </if>
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{loanBaseId},#{loanNo},#{personId},#{org},#{masterLoadId},
+			<if test="jiDongUserLevel != null and jiDongUserLevel != '' "> #{jiDongUserLevel}, </if>
+			<if test="whiteCreditValue != null and whiteCreditValue != '' "> #{whiteCreditValue}, </if>
+			<if test="pastYearShoppingAmount != null and pastYearShoppingAmount != '' "> #{pastYearShoppingAmount}, </if>
+			
+			<if test="buyerCreditLevel != null and buyerCreditLevel != '' "> #{buyerCreditLevel}, </if>
+			<if test="buyerCreditType != null and buyerCreditType != '' "> #{buyerCreditType}, </if>
+			<if test="lastYearPayAmt != null and lastYearPayAmt != '' "> #{lastYearPayAmt}, </if>
+			<if test="sesameCreditValue != null and sesameCreditValue != '' "> #{sesameCreditValue}, </if>
+			#{creator},#{creatorId},now()
+		</trim>
+	</insert>	
+	
+	<!-- 淘宝商户信息 -->
+	<insert id="insertMerchantLoanInfo" parameterType="com.ymkj.cms.biz.entity.app.asset.AppMerchantLoanInfo" 
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_tm_app_merchant_loan_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			loan_base_id,loan_no,person_id,org,merchant_loan_id,
+			<if test="setupShopDate != null and setupShopDate != '' "> setup_shop_date, </if>
+			<if test="sellerCreditLevel != null and sellerCreditLevel != '' "> seller_credit_level, </if>
+			<if test="sellerCreditType != null and sellerCreditType != '' "> seller_credit_type, </if>
+			<if test="regardedNum != null and regardedNum != '' "> regarded_num, </if>
+			<if test="biullAmt1 != null and biullAmt1 != '' "> bill_amt1, </if>
+			<if test="biullAmt2 != null and biullAmt2 != '' "> bill_amt2, </if>
+			<if test="biullAmt3 != null and biullAmt3 != '' "> bill_amt3, </if>
+			<if test="biullAmt4 != null and biullAmt4 != '' "> bill_amt4, </if>
+			<if test="biullAmt5 != null and biullAmt5 != '' "> bill_amt5, </if>
+			<if test="biullAmt6 != null and biullAmt6 != '' "> bill_amt6, </if>
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{loanBaseId},#{loanNo},#{personId},#{org},#{merchantLoanId},
+			<if test="setupShopDate != null and setupShopDate != '' "> #{setupShopDate}, </if>
+			<if test="sellerCreditLevel != null and sellerCreditLevel != '' "> #{sellerCreditLevel}, </if>
+			<if test="sellerCreditType != null and sellerCreditType != '' "> #{sellerCreditType}, </if>
+			<if test="regardedNum != null and regardedNum != '' "> #{regardedNum}, </if>
+			<if test="biullAmt1 != null and biullAmt1 != '' "> #{biullAmt1}, </if>
+			<if test="biullAmt2 != null and biullAmt2 != '' "> #{biullAmt2}, </if>
+			<if test="biullAmt3 != null and biullAmt3 != '' "> #{biullAmt3}, </if>
+			<if test="biullAmt4 != null and biullAmt4 != '' "> #{biullAmt4}, </if>
+			<if test="biullAmt5 != null and biullAmt5 != '' "> #{biullAmt5}, </if>
+			<if test="biullAmt6 != null and biullAmt6 != '' "> #{biullAmt6}, </if>
+			#{creator},#{creatorId},now()
+		</trim>
+	</insert>
+	
+	<!-- 插入各表主键 -->
+	<insert id="insertLoanBaseRela" parameterType="com.ymkj.cms.biz.entity.apply.LoanBaseRelaEntity" 
+		useGeneratedKeys="true" keyProperty="id">
+		insert into bms_loan_base_rela
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			person_id, loan_base_id, bms_app_person_info_id, bms_tm_app_contact_info_id, bms_tm_app_estate_info_id,
+			bms_tm_app_provident_info_id, bms_tm_app_policy_info_id, bms_tm_app_master_loan_info_id, bms_tm_app_merchant_loan_info_id,
+			bms_tm_app_car_info_id, bms_tm_app_salary_loan_info_id, bms_tm_app_card_loan_info_id,
+			creator, creator_id, created_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{personId}, #{loanBaseId}, #{bmsAppPersonInfoId}, #{tmAppContatcInfoId}, #{tmAppEstateInfoId},
+			#{tmAppProvidentInfoId}, #{tmAppPolicyInfoId}, #{tmAppMasterLoanInfoId}, #{tmAppMerchanLoanInfoId},
+			#{tmAppCarInfoId}, #{tmAppSalaryLoanInfoId}, #{tmAppCardLoanInfoId},
+			#{creator},#{creatorId},now()
+		</trim>
+	</insert>		
+	
+	
+	
+	<!-- 获取省市区 -->
+	<select id="getAreaInfo" parameterType="java.lang.String" resultType="java.util.Map">
+		select name,code from bms_base_area where code = concat(left(#{areaCode},2),'0000') union
+		select name,code from bms_base_area where code = concat(left(#{areaCode},4),'00') union
+		select name,code from bms_base_area where code = #{areaCode}
+	</select>
+	
+	<!-- 获取正在处理申请单的客服列表 -->
+	<select id="getApplyServiceCount" parameterType="java.util.Map" resultType="java.util.Map">
+		select t.*, max(ifnull(le.app_average_flag,0)) count from (
+		select id,service_code,service_name FROM bms_loan_base where owning_branch_id = #{orgId} and status = 'APPLY' and person_id != 0 and apply_date > #{averageStartTime}) t 
+		left join bms_loan_ext le on t.id = le.loan_base_id
+		group by t.service_code
+	</select>
+	
+	<!-- 获取营业部下最新分派的客服信息 -->
+	<select id="getLatestAssignService" parameterType="java.lang.String" resultType="java.util.Map">
+		select service_code,service_name from bms_loan_base where owning_branch_id = #{orgId} and service_code is not null 
+		order by id desc limit 0,1
+	</select>
+	
+	<!-- 获取校验的字段信息 -->
+	<select id="getFieldInfoList" parameterType="java.util.Map" resultType="java.util.Map">
+		select bef.field_code fieldCode,bar.regex_content fieldRegex,bar.regex_tip fieldTip FROM bms_extension_field bef 
+		left join bms_app_regex bar on bef.regex_id=bar.id where 1=1
+		<if test="parentGroupCode!=''"> and bef.parent_group_code = #{parentGroupCode} and is_hide = 0</if>
+		<if test="hideLabelCode!=''"> and bef.hide_label_code = #{hideLabelCode} </if>
+	</select>
+</mapper> 

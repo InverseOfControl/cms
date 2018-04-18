@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSSysLogDaoImpl">
+	<sql id="table">BMS_SYS_LOG</sql>
+
+	<resultMap id="BMSBankMap" type="com.ymkj.cms.biz.entity.master.BMSSysLog">
+		<id property="Id" column="ID" />
+		<result property="postCode" column="POST_CODE" />
+		<result property="firstLevelDir" column="FIRST_LEVEL_DIR" />
+		<result property="twoLevelDir" column="TWO_LEVEL_DIR" />
+	    <result property="operatorCode" column="OPERATOR_CODE" />
+	    <result property="operator" column="OPERATOR" />
+	   <result property="operationTime" column="OPERATION_TIME" />
+	   <result property="operationType" column="OPERATION_TYPE" />
+       <result property="ip" column="IP" />
+	   <result property="remark" column="REMARK" />
+	</resultMap>
+	
+
+ 
+	<sql id="condition_sql">
+		where 1=1
+		<if test="id != null and id != 0">
+			and ID = #{id}
+		</if>
+		<if test="operatorCode != null and operatorCode!= ''">
+        	and  OPERATOR_CODE =#{operatorCode}
+		</if>
+		<if test="firstLevelDir != null and  firstLevelDir!= ''">
+        	and  FIRST_LEVEL_DIR =#{firstLevelDir}
+		</if>
+		 <if test="twoLevelDir != null  and twoLevelDir!= ''">
+        	and  TWO_LEVEL_DIR =#{twoLevelDir}
+		</if>
+		<if test="operationType != null  and operationType ''">
+        	and  OPERATION_TYPE =#{operationType}
+		</if>
+		<if test="operationTimeStart != null  and operationTimeStart ''">
+        	and  OPERATION_TIME  >=#{operationTimeStart}
+		</if>
+		<if test="operationTimeEnd != null  and operationTimeEnd ''">
+        	and  OPERATION_TIME  <![CDATA[  <=]]> #{operationTimeEnd}
+		</if>
+		
+		<if test="isDeleted != null">
+			and IS_DELETED = #{isDeleted}
+		</if>
+		<if test="version != null">
+			and VERSION = #{version}
+		</if>
+	</sql>
+
+	
+
+	<select id="listBy" parameterType="java.util.Map" resultMap="BMSBankMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSBankMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by ID desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+
+	 
+
+
+	
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSSysLog">
+		insert into BMS_SYS_LOG
+		
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="postCode != null and postCode != ''">
+				POST_CODE,
+			</if>
+			<if test="firstLevelDir != null and firstLevelDir !=''">
+				FIRST_LEVEL_DIR,
+			</if>
+			 <if test="twoLevelDir != null and twoLevelDir != ''">  
+				TWO_LEVEL_DIR,
+			  </if>
+			<if test="operatorCode != null and operatorCode != ''">
+				OPERATOR_CODE,
+			 </if>
+			<if test="operator != null  and operator != ''">
+				OPERATOR,
+		   </if>  
+			<if test="operationTime != null and operationTime != ''">
+				OPERATION_TIME,
+			</if>
+			<if test="operationType != null and operationType != ''">
+				OPERATION_TYPE,
+			</if>
+			 <if test="ip != null  and ip != ''">
+				ip,
+		   </if>  
+			<if test="remark != null and remark != ''">
+				REMARK,
+			</if>
+		</trim>
+			 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="postCode != null and postCode != ''">
+				#{postCode},
+			</if>
+		   <if test="firstLevelDir != null and firstLevelDir != ''">
+				#{firstLevelDir},
+			</if> 
+			<if test="twoLevelDir != null and twoLevelDir != ''">
+				#{twoLevelDir},
+			</if>  
+		   <if test="operatorCode != null and operatorCode != ''">
+				#{operatorCode},
+			</if>
+		   <if test="operator != null and operator != ''">
+				#{operator},
+			</if> 
+			<if test="operationTime != null and operationTime != ''">
+				#{operationTime},
+			</if>  
+			 <if test="operationType != null and operationType != ''">
+				#{operationType},
+			</if> 
+			<if test="ip != null and ip != ''">
+				#{ip},
+			</if>  
+			<if test="remark != null and remark != ''">
+				#{remark},
+			</if>  
+		</trim>
+	</insert>
+
+	<!-- 记录系统日志 -->
+	<insert id="recordSysLog" parameterType="com.ymkj.cms.biz.entity.master.BMSSysLogRecordEntity">
+		insert into bms_sys_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="systemCode != null and systemCode != ''"> system_code, </if>
+			<if test="systemName != null and systemName != ''"> system_name, </if>
+			<if test="twoLevelDir != null and twoLevelDir != ''"> two_level_dir, </if>
+			<if test="optModule != null and optModule != ''"> opt_module, </if>
+			<if test="optName != null and optName != ''"> opt_name, </if>
+			<if test="requestUri != null and requestUri != ''"> request_uri, </if>
+			<if test="employeeType != null and employeeType != ''"> employee_type, </if>
+			<if test="firstLevelDir != null and firstLevelDir != ''"> first_level_dir, </if>
+			<if test="optType != null and optType != ''"> opt_type, </if>
+			<if test="optCode != null and optCode != ''"> opt_code, </if>
+			<if test="params != null and params != ''"> params, </if>
+			<if test="romoteAddr != null and romoteAddr != ''"> romote_addr, </if>
+			<if test="memo != null and memo != ''"> memo, </if>
+			opt_time
+		</trim>
+		
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="systemCode != null and systemCode != ''"> #{systemCode}, </if>
+			<if test="systemName != null and systemName != ''"> #{systemName}, </if>
+			<if test="twoLevelDir != null and twoLevelDir != ''"> #{twoLevelDir}, </if>
+			<if test="optModule != null and optModule != ''"> #{optModule}, </if>
+			<if test="optName != null and optName != ''"> #{optName}, </if>
+			<if test="requestUri != null and requestUri != ''"> #{requestUri}, </if>
+			<if test="employeeType != null and employeeType != ''"> #{employeeType}, </if>
+			<if test="firstLevelDir != null and firstLevelDir != ''"> #{firstLevelDir}, </if>
+			<if test="optType != null and optType != ''"> #{optType}, </if>
+			<if test="optCode != null and optCode != ''"> #{optCode}, </if>
+			<if test="params != null and params != ''"> #{params}, </if>
+			<if test="romoteAddr != null and romoteAddr != ''"> #{romoteAddr}, </if>
+			<if test="memo != null and memo != ''"> #{memo}, </if>
+			now()
+		</trim>
+	</insert>
+	
+	<!-- 系统日志表 -->
+	<resultMap id="BMSSysLogMap" type="com.ymkj.cms.biz.entity.master.BMSSysLog">
+	    <!-- ID -->
+	    <result column ="ID"  property ="id"/>
+	    <!-- 所属系统编码 -->
+		<result column ="SYSTEM_CODE"  property ="systemCode"/>
+		<!-- 所属系统名称 -->
+		<result column ="SYSTEM_NAME"  property ="systemName"/>
+		<!-- 二级目录code -->
+		<result column ="TWO_LEVEL_DIR"  property ="twoLevelDir"/>
+		<!-- 操作模块 -->
+		<result column ="OPT_MODULE"  property ="optModule"/>
+		<!-- 操作人姓名 -->
+		<result column ="OPT_NAME"  property ="optName"/>
+		<!-- 操作时间 -->
+		<result column ="OPT_TIME"  property ="optTime"/>
+		<!-- 请求地址 -->
+		<result column ="REQUEST_URI"  property ="requestUri"/>
+		<!-- 所属岗位 -->
+		<result column ="EMPLOYEE_TYPE"  property ="employeeType"/>
+		<!-- 一级目录code -->
+		<result column ="FIRST_LEVEL_DIR"  property ="firstLevelDir"/>
+		<!-- 操作类型 -->
+		<result column ="OPT_TYPE"  property ="optType"/>
+		<!-- 操作人工号 -->
+		<result column ="OPT_CODE"  property ="optCode"/>
+		<!-- 异常信息 -->
+		<result column ="PARAMS"  property ="params"/>
+		<!-- ip地址 -->
+		<result column ="ROMOTE_ADDR"  property ="romoteAddr"/>
+		<!-- 备注 -->
+		<result column ="MEMO"  property ="memo"/>
+		<!-- 版本号 -->
+		<result column ="VERSION"  property ="version"/>
+		<!-- 是否逻辑删除 -->
+		<result column ="IS_DELETE"  property ="isDelete"/>
+	</resultMap>
+</mapper>

@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSProductDaoImpl">
+
+	<sql id="table">bms_product</sql>
+
+	<sql id="condition_sql">
+	where IS_DELETED = 0 AND IS_SHOW=0
+		<if test="productId != null and productId != 0">
+        	and	PRODUCT_ID = #{productId}
+		</if>
+        <if test="name != null and name != ''">
+        	<![CDATA[ 
+        	and  NAME like '%${name}%']]>
+        </if>
+        <if test="code != null and code != ''">
+        	and CODE = #{code}
+        </if>
+        <if test="depict != null and depict != ''">
+        	 and DEPICT = #{depict}
+        </if>
+        <if test="floorLimit != null  and floorLimit !=''">
+        	 and FLOOR_LIMIT = #{floorLimit}
+        </if>
+        <if test="upperLimit != null  and upperLimit !=''">
+        	 and UPPER_LIMIT = #{upperLimit}
+        </if>
+        <if test="rate != null  and rate !=''">
+        	and RATE = #{rate}
+        </if>
+        <if test="adjustBase != null  and adjustBase !=''">
+        	and ADJUST_BASE = #{adjustBase}
+        </if>
+        <if test="debtRadio !=null and debtRadio!=''">
+            and DEBT_RADIO=#{debtRadio}
+        </if>
+        <if test="isDeleted != null  and isDeleted !=''">
+        	and  IS_DELETED = #{isDeleted}
+        </if>
+        <if test="version != null and version !=''">
+        	and VERSION = #{version}
+        </if>
+	</sql>
+	
+    <sql id="set_sql">
+    <trim prefix="set" suffixOverrides=",">  
+      
+		<if test="name != null and name != ''">
+        	NAME = #{name},
+        </if>
+        <if test="code != null and code != ''">
+        	CODE = #{code},
+        </if>
+        <if test="depict != null and depict != ''">
+        	DEPICT = #{depict},
+        </if>
+        <if test="floorLimit != null">
+        	FLOOR_LIMIT = #{floorLimit},
+        </if>
+        <if test="upperLimit != null">
+        	UPPER_LIMIT = #{upperLimit},
+        </if>
+        <if test="rate != null">
+        	 RATE = #{rate},
+        </if>
+        <if test="adjustBase != null">
+        	 ADJUST_BASE = #{adjustBase},
+        </if>
+        <if test="isDeleted != null">
+        	IS_DELETED = #{isDeleted},
+        </if>
+        <if test="version != null">
+        	VERSION = #{version},
+        </if>
+         <if test="creator != null and creator != ''">
+	        	CREATOR=#{creator},
+	        </if>
+	         <if test="creatorId != null">
+	        	CREATOR_ID=#{creatorId},
+	        </if>
+	         <if test="creatorDate != null">
+	        	CREATOR_DATE=#{creatorDate},
+	        </if>
+	         <if test="modified != null and modified != ''">
+	        	MODIFIED=#{modified},
+	        </if>
+	         <if test="modifiedId != null">
+	        	MODIFIED_ID=#{modifiedId},
+	        </if>
+	         <if test="modifiedDate != null">
+	        	MODIFIED_DATE=#{modifiedDate},
+	        </if>
+	         <if test="debtRadio !=null">
+	               DEBT_RADIO=#{debtRadio},
+	        </if>
+	        
+	        <if test="preferentialRate !=null">
+	               PREFERENTIAL_RATE=#{preferentialRate},
+	        </if>
+	        
+       </trim> 
+    </sql>
+	
+    <resultMap id="BMSProductMap" type="com.ymkj.cms.biz.entity.master.BMSProduct">
+		<id property="productId" column="PRODUCT_ID" />
+		<result property="name" column="NAME" />
+		<result property="code" column="CODE" />
+		<result property="depict" column="DEPICT" />
+		<result property="floorLimit" column="FLOOR_LIMIT" />
+		<result property="upperLimit" column="UPPER_LIMIT" />
+		<result property="rate" column="RATE" />
+		<result property="adjustBase" column="ADJUST_BASE" />
+		<result property="isDeleted" column="IS_DELETED" />
+		<result property="version" column="VERSION" />
+		<result property="channelId" column="CHANNEL_ID" />
+		<result property="blcIsDisabled" column="BLC_IS_DISABLED" />
+		<result property="debtRadio" column="DEBT_RADIO"/>
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="creatorDate" column="CREATOR_DATE" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modified" column="MODIFIED" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedDate" column="MODIFIED_DATE" />
+	    <!-- 修改用户Id -->
+	     <result property="modifiedId" column="MODIFIED_ID" />
+	     
+	     
+	     <!-- 优惠费率 -->
+	     <result property="preferentialRate" column="PREFERENTIAL_RATE" />
+	     
+	</resultMap>
+      
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="BMSProductMap">
+		select * from
+		<include refid="table" />
+		where PRODUCT_ID = #{productId}
+	</select>
+	<!-- 按vo类中的元素查询信息 -->
+	<select id="getByVo" parameterType="java.util.Map" resultMap="BMSProductMap">
+		select * from
+		<include refid="table" />
+		where 1=1
+		<if test="name != null and name != ''">
+          and NAME = #{name}
+        </if>
+        <if test="code != null and code != ''">
+        	and CODE = #{code}
+        </if>
+        <if test="isDeleted !=null ">
+        	and  IS_DELETED=#{isDeleted}
+        </if>
+	</select>
+    
+    <select id="listBy" parameterType="java.util.Map" resultMap="BMSProductMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+	<!-- 根据营业部ID获取产品对象 -->
+	<select id="listProByCondition" parameterType="java.util.Map" resultMap="BMSProductMap">
+		SELECT DISTINCT P.* FROM BMS_PRODUCT P
+		INNER JOIN bms_product_audit_limit AL ON P.PRODUCT_ID  = AL.PRODUCT_ID 
+		INNER JOIN bms_org_limit_channel lc ON lc.AUDIT_LIMIT_ID = al.AUDIT_LIMIT_ID
+		INNER JOIN bms_channel bc ON lc.CHANNEL_ID = bc.ID 
+		WHERE 
+		p.IS_DELETED=0
+		AND lc.IS_DELETED=0
+		AND al.IS_DELETED=0
+		AND lc.IS_DISABLED=0
+		AND al.IS_DISABLED=0
+		AND bc.IS_DELETED = 0 
+		<!-- hcr添加配置冲突代码开始,这个是给产品用的如果产品下面的全部冲突不显示产品  -->
+		AND lc.CONFIGURE_CONFLICT='N'
+		<!-- hcr添加配置冲突代码结束 -->
+		<!-- 起止时间限制   &lt;等于<    &gt;等于>    -->
+		AND bc.STOP_SALES_TIME &gt;= NOW() 
+		AND bc.START_SALES_TIME &lt;= NOW()
+		<if test="orgId!=null">
+			AND  lc.org_id = #{orgId} 
+		</if>
+		<if test="orgIdList!=null and orgIdList.size>0">
+			AND lc.ORG_ID IN
+			<foreach collection="orgIdList" item="orgIdItem" open="(" close=")" separator=",">
+				#{orgIdItem}
+			</foreach>
+		</if>
+		<!-- 渠道id集合 -->
+		<if test="channelIds!=null and channelIds.size>0">
+			AND lc.CHANNEL_ID IN 
+			<foreach collection="channelIds" item="channelIdItem" open="(" close=")" separator=",">
+				#{channelIdItem}
+			</foreach>
+		</if>
+		<!-- 产品期限id集合 -->
+		<if test="auditLimitIds!=null and auditLimitIds.size>0">
+			AND lc.audit_limit_ID IN 
+			<foreach collection="auditLimitIds" item="auditLimitIdItem" open="(" close=")" separator=",">
+				#{auditLimitIdItem}
+			</foreach>
+		</if>
+		<if test="isCanPreferential!=null">
+			<if test="isCanPreferential == 0">
+		  	 	AND bc.is_can_preferential=#{isCanPreferential}
+		  	 </if>
+			AND  lc.is_can_preferential = #{isCanPreferential} 
+		</if>
+		
+		<![CDATA[ order by p.sequence_num asc]]>
+	</select>
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSProductMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by PRODUCT_ID desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+	<!-- 根据渠道ID获取产品对象 返回值有渠道ID -->
+	<select id="findProByChannelId"  parameterType="java.util.Map" resultMap="BMSProductMap">
+		SELECT  DISTINCT
+		  bp.*,
+		  blc.CHANNEL_ID,
+  		  blc.IS_DISABLED AS BLC_IS_DISABLED
+		FROM
+		  bms_limit_channel blc 
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON blc.AUDIT_LIMIT_ID = bpal.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+		  INNER JOIN bms_channel bc 
+		    ON blc.channel_id = bc.id 
+		WHERE blc.IS_DELETED = 0 
+		  AND bpal.IS_DELETED = 0 
+		  AND bp.IS_DELETED = 0 
+		  AND bc.IS_DELETED = 0 
+		  AND blc.CHANNEL_ID IN(
+			<foreach item="guard" index="index" collection="channelIds" separator=",">
+					#{guard}
+			</foreach>)
+	</select>
+	<!-- 根据渠道ID获取产品对象 返回值有渠道ID -->
+	<select id="findProByChannelIdNotChannel"  parameterType="java.util.Map" resultMap="BMSProductMap">
+		SELECT  DISTINCT bp.* FROM bms_limit_channel blc
+		INNER JOIN bms_product_audit_limit bpal ON blc.AUDIT_LIMIT_ID = bpal.AUDIT_LIMIT_ID 
+		INNER JOIN bms_product bp ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+		WHERE blc.CHANNEL_ID IN(
+				<foreach item="guard" index="index" collection="channelIds" separator=",">
+					#{guard}
+				</foreach>
+				)
+	</select>
+    
+    <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSProduct" keyProperty="productId" useGeneratedKeys="true">
+    	
+         insert into bms_product
+         <trim prefix="(" suffix=")" suffixOverrides="," >
+         	<if test="productId != null and productId != 0">
+        	PRODUCT_ID,
+			</if>
+	        <if test="name != null and name != ''">
+	        	NAME,
+	        </if>
+	        <if test="code != null and code != ''">
+	        	CODE,
+	        </if>
+	        <if test="depict != null and depict != ''">
+	        	 DEPICT,
+	        </if>
+	        <if test="floorLimit != null">
+	        	 FLOOR_LIMIT,
+	        </if>
+	        <if test="upperLimit != null">
+	        	 UPPER_LIMIT,
+	        </if>
+	        <if test="rate != null">
+	        	RATE,
+	        </if>
+	         <if test="adjustBase != null">
+        	    ADJUST_BASE,
+             </if>
+	        <!-- <if test="isDeleted != null"> -->
+	        	 IS_DELETED,
+	        <!-- </if>
+	        <if test="version != null"> -->
+	        	VERSION,
+	       <!--  </if>
+	         <if test="creator != null and creator != ''"> -->
+	        	CREATOR,
+	       <!--  </if>
+	         <if test="creatorId != null"> -->
+	        	CREATOR_ID,
+	       <!--  </if>
+	         <if test="creatorDate != null"> -->
+	        	CREATOR_DATE,
+	        <!-- </if> -->
+	         <if test="modified != null and modified != ''">
+	        	MODIFIED,
+	        </if>
+	         <if test="modifiedId != null">
+	        	MODIFIED_ID,
+	        </if>
+	         <if test="modifiedDate != null">
+	        	MODIFIED_DATE,
+	        </if>
+	         <if test="debtRadio !=null and debtRadio!=''">
+             	DEBT_RADIO,
+        	</if>
+        	
+        	<if test="preferentialRate !=null">
+             	PREFERENTIAL_RATE,
+        	</if>
+        	
+         </trim>
+         <trim prefix="values (" suffix=")" suffixOverrides="," >
+         	<if test="productId != null and productId != 0">
+        		#{productId},
+			</if>
+	        <if test="name != null and name != ''">
+	        	#{name},
+	        </if>
+	        <if test="code != null and code != ''">
+	        	#{code},
+	        </if>
+	        <if test="depict != null and depict != ''">
+	        	 #{depict},
+	        </if>
+	        <if test="floorLimit != null">
+	        	 #{floorLimit},
+	        </if>
+	        <if test="upperLimit != null">
+	        	 #{upperLimit},
+	        </if>
+	        <if test="rate != null">
+	        	#{rate},
+	        </if>
+	        <if test="adjustBase != null">
+        	    #{adjustBase},
+             </if>
+	       <!--  <if test="isDeleted != null"> -->
+	        	 0,
+	       <!--  </if>
+	        <if test="version != null"> -->
+	        	1,
+	        <!-- </if>
+	         <if test="creator != null and creator != ''"> -->
+	        	'admin',
+	        <!-- </if>
+	         <if test="creatorId != null"> -->
+	        	1,
+	       <!--  </if>
+	         <if test="creatorDate != null"> -->
+	        	sysdate(),
+	       <!--  </if> -->
+	         <if test="modified != null and modified != ''">
+	        	#{modified},
+	        </if>
+	         <if test="modifiedId != null">
+	        	#{modifiedId},
+	        </if>
+	         <if test="modifiedDate != null">
+	        	#{modifiedDate},
+	        </if>
+	        <if test="debtRadio !=null and debtRadio!=''">
+	             #{debtRadio},
+	        </if>
+        	<if test="preferentialRate !=null">
+             	#{preferentialRate},
+        	</if>
+         </trim>
+    </insert >
+    
+    <!-- del -->
+    <delete id="deleteById" parameterType="long">
+    	delete from
+		<include refid="table" />
+		where PRODUCT_ID = #{productId}
+    </delete>
+    
+    <delete id="deletelAll">
+    	delete from
+    	<include refid="table" />
+    </delete>    
+    
+    
+    <!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSProduct">
+		update
+		<include refid="table" />
+<!-- 			VERSION = #{version}+1 , -->
+			<include refid="set_sql" />
+		<where>
+			 PRODUCT_ID = #{productId}
+		</where>
+	</update>
+	<select id="findProductById" resultType="int" parameterType="long">
+	SELECT COUNT(1) FROM (SELECT bpal.audit_Limit_id,bp.product_iD FROM
+	bms_product bp LEFT JOIN bms_product_audit_limit bpal ON
+	bpal.product_ID=bp.product_iD WHERE bpal.IS_DELETED=0 AND
+	bp.IS_DELETED=0) A
+	LEFT JOIN bms_org_limit_channel bolc ON
+	bolc.audit_Limit_id=A.audit_Limit_id
+	LEFT JOIN bms_limit_channel blc ON blc.audit_Limit_id= A.audit_Limit_id
+	WHERE (blc.IS_DELETED = 0 OR bolc.IS_DELETED = 0 )AND a.product_id=#{productId}
+	
+	</select>
+
+	<select id="findProducByCode" parameterType="java.util.Map" resultMap="BMSProductMap">
+		select * from bms_product where IS_DELETED= 0
+		<if test="code !=null and code != ''">
+			and CODE=#{code}
+		</if>
+	</select>
+	
+	<!-- 根据渠道ID获取优惠产品对象 返回值有渠道ID -->
+	<select id="findProRateByChannelId"  parameterType="java.util.Map" resultMap="BMSProductMap">
+		SELECT DISTINCT 
+		  bp.*,
+		  bolc.CHANNEL_ID,
+		  blc.IS_DISABLED AS BLC_IS_DISABLED 
+		FROM
+			bms_org_limit_channel bolc 
+	 	  INNER JOIN bms_limit_channel blc 
+		 	ON bolc.CHANNEL_ID = blc.CHANNEL_ID 
+    		AND blc.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID  
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON blc.AUDIT_LIMIT_ID = bpal.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+		  INNER JOIN bms_channel bc 
+		    ON blc.channel_id = bc.id 
+		WHERE blc.IS_DELETED = 0 
+		  AND bpal.IS_DELETED = 0 
+		  AND bp.IS_DELETED = 0 
+		  AND bc.IS_DELETED = 0 
+		  AND bp.IS_DELETED = 0
+		  AND bolc.IS_DELETED = 0 
+  
+		  AND blc.IS_DISABLED = 0 
+		  AND bpal.IS_DISABLED = 0 
+		  AND bc.IS_DISABLED = 0 
+		<!--   联合配置  集合 -->
+		<if test="channelAuditLimitList!=null and channelAuditLimitList.size>0">
+			AND CONCAT_WS('_',blc.CHANNEL_ID,bolc.audit_limit_ID) IN
+			<foreach collection="channelAuditLimitList" item="channelAuditLimitItem" open="(" close=")" separator=",">
+				#{channelAuditLimitItem}
+			</foreach>
+		</if>
+	</select>
+	
+	 <select id="queryProductList" parameterType="java.util.Map" resultMap="BMSProductMap">
+		select * from bms_product where IS_DELETED= 0
+		<if test="productIds !=null and productIds != ''">
+		<![CDATA[ and PRODUCT_ID in (${productIds})]]>
+		</if>
+		<![CDATA[ order by PRODUCT_ID desc]]>
+	</select>
+	
+	<select id="queryProductCount" parameterType="java.util.Map" resultType="int">
+		select count(*) from bms_product where IS_DELETED= 0
+		<if test="productIds !=null and productIds != ''">
+		<![CDATA[ and PRODUCT_ID in (${productIds})]]>
+		</if>
+		<![CDATA[ order by PRODUCT_ID desc]]>
+	</select>
+	
+	<select id="queryProductByChannelIds" parameterType="java.util.Map" resultMap="BMSProductMap">
+				SELECT
+		  DISTINCT C.`PRODUCT_ID`,c.`NAME`
+		FROM
+		  bms_product_audit_limit B
+		  LEFT JOIN bms_limit_channel A
+		    ON B.AUDIT_LIMIT_ID = A.AUDIT_LIMIT_ID
+		  LEFT JOIN bms_product C
+		    ON B.PRODUCT_ID = C.PRODUCT_ID
+		WHERE B.IS_DELETED=0 and B.IS_DISABLED=0 and A.IS_DELETED=0 and A.IS_DISABLED=0
+		<if test="channels !=null and channels != ''">
+			<![CDATA[ and A.CHANNEL_ID in (${channels})]]>
+		</if>
+	</select>
+</mapper> 

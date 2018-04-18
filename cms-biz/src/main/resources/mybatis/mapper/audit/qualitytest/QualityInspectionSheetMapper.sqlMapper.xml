@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.audit.impl.BMSQualityInspectionSheetDaoImpl">
+	<resultMap id="firstPassSheet"
+		type="com.ymkj.cms.biz.api.vo.response.audit.ResQualityInspectionSheetResultVO">
+		<result property="loanNo" column="LOAN_NO" />
+		<result property="extractionTime" column="NOW" />
+		<result property="status" column="STATUS" />
+		<result property="name" column="NAME" />
+		<result property="idNO" column="ID_NO" />
+		<result property="owningBranchId" column="OWNING_BRANCH_ID" />
+		<result property="owningBranch" column="OWNING_BRANCH" />
+		<result property="rtfNodeState" column="RTF_NODE_STATE" />
+		<result property="checkPersonCode" column="CHECK_PERSON_CODE" />
+		<result property="checkPerson" column="CHECK_PERSON" />
+		<result property="finalPersonCode" column="FINAL_PERSON_CODE" />
+		<result property="finalPerson" column="FINAL_PERSON" />
+		<result property="applyDate" column="APPLY_DATE" />
+		<result property="applyType" column="APPLY_TYPE" />
+		<result property="accDate" column="ACC_DATE" />
+		<result property="productCd" column="PRODUCT_CD" />
+		<result property="firstLevleReasons" column="FIRST_LEVLE_REASONS" />
+		<result property="twoLevleReasons" column="TWO_LEVLE_REASONS" />
+		<result property="firstLevleReasonsCode" column="FIRST_LEVLE_REASONS_CODE" />
+		<result property="twoLevleReasonsCode" column="TWO_LEVLE_REASONS_CODE" />
+		<result property="countZsJj" column="COUNT_ZS_JJ" />
+		<result property="passFile" column="TGJ" />
+		<result property="rejectFile" column="JJJ" />
+	</resultMap>
+	
+	
+
+	
+	<select id="getPass" parameterType="java.util.Map"  resultMap="firstPassSheet">
+				SELECT
+				a.LOAN_NO AS LOAN_NO,
+				now() AS NOW,
+				a. STATUS AS STATUS,
+				a. NAME AS NAME,
+				a.ID_NO AS ID_NO,
+				a.OWNING_BRANCH_ID AS OWNING_BRANCH_ID,
+				a.OWNING_BRANCH AS OWNING_BRANCH,
+				a.RTF_NODE_STATE AS RTF_NODE_STATE,
+				b.ACC_DATE AS ACC_DATE,
+				a.APPLY_TYPE AS APPLY_TYPE,
+				a.APPLY_DATE AS APPLY_DATE,
+				b.CHECK_PERSON_CODE AS CHECK_PERSON_CODE,
+				b.CHECK_PERSON AS CHECK_PERSON,
+				b.FINAL_PERSON_CODE AS FINAL_PERSON_CODE,
+				b.FINAL_PERSON AS FINAL_PERSON,
+				c.PRODUCT_NAME AS PRODUCT_CD,
+				d.FIRST_LEVLE_REASONS,
+				d.TWO_LEVLE_REASONS,
+				d.FIRST_LEVLE_REASONS_CODE,
+				d.TWO_LEVLE_REASONS_CODE
+			FROM
+				BMS_LOAN_BASE a,
+				BMS_LOAN_AUDIT b,
+				BMS_LOAN_PRODUCT c,
+				BMS_LOAN_LOG d
+			WHERE
+				a.LOAN_NO = b.LOAN_NO
+			AND a.LOAN_NO = c.LOAN_NO
+			and a.LOAN_NO = d.LOAN_NO
+			<![CDATA[ AND a.VERSION <= 999]]>
+			and a.LOAN_NO not in(select distinct loan_no from bms_loan_log where RTF_NODE_STATE = 'SQJWH-REJECT' AND DATE_FORMAT(OPERATION_TIME, '%Y-%m-%d') = #{curttenDate})
+			and d.rtf_node_state='XSZS-PASS'
+			AND DATE_FORMAT(d.OPERATION_TIME, '%Y-%m-%d') = #{curttenDate}
+		<if test="userCode!=null and userCode.size()>0">
+				and b.CHECK_PERSON_CODE in(
+				<foreach item="userCodeString" index="index" collection="userCode"
+				separator=",">
+					#{userCodeString}
+				</foreach>
+				) 
+		</if>
+		  
+		group by a.LOAN_NO 
+	</select>
+	<select id="getReject" parameterType="java.util.Map"  resultMap="firstPassSheet">
+				SELECT
+				a.LOAN_NO AS LOAN_NO,
+				now() AS NOW,
+				a. STATUS AS STATUS,
+				a. NAME AS NAME,
+				a.ID_NO AS ID_NO,
+				a.OWNING_BRANCH_ID AS OWNING_BRANCH_ID,
+				a.OWNING_BRANCH AS OWNING_BRANCH,
+				a.RTF_NODE_STATE AS RTF_NODE_STATE,
+				b.ACC_DATE AS ACC_DATE,
+				a.APPLY_TYPE AS APPLY_TYPE,
+				a.APPLY_DATE AS APPLY_DATE,
+				b.CHECK_PERSON_CODE AS CHECK_PERSON_CODE,
+				b.CHECK_PERSON AS CHECK_PERSON,
+				b.FINAL_PERSON_CODE AS FINAL_PERSON_CODE,
+				b.FINAL_PERSON AS FINAL_PERSON,
+				c.PRODUCT_NAME AS PRODUCT_CD,
+				d.FIRST_LEVLE_REASONS,
+				d.TWO_LEVLE_REASONS,
+				d.FIRST_LEVLE_REASONS_CODE,
+				d.TWO_LEVLE_REASONS_CODE,
+				(
+				SELECT
+						count(1)
+					FROM
+						BMS_LOAN_BASE a,
+						BMS_LOAN_AUDIT b,
+						BMS_LOAN_PRODUCT c,
+						BMS_LOAN_LOG d
+					WHERE
+						a.LOAN_NO = b.LOAN_NO
+					AND a.LOAN_NO = c.LOAN_NO
+					and a.LOAN_NO = d.LOAN_NO
+					<![CDATA[ AND a.VERSION <= 999]]> 
+					and a.LOAN_NO in (select distinct loan_no from bms_loan_log where RTF_NODE_STATE = 'SQJWH-REJECT' AND DATE_FORMAT(OPERATION_TIME, '%Y-%m-%d') = #{curttenDate})
+					and d.rtf_node_state='XSZS-PASS'
+					AND DATE_FORMAT(d.OPERATION_TIME, '%Y-%m-%d') = #{curttenDate}
+					 
+					<if test="userCode!=null and userCode.size()>0">
+						and b.CHECK_PERSON_CODE in(
+						<foreach item="userCodeString" index="index" collection="userCode"
+						separator=",">
+							#{userCodeString}
+						</foreach>
+						) 
+					</if>
+				) as COUNT_ZS_JJ
+			FROM
+				BMS_LOAN_BASE a,
+				BMS_LOAN_AUDIT b,
+				BMS_LOAN_PRODUCT c,
+				BMS_LOAN_LOG d
+			WHERE
+				a.LOAN_NO = b.LOAN_NO
+				AND a.LOAN_NO = c.LOAN_NO
+				and a.LOAN_NO = d.LOAN_NO
+				<![CDATA[ AND a.VERSION <= 999]]> 
+				and ((d.rtf_node_state='XSCS-REJECT' and b.CHECK_NODE_STATE='NO_CHECK' and DATE_FORMAT(d.OPERATION_TIME, '%Y-%m-%d') = #{curttenDate}) or 
+			(d.rtf_node_state='XSCS-REJECT' and b.CHECK_NODE_STATE='CHECK_PASS' and DATE_FORMAT(d.OPERATION_TIME, '%Y-%m-%d') = #{curttenDate} and DATE_FORMAT(b.AUDIT_REVIEW_TIME, '%Y-%m-%d') = #{curttenDate} ))
+		<if test="userCode!=null and userCode.size()>0">
+				and b.CHECK_PERSON_CODE in(
+				<foreach item="userCodeString" index="index" collection="userCode"
+				separator=",">
+					#{userCodeString}
+				</foreach>
+				) 
+		</if>
+		
+		group by a.LOAN_NO 
+	</select>
+	<!-- 根据借款编号查询信息 -->
+	<select id="findByLoanNo" parameterType="java.util.Map" resultMap="firstPassSheet">
+		select a.LOAN_NO as LOAN_NO,now() as NOW,a.STATUS as STATUS,a.NAME as NAME,a.ID_NO as ID_NO,a.OWNING_BRANCH_ID as OWNING_BRANCH_ID,
+		a.OWNING_BRANCH as OWNING_BRANCH,a.RTF_NODE_STATE as RTF_NODE_STATE,b.ACC_DATE as ACC_DATE,a.APPLY_TYPE as APPLY_TYPE,a.APPLY_DATE as APPLY_DATE,
+		b.CHECK_PERSON_CODE as CHECK_PERSON_CODE,b.CHECK_PERSON as CHECK_PERSON,b.FINAL_PERSON_CODE as FINAL_PERSON_CODE,b.FINAL_PERSON as FINAL_PERSON,c.PRODUCT_NAME as PRODUCT_CD from 
+		BMS_LOAN_BASE a,BMS_LOAN_AUDIT b,BMS_LOAN_PRODUCT c  where a.id=b.LOAN_BASE_ID and a.id=c.LOAN_BASE_ID and a.LOAN_NO = #{loanNo} 
+	</select>
+	
+	
+		<!-- 手动抽单通过件 -->
+	<select id="getHandPass" parameterType="java.util.Map"  resultMap="firstPassSheet">
+		select a.LOAN_NO as LOAN_NO,now() as NOW,a.STATUS as STATUS,a.NAME as NAME,a.ID_NO as ID_NO,a.OWNING_BRANCH_ID as OWNING_BRANCH_ID,
+		a.OWNING_BRANCH as OWNING_BRANCH,a.RTF_NODE_STATE as RTF_NODE_STATE,b.ACC_DATE as ACC_DATE,a.APPLY_TYPE as APPLY_TYPE,a.APPLY_DATE as APPLY_DATE,
+		b.CHECK_PERSON_CODE as CHECK_PERSON_CODE,b.CHECK_PERSON as CHECK_PERSON,b.FINAL_PERSON_CODE as FINAL_PERSON_CODE,b.FINAL_PERSON as FINAL_PERSON,c.PRODUCT_NAME as PRODUCT_CD from BMS_LOAN_BASE a,BMS_LOAN_AUDIT b,BMS_LOAN_PRODUCT c,BMS_LOAN_LOG d 
+		where a.id=b.LOAN_BASE_ID and a.id=c.loan_base_id and a.id=d.loan_base_id and a.RTF_NODE_STATE='XSZS-PASS' and d.rtf_node_state='XSZS-PASS'
+		<if test="userCode!=null and userCode.size()>0">
+				and b.CHECK_PERSON_CODE in(
+				<foreach item="userCodeString" index="index" collection="userCode"
+				separator=",">
+					#{userCodeString}
+				</foreach>
+				) 
+		</if>
+		and b.acc_date &gt;=str_to_date(#{startDate},'%Y-%m-%d %H:%i:%s') and b.acc_date &lt;=str_to_date(#{endDate},'%Y-%m-%d %H:%i:%s')
+		<if test="owningBranchIds!=null and owningBranchIds.size()>0">
+				and a.OWNING_BRANCH_ID in(
+				<foreach item="owningBranchIds" index="index" collection="owningBranchIds"
+				separator=",">
+					#{owningBranchIds}
+				</foreach>
+				) 
+		</if>
+		<if test="productCd!=null and productCd!=''">
+				and c.PRODUCT_CD=#{productCd}
+		</if>
+		<!-- 
+		<if test="firstLevleReasonsCode!=null and firstLevleReasonsCode.size()>0">
+				and d.FIRST_LEVLE_REASONS_CODE in(
+				<foreach item="firstCodes" index="index" collection="firstLevleReasonsCode"
+				separator=",">
+					#{firstCodes}
+				</foreach>
+				) 
+		</if>
+		<if test="twoLevleReasonsCode!=null and twoLevleReasonsCode.size()>0">
+				and d.TWO_LEVLE_REASONS_CODE in(
+				<foreach item="twoCodes" index="index" collection="twoLevleReasonsCode"
+				separator=",">
+					#{twoCodes}
+				</foreach>
+				) 
+		</if>
+		 -->
+		<if test="applyType!=null and applyType!=''">
+				and a.APPLY_TYPE=#{applyType}
+		</if>
+	</select>
+	<!-- 手动抽单拒绝件 -->
+	<select id="getHandReject" parameterType="java.util.Map"  resultMap="firstPassSheet">
+		select a.LOAN_NO as LOAN_NO,now() as NOW,a.STATUS as STATUS,a.NAME as NAME,a.ID_NO as ID_NO,a.OWNING_BRANCH_ID as OWNING_BRANCH_ID,
+		a.OWNING_BRANCH as OWNING_BRANCH,a.RTF_NODE_STATE as RTF_NODE_STATE,b.ACC_DATE as ACC_DATE,a.APPLY_TYPE as APPLY_TYPE,a.APPLY_DATE as APPLY_DATE,
+		b.CHECK_PERSON_CODE as CHECK_PERSON_CODE,b.CHECK_PERSON as CHECK_PERSON,b.FINAL_PERSON_CODE as FINAL_PERSON_CODE,b.FINAL_PERSON as FINAL_PERSON,c.PRODUCT_NAME as PRODUCT_CD from BMS_LOAN_BASE a,BMS_LOAN_AUDIT b,BMS_LOAN_PRODUCT c,BMS_LOAN_LOG d 
+		where a.id=b.LOAN_BASE_ID and a.id=c.loan_base_id and a.id=d.loan_base_id and a.RTF_NODE_STATE='XSCS-REJECT' and d.rtf_node_state='XSCS-REJECT'
+		<if test="userCode!=null and userCode.size()>0">
+				and b.CHECK_PERSON_CODE in(
+				<foreach item="userCodeString" index="index" collection="userCode"
+				separator=",">
+					#{userCodeString}
+				</foreach>
+				) 
+		</if>
+		and b.acc_date &gt;=str_to_date(#{startDate},'%Y-%m-%d %H:%i:%s') and b.acc_date &lt;=str_to_date(#{endDate},'%Y-%m-%d %H:%i:%s')
+		<if test="owningBranchIds!=null and owningBranchIds.size()>0">
+				and a.OWNING_BRANCH_ID in(
+				<foreach item="owningBranchIds" index="index" collection="owningBranchIds"
+				separator=",">
+					#{owningBranchIds}
+				</foreach>
+				) 
+		</if>
+		<if test="productCd!=null and productCd!=''">
+				and c.PRODUCT_CD=#{productCd}
+		</if>
+		<if test="firstLevleReasonsCode!=null and firstLevleReasonsCode.size()>0">
+				and d.FIRST_LEVLE_REASONS_CODE in(
+				<foreach item="firstCodes" index="index" collection="firstLevleReasonsCode"
+				separator=",">
+					#{firstCodes}
+				</foreach>
+				) 
+		</if>
+		<if test="twoLevleReasonsCode!=null and twoLevleReasonsCode.size()>0">
+				and d.TWO_LEVLE_REASONS_CODE in(
+				<foreach item="twoCodes" index="index" collection="twoLevleReasonsCode"
+				separator=",">
+					#{twoCodes}
+				</foreach>
+				) 
+		</if>
+		<if test="applyType!=null and applyType!=''">
+				and a.APPLY_TYPE=#{applyType}
+		</if>
+	</select>
+	
+	
+	<!-- 根据借款编号，姓名，身份证集合查询申请件信息 -->
+	<select id="findByLoanNoAndNameAndIdNos" parameterType="java.util.Map"  resultMap="firstPassSheet">
+				SELECT
+				a.LOAN_NO AS LOAN_NO,
+				now() AS NOW,
+				a. STATUS AS STATUS,
+				a. NAME AS NAME,
+				a.ID_NO AS ID_NO,
+				a.OWNING_BRANCH_ID AS OWNING_BRANCH_ID,
+				a.OWNING_BRANCH AS OWNING_BRANCH,
+				a.RTF_NODE_STATE AS RTF_NODE_STATE,
+				b.ACC_DATE AS ACC_DATE,
+				a.APPLY_TYPE AS APPLY_TYPE,
+				a.APPLY_DATE AS APPLY_DATE,
+				b.CHECK_PERSON_CODE AS CHECK_PERSON_CODE,
+				b.CHECK_PERSON AS CHECK_PERSON,
+				b.FINAL_PERSON_CODE AS FINAL_PERSON_CODE,
+				b.FINAL_PERSON AS FINAL_PERSON,
+				c.PRODUCT_NAME AS PRODUCT_CD,
+				d.PRIMARY_REASON as FIRST_LEVLE_REASONS,
+				d.SECODE_REASON as TWO_LEVLE_REASONS,
+				d.FIRST_LEVLE_REASONS_CODE,
+				d.TWO_LEVLE_REASONS_CODE,
+				(SELECT
+							count(1)
+						FROM
+							BMS_LOAN_BASE a1,
+							BMS_LOAN_AUDIT b1,
+							BMS_LOAN_LOG d1
+						WHERE
+							a1.LOAN_NO = b1.LOAN_NO	
+						and a1.LOAN_NO = d1.LOAN_NO
+						and a1.LOAN_NO not in(select distinct loan_no from bms_loan_log where RTF_NODE_STATE = 'SQJWH-REJECT')
+						and d1.rtf_node_state='XSZS-PASS' and a1.loan_no=a.loan_no) as TGJ,
+				(SELECT
+						count(1)			
+						FROM
+							BMS_LOAN_BASE a2,
+							BMS_LOAN_AUDIT b2,
+							BMS_LOAN_LOG d2
+						WHERE
+							a2.LOAN_NO = b2.LOAN_NO
+							and a2.LOAN_NO = d2.LOAN_NO
+							and ((d2.rtf_node_state='XSCS-REJECT' and b2.CHECK_NODE_STATE='NO_CHECK') or 
+						  (d2.rtf_node_state='XSCS-REJECT' and b2.CHECK_NODE_STATE='CHECK_PASS'))
+							and a2.loan_no=a.loan_no) as JJJ
+			FROM
+				BMS_LOAN_BASE a LEFT JOIN BMS_LOAN_AUDIT b ON a.LOAN_NO = b.LOAN_NO
+				INNER JOIN BMS_LOAN_PRODUCT c ON a.LOAN_NO = c.LOAN_NO
+				INNER JOIN bms_loan_ext d ON a.LOAN_NO=d.LOAN_NO
+			WHERE 1=1
+		<if test="vos!=null and vos.size()>0">
+				and a.LOAN_NO in(
+				<foreach item="vo" index="index" collection="vos"
+				separator=",">
+					#{vo.loanNo}
+				</foreach>
+				) 
+		</if>	
+		<if test="vos!=null and vos.size()>0">
+				and a.NAME in(
+				<foreach item="vo" index="index" collection="vos"
+				separator=",">
+					#{vo.name}
+				</foreach>
+				) 
+		</if>
+		<if test="vos!=null and vos.size()>0">
+				and a.ID_NO in(
+				<foreach item="vo" index="index" collection="vos"
+				separator=",">
+					#{vo.idNo}
+				</foreach>
+				) 
+		</if>	
+	</select>
+	
+	
+	<select id="findCodeByDates" parameterType="java.util.Map"  resultType="String">
+		select CHECK_PERSON_CODE from BMS_LOAN_LOG where RTF_NODE_STATE in ('XSCS-PASS','XSCS-REJECT','XSCS-RETURN','HIGH-PASS') 
+		and OPERATION_TIME &gt;=str_to_date(#{startDate},'%Y-%m-%d %H:%i:%s') and OPERATION_TIME &lt;=str_to_date(#{endDate},'%Y-%m-%d %H:%i:%s')
+		group by CHECK_PERSON_CODE
+	</select>
+	
+	
+	
+	<select id="getCountZj" parameterType="java.util.Map"  resultType="int">
+		SELECT
+						count(1)
+					FROM
+						BMS_LOAN_BASE a,
+						BMS_LOAN_AUDIT b,
+						BMS_LOAN_PRODUCT c,
+						BMS_LOAN_LOG d
+					WHERE
+						a.LOAN_NO = b.LOAN_NO
+					AND a.LOAN_NO = c.LOAN_NO
+					and a.LOAN_NO = d.LOAN_NO
+					<![CDATA[ AND a.VERSION <= 999]]> 
+					and a.LOAN_NO in (select distinct loan_no from bms_loan_log where RTF_NODE_STATE = 'SQJWH-REJECT' AND DATE_FORMAT(OPERATION_TIME, '%Y-%m-%d') = #{curttenDate})
+					and d.rtf_node_state='XSZS-PASS'
+					AND DATE_FORMAT(d.OPERATION_TIME, '%Y-%m-%d') = #{curttenDate}
+					 
+					<if test="userCode!=null and userCode.size()>0">
+						and b.CHECK_PERSON_CODE in(
+						<foreach item="userCodeString" index="index" collection="userCode"
+						separator=",">
+							#{userCodeString}
+						</foreach>
+						) 
+					</if>
+	</select>
+</mapper> 

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSLoanUrgentConfigDaoImpl">
+
+	<select id="selectAllBmsLoanUrgentConfigs" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.master.BMSLoanUrgentConfig">
+		select 
+		ID as id,
+		ORG_ID as orgId,
+		ORG_NAME as orgName,
+		urgent_count as urgentCount,
+		limit_time as limitTime,
+		IS_DELETE as isDelete,
+		VERSION as version
+		from bms_loan_urgent_config
+		where 1=1
+		<if test="listOrgids!=null and listOrgids.size()>0">
+				and org_id in(
+				<foreach item="listOrgid" index="index" collection="listOrgids"
+				separator=",">
+					#{listOrgid}
+				</foreach>
+				) 
+		</if>
+		and limit_time =#{limitDate}
+	</select>
+	<select id="getLongBaseCountById" parameterType="java.util.Map" resultType="int">
+		SELECT count(1) from bms_loan_base a,BMS_LOAN_PRODUCT b,bms_loan_ext c where a.id=b.LOAN_BASE_ID and a.id=c.LOAN_BASE_ID
+		 and a.OWNING_BRANCH_ID=#{id} and b.IF_PRI=1 and DATE_FORMAT(c.audit_end_time,'%Y-%m') =#{limitDate}
+	</select>
+	
+	
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSLoanUrgentConfig" keyProperty="id" useGeneratedKeys="true">
+		insert into bms_loan_urgent_config (id,org_name,org_id,urgent_count,limit_time,CREATOR_ID,CREATOR,CREATED_TIME)
+			values(#{id},#{orgName},#{orgId},#{urgentCount},#{limitTime},#{cteatorId},#{creator},#{createdTime})
+	</insert>
+	
+	
+	
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSLoanUrgentConfig">
+		update bms_loan_urgent_config set urgent_count=#{urgentCount},MODIFIER_ID=#{modifierId},MODIFIER=#{modifier},MODIFIED_TIME=#{modifiedTime} where org_id=#{orgId} and limit_time=#{limitTime}
+	</update>
+</mapper>

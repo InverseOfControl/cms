@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.app.impl.InitFieldDaoImpl">
+	
+	<resultMap id="extendFieldMap" type="com.ymkj.cms.biz.entity.app.BMSExtendsionFieldEntity">
+		<result property="id" column="ID" />
+		<result property="fieldCode" column="FIELD_CODE" />
+		<result property="fieldName" column="FIELD_NAME" />
+		<result property="fieldType" column="FIELD_TYPE" />
+		<result property="isRequested" column="IS_REQUESTED" />
+		<result property="isEdited" column="IS_EDITED" />
+		<result property="relationCodeType" column="RELATION_CODE_TYPE" />
+		<result property="defaultValue" column="DEFAULT_VALUE" />
+		<result property="parentGroupCode" column="PARENT_GROUP_CODE" />
+		<result property="codeIndex" column="CODE_INDEX" />
+		<result property="isHide" column="IS_HIDE" />
+		<result property="hideLabelCode" column="HIDE_LABEL_CODE" />
+		<result property="hideLabelName" column="HIDE_LABEL_NAME" />
+		<result property="labelIndex" column="LABEL_INDEX" />
+		<result property="creator" column="CREATOR" />
+		<result property="createTime" column="CREATE_TIME" />
+		<result property="updator" column="UPDATOR" />
+		<result property="updateTime" column="UPDATE_TIME" />
+		<result property="fieldRegex" column="FIELD_REGEX" />
+		<result property="fieldTip" column="FIELD_TIP" />
+		<result property="isRequestedAssets" column="IS_REQUESTED_ASSETS" />
+	</resultMap>
+	
+
+	<!-- 获取字段最新更新时间 -->
+	<select id="getUpdateFieldsTime" resultType="java.util.Map">
+		select bef.id, bef.field_code, bef.field_name, date_format(bef.update_time,'%Y-%m-%d %H:%i:%s') update_time
+		from  bms_extension_field bef where bef.update_time is not null order by bef.update_time desc limit 0,1
+	</select>
+	
+	<!-- 获取字段所属组列表信息 -->
+	<select id="getFieldGroup" resultType="java.util.Map">
+		select * from bms_extension_field_group
+	</select>
+
+	<!-- 获取每个组下的字段信息 -->
+	<select id="getFieldByGroupCode" parameterType="java.lang.String" resultMap="extendFieldMap">
+		select bef.*,bar.regex_content field_regex,bar.regex_tip field_tip from bms_extension_field bef 
+		left join bms_app_regex bar on bef.regex_id=bar.id 
+		where bef.parent_group_code = #{groupCode} and bef.is_hide = '0' order by bef.code_index asc
+	</select>
+	
+	<!-- 获取隐藏组列表信息 -->
+	<select id="getHideLabelList" parameterType="java.lang.String" resultType="java.util.Map">
+		select distinct t.hide_label_code,t.hide_label_name,t.label_index from bms_extension_field t
+        where t.parent_group_code=#{groupCode} and t.is_hide='1' order by t.label_index asc
+	</select>
+	
+	<!-- 获取每个隐藏组的详情列表 -->
+	<select id="getHideLabelDetailList" parameterType="java.util.Map" resultMap="extendFieldMap">
+		select bef.*,bar.regex_content field_regex,bar.regex_tip field_tip from bms_extension_field bef 
+		left join bms_app_regex bar on bef.regex_id=bar.id 
+		where bef.parent_group_code = #{groupCode} and bef.is_hide = '1' and bef.hide_label_code = #{hideLabelCode} order by bef.code_index asc
+	</select>
+	
+	<!-- 下拉框数据 -->
+	<select id="getAdapaterList" parameterType="java.lang.String" resultType="java.util.Map">
+		select t.code,t.name_cn nameCn,t.code_index codeIndex from bms_enum_code t where lower(t.code_type)=lower(#{codeType}) order by t.code_index asc
+	</select>
+	
+	<!-- 省市区下拉框数据 -->
+	<select id="getProvincesList" parameterType="java.lang.String" resultType="java.util.Map">
+		select area_id areaId,name,code from bms_base_area where 1 and parent_id=#{areaId}
+	</select>
+	
+	<!-- 获取工作类型、单位性质、职业关系信息 -->
+	<select id="getWorkTypeRelation" parameterType="java.util.Map" resultType="java.util.Map">
+		select id,enum_code code,enum_name name from bms_app_enum_relation where 1 and level=#{level} and enum_belong_flag=#{enumBelongFlag}
+		<if test="parentFirstId != ''"> and locate(#{parentFirstId},parent_first_id)>0  </if>
+		<if test="parentSecondId != ''"> and locate(#{parentSecondId},parent_second_id)>0 </if>
+	</select>
+	
+</mapper> 

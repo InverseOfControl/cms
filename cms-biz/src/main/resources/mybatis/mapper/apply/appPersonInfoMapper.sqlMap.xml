@@ -1,0 +1,786 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPPersonInfoDaoImpl">
+    <resultMap id="appPersonInfoMap" type="com.ymkj.cms.biz.entity.apply.APPPersonInfoEntity">
+		<id property="id" column="ID" />
+		<result property="personId" column="PERSON_ID" />
+	    <result property="applyPersonId" column="APPLY_PERSON_ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="loanNo" column="LOAN_NO" />
+		
+		<result property="idNo" column="ID_NO" />
+		<result property="org" column="ORG" />
+		<result property="birthday" column="BIRTHDAY" />
+		<result property="gender" column="GENDER" />
+		<result property="age" column="AGE" />
+		<result property="idLastDate" column="ID_LAST_DATE" />
+		
+		<result property="idIssuerAddress" column="ID_ISSUER_ADDRESS" />
+		<result property="issuerStateId" column="ISSUER_STATE_ID" />
+		<result property="issuerCityId" column="ISSUER_CITY_ID" />
+	    <result property="issuerZoneId" column="ISSUER_ZONE_ID" />
+		<result property="issuerPostcode" column="ISSUER_POSTCODE" />
+	
+		 <result property="issuerState" column="ISSUER_STATE" />
+	    <result property="issuerCity" column="ISSUER_CITY" />
+	  	<result property="issuerZone" column="ISSUER_ZONE" />        <!--  varchar(40) comment '家庭所在市', -->
+	 
+		<result property="homePostcode" column="HOME_POSTCODE"/>
+		<result property="maritalStatus" column="MARITAL_STATUS" />
+		<result property="childrenNum" column="CHILDREN_NUM" />
+		
+		<result property="qualification" column="QUALIFICATION" />
+		<result property="graduationDate" column="GRADUATION_DATE" />
+		<result property="houseOwnership" column="HOUSE_OWNERSHIP" />
+		<result property="houseType" column="HOUSE_TYPE" />
+	    <result property="houseRent" column="HOUSE_RENT" />
+	    <result property="liquidAsset" column="LIQUID_ASSET" />
+		<result property="cellphone" column="CELLPHONE" />
+		<result property="cellphoneSec" column="CELLPHONE_SEC" />
+		<result property="qqNum" column="QQ_NUM" />
+	    <result property="weChatNum" column="WECHAT_NUM" />
+	    <result property="email" column="EMAIL" />
+		<result property="familyMonthPay" column="FAMILY_MONTH_PAY" />
+	    <result property="homeStateId" column="HOME_STATE_ID" />
+	    <result property="homeCityId" column="HOME_CITY_ID" />
+	    <result property="homeZoneId" column="HOME_ZONE_Id" />
+	    <result property="homeAddress" column="HOME_ADDRESS" />
+	    
+       	<result property="homeState" column="HOME_STATE" />
+	  	<result property="homeCity" column="HOME_CITY" />        
+	  	<result property="homeZone" column="HOME_ZONE" />  
+	  	        <!-- varchar(100) comment '家庭所在区县', -->
+	    <result property="homePhone1" column="HOME_PHONE1" />
+	    <result property="monthMaxRepay" column="MONTH_MAX_REPAY" />
+	    <result property="cusWorkType" column="CUS_WORK_TYPE" />
+	    <result property="corpName" column="CORP_NAME" />
+	    <result property="corpProvinceId" column="CORP_PROVINCE_ID" />
+	    <result property="corpCityId" column="CORP_CITY_ID" />
+	    <result property="corpZoneId" column="CORP_ZONE_ID" />
+	    <result property="corpPhone" column="CORP_PHONE" />
+	    <result property="corpPhoneSec" column="CORP_PHONE_SEC" />
+	    
+	    <result property="corpProvince" column="CORP_PROVINCE" />
+	    <result property="corpCity" column="CORP_CITY" />
+	  	<result property="corpZone" column="CORP_ZONE" />        
+	  	
+	  	<result property="corpAddress" column="CORP_ADDRESS" />  
+	    <result property="corpPostcode" column="CORP_POSTCODE" />
+	    <result property="businessNetWork" column="BUSINESS_NET_WORK" />
+	    <result property="corpStructure" column="CORP_STRUCTURE" />
+	    <result property="corpType" column="CORP_TYPE" />
+	    <result property="corpPost" column="CORP_POST" />
+	    <result property="corpStandFrom" column="CORP_STAND_FROM" />
+	    <result property="corpPayWay" column="CORP_PAY_WAY" />
+	    <result property="corpDepapment" column="CORP_DEPAPMENT" />
+	    <result property="occupation" column="OCCUPATION" />
+	    <result property="monthSalary" column="MONTH_SALARY" />
+	    <result property="otherIncome" column="OTHER_INCOME" />
+	    <result property="totalMonthSalary" column="TOTAL_MONTH_SALARY" />
+	    <result property="setupDate" column="SETUP_DATE" />
+	    <result property="sharesScale" column="SHARES_SCALE" />
+	    <result property="registerFunds" column="REGISTER_FUNDS" />
+	    <result property="priEnterpriseType" column="PRI_ENTERPRISE_TYPE" />
+	    <result property="businessPlace" column="BUSINESS_PLACE" />
+	    <result property="monthRent" column="MONTH_RENT" />
+	    <result property="employeeNum" column="EMPLOYEE_NUM" />
+	    <result property="enterpriseRate" column="ENTERPRISE_RATE" />
+	    <result property="sharesName" column="SHARES_NAME" />
+	    <result property="sharesIdNO" column="SHARES_ID_NO" />
+	    <result property="monthAmt" column="MONTH_AMT" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		<result property="name" column="NAME" />
+		<result property="snapVersion" column="SNAP_VERSION" />
+		<result property="hzzxId" column="HZZX_ID" />
+		<result property="TheThirdPartyNote" column="THE_THIRDPARTY_NOTE" />
+		<result property="TheThirdPartyNoteDetails" column="THE_THIRDPARTY_NOTE_DETAILS" />
+		<result property="homeSameRegistered" column="HOME_SAME_REGISTERED" />
+		
+		<result property="reportId" column="REPORT_ID" />
+		<result property="nfcsId" column="NFCS_ID" />
+		<result property="auditEndTime" column="AUDIT_END_TIME" />
+		<result property="ifReportId" column="IF_REPORT_ID" />
+		
+		<result property="longOnlineId" column="LONG_ONLINE_ID"/>                                          
+		<result property="realNameAuthId" column="REAL_NAME_AUTH_ID"/> 
+	</resultMap>
+ 	 
+ 	 
+ 	  <select id="findPersonByLoanBaseId" parameterType="java.util.Map" resultMap="appPersonInfoMap">
+		SELECT 
+		   p.ID,                  <!--  int(32) not null comment 'id', -->
+		   p.LOAN_BASE_ID,        <!--  int(32) not null comment 'LOAN_BASE_ID', -->
+		   p.LOAN_NO,            <!--  varchar(20) comment '借款编号', -->
+		   p.APP_NO,               <!-- varchar(20) not null comment '申请件编号', -->
+		   l.ID_NO,
+		   p.APPLY_PERSON_ID,    <!--   int(10) not null comment '申请人信息流水', -->
+		   p.PERSON_ID,          <!--   int(32) comment '客户编号', -->
+		   p.ORG,                 <!--  varchar(12) not null comment '机构号', -->
+		   p.BIRTHDAY, <!--  date comment '生日', -->
+		    CASE 
+			WHEN  p.GENDER='男' THEN 'M'
+			WHEN  p.GENDER='女' THEN 'F'  
+			ELSE 'O' END  GENDER,        <!-- varchar(10) not null comment '性别', -->              
+		   p.AGE,                <!--   int(4) comment '年龄', -->
+		   p.ID_LAST_DATE,        <!--  date comment '证件到期日', -->
+		   p.ID_ISSUER_ADDRESS,  <!--   varchar(200) comment '户籍地址', -->
+		   p.ISSUER_STATE_ID,      <!-- INT(18) comment '户籍所在省ID', -->
+		   p.ISSUER_CITY_ID,       <!--  INT(18) comment '户籍所在市ID', -->
+		   p.ISSUER_ZONE_ID,        <!-- INT(18) comment '户籍所在区/县ID', -->
+		   p.ISSUER_STATE,        <!--  varchar(40) comment '户籍所在省', -->
+		   p.ISSUER_CITY,          <!-- varchar(40) comment '户籍所在市', -->
+		   p.ISSUER_ZONE,        <!--  varchar(100) comment '户籍所在区/县', -->
+		   p.ISSUER_POSTCODE,      <!-- varchar(10) comment '户籍邮编', -->
+		   p.NATIONALITY,          <!-- varchar(10) comment '国籍', -->
+		   p.RESIDENCY_COUNTRY_CD, <!-- varchar(10) comment '永久居住地国家代码', -->
+		   p.MARITAL_STATUS,       <!-- varchar(10) comment '婚姻状况', -->
+		   p.CHILDREN_NUM,        <!--  int(2) comment '子女数', -->
+		   p.QUALIFICATION,        <!-- varchar(10) comment '教育状况', -->
+		   p.GRADUATION_DATE,      <!-- date comment '毕业时间', -->
+		   p.HOUSE_OWNERSHIP,    <!--  varchar(10) comment '房屋持有类型', -->
+		   p.HOUSE_TYPE,           <!-- varchar(10) comment '住宅类型', -->
+		   p.HOUSE_RENT,         <!--   int(9) comment '租金/元', -->
+		   p.LIQUID_ASSET,       <!--   varchar(10) comment '个人资产类型', -->
+		   p.CELLPHONE,            <!-- varchar(15) comment '手机1', -->
+		   p.CELLPHONE_SEC,        <!-- varchar(15) comment '手机2', -->
+		   p.QQ_NUM,               <!-- VARCHAR2(15) comment 'QQ号', -->
+		   p.WECHAT_NUM,           <!-- VARCHAR2(30) comment '微信号', -->
+		   p.EMAIL,                <!-- varchar(80) comment '电子邮箱', -->
+		   p.FAMILY_MEMBER,        <!--  INT(2) comment '家庭人口', -->
+		   p.FAMILY_AVGE_VENUE,     <!-- INT(9) comment '家庭人均年收入', -->
+		   p.FAMILY_MONTH_PAY,    <!--  int(9) comment '每月家庭支出', -->
+		   p.HOME_ADDR_CTRY_CD,    <!-- varchar(10) comment '家庭国家代码', -->
+		   p.HOME_STATE_ID,        <!--  INT(18) comment '家庭所在省ID', -->
+		   p.HOME_CITY_ID,         <!--  INT(18) comment '家庭所在市ID', -->
+		   p.HOME_ZONE_ID,          <!-- INT(18) comment '家庭所在区县ID', -->
+		   p.HOME_STATE,          <!--  varchar(40) comment '家庭所在省', -->
+		   p.HOME_CITY,           <!--  varchar(40) comment '家庭所在市', -->
+		   p.HOME_ZONE,            <!-- varchar(100) comment '家庭所在区县', -->
+		   p.HOME_ADDRESS,        <!--  varchar(100) comment '家庭地址', -->
+		   p.HOME_POSTCODE,        <!-- varchar(10) comment '家庭住宅邮编', -->
+		   p.HOME_SAME_REGISTERED, <!-- INT(10) comment '家庭住址是否同户籍地址', -->
+		   p.HOME_PHONE1,          <!-- varchar(30) comment '住宅电话1', -->
+		   p.HOME_PHONE2,        <!--  varchar(30) comment '住宅电话2', -->
+		   p.HOME_STAND_FROM,     <!--  date comment '现住址居住起始年月', -->
+		   p.PR_OF_COUNTRY,       <!--  varchar(10) comment '是否永久居住', -->
+		   p.PRIVATE_OWNERS_FLAG,  <!-- varchar(10) comment '是否私营业主', -->
+		   p.CORP_NAME,          <!--   varchar(300) comment '单位名称', -->
+		   p.CORP_STRUCTURE,      <!--  varchar(10) comment '公司性质', -->
+		   p.CORP_ADDR_CTRY_CD,    <!-- varchar(3) comment '公司国家代码', -->
+		   p.CORP_PROVINCE_ID,    <!--  INT(18), -->
+		   p.CORP_CITY_ID,       <!--  INT(18), -->
+		   p.CORP_ZONE_ID,        <!--  INT(18), -->
+		   p.CORP_PROVINCE,        <!-- varchar(40) comment '公司所在省', -->
+		   p.CORP_CITY,           <!--  varchar(40) comment '公司所在市', -->
+		   p.CORP_ZONE,          <!--   varchar(40) comment '公司所在区/县', -->
+		   p.CORP_ADDRESS,        <!--  varchar(300) comment '公司地址', -->
+		   p.CORP_POSTCODE,       <!--  varchar(40) comment '公司邮编', -->
+		   p.CORP_PHONE,          <!--  varchar(40) comment '公司电话1', -->
+		   p.CORP_PHONE_SEC,      <!--  varchar(40) comment '公司电话2', -->
+		   p.CORP_FAX,          <!--    varchar(20) comment '公司传真', -->
+		   p.CORP_DEPAPMENT,       <!-- varchar(80) comment '任职部门', -->
+		   p.CORP_POST,           <!--  varchar(10) comment '职务', -->
+		   p.CORP_STAND_FROM,     <!--  date comment '现单位工作起始年月', -->
+		   p.BUSINESS_NET_WORK,   <!--  varchar(50) comment '工商网信息', -->
+		   p.CORPMEM_FLAG,        <!--  varchar(2) comment '是否公司员工', -->
+		   p.CORPMEM_NO,          <!--  varchar(20) comment '本公司员工号', -->
+		   p.CORP_TYPE,           <!--  varchar(20) comment '公司行业类别', -->
+		   p.CORP_WORKYEARS,       <!-- int(2) comment '本单位工作年限', -->
+		   p.CORP_STABILITY,       <!-- varchar(10) comment '工作稳定性', -->
+		   p.OCCUPATION,           <!-- varchar(10) comment '职业', -->
+		   p.EMP_STATUS,           <!-- varchar(10) comment '是否在职', -->
+		   p.CORP_PAY_WAY,        <!--  varchar(10) comment '发薪方式', -->
+		   p.CORP_PAYDAY,         <!--  varchar(2) comment '发薪日', -->
+		   p.MONTH_SALARY,        <!--  int(13) comment '单位月收入/元', -->
+		   p.OTHER_INCOME,       <!--   int(13) comment '其他月收入 ', -->
+		   p.TOTAL_MONTH_SALARY,   <!-- int(13) comment '月总收入/元', -->
+		   p.SETUP_DATE,           <!-- date comment '成立时间', -->
+		   p.MONTH_MAX_REPAY,     <!--  int(13) comment '可接受的月最高还款', -->
+		   p.SHARES_SCALE,        <!--  decimal(5,2) comment '占股比例/%', -->
+		   p.REGISTER_FUNDS,       <!-- int comment '注册资本/万元', -->
+		   p.PRI_ENTERPRISE_TYPE, <!--  varchar(10) comment '私营企业类型', -->
+		   p.BUSINESS_PLACE,      <!--  varchar(10) comment '经营场所', -->
+		   p.MONTH_RENT,           <!-- int(13) comment '月租金/元', -->
+		   p.EMPLOYEE_NUM,       <!--   int(10) comment '员工人数/人', -->
+		   p.ENTERPRISE_RATE,      <!-- decimal(5,2) comment '企业净利润率/%', -->
+		   p.SHARES_NAME,          <!-- varchar(80) comment '股东姓名(除客户外最大股东)', -->
+		   p.SHARES_ID_NO,         <!-- varchar(20) comment '股东身份证', -->
+		   p.MONTH_AMT,            <!-- decimal(15,2) comment '每月净利率额/万元', -->
+		   p.REPORT_ID,            <!-- int(20) comment '人行征信ID', -->
+		   p.NFCS_ID,            <!-- int(20) comment '上海资信ID', -->
+		   p.REPORT_MESSAGE,       <!-- varchar(100) comment '绑定记录信息', -->
+		   p.CUS_WORK_TYPE,      <!--   varchar(5) comment '客户工作类型', -->
+		   p.CREATOR,             <!--  varchar(64) comment '创建用户', -->
+		   p.CREATED_TIME,        <!--  datetime comment '创建时间', -->
+		   p.CREATOR_ID,           <!-- int(18) comment '创建用户ID', -->
+		   p.MODIFIER,           <!--   varchar(64) comment '修改用户', -->
+		   p.MODIFIED_TIME,       <!--  datetime comment '修改时间', -->
+		   p.MODIFIER_ID,          <!-- int(18) comment '修改用户id', -->
+		  <!--  p.FLOW_STATE,         --> <!--   int(10), -->
+		   p.VERSION,            <!--   int(10) comment '默认值是1', -->
+		 <!--   p.SNAP_VERSION,   -->       <!-- int(10), -->
+		   p.IS_DELETE,          <!--   int(2) comment '默认是0，删除是1', -->
+		   l.NAME,				<!--   varchar(32) comment '申请人姓名', -->
+		   le.AUDIT_END_TIME				<!--   varchar(32) comment '审核结束时间（首次录入复核时间）', -->
+		FROM  BMS_APP_PERSON_INFO p 
+		LEFT JOIN BMS_LOAN_BASE l
+		ON l.id = p.LOAN_BASE_ID
+		LEFT JOIN bms_loan_ext le
+		ON le.LOAN_BASE_ID = p.LOAN_BASE_ID
+		<where>
+		<if test="loanBaseId != null">
+			and p.LOAN_BASE_ID =#{loanBaseId}
+        </if>
+		 <if test="loanNo != null and loanNo != ''">
+        	and p.LOAN_NO = #{loanNo}
+        </if>
+		</where>
+	</select>
+ 
+ 	 
+ 
+	 
+	<sql id="condition_sql">
+	     IS_DELETE = 0 
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+        
+        <if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.APPPersonInfoEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_APP_PERSON_INFO(LOAN_BASE_ID,  PERSON_ID,APP_NO,APPLY_PERSON_ID
+         				, ORG,BIRTHDAY,GENDER, AGE,ID_LAST_DATE,ID_ISSUER_ADDRESS,ISSUER_STATE_ID
+         				,ISSUER_CITY_ID ,ISSUER_ZONE_ID,ISSUER_POSTCODE,MARITAL_STATUS,CHILDREN_NUM,QUALIFICATION
+         				,GRADUATION_DATE,HOUSE_OWNERSHIP,HOUSE_TYPE,HOUSE_RENT,LIQUID_ASSET
+         				,CELLPHONE,CELLPHONE_SEC,QQ_NUM,WECHAT_NUM,EMAIL,FAMILY_MONTH_PAY,HOME_STATE_ID,HOME_CITY_ID,HOME_ZONE_ID
+         				,HOME_ADDRESS,HOME_PHONE1,MONTH_MAX_REPAY,CUS_WORK_TYPE,CORP_NAME
+         				,CORP_PROVINCE_ID,CORP_CITY_ID,CORP_ZONE_ID,CORP_PHONE,CORP_PHONE_SEC
+         				,CORP_POST,CORP_STAND_FROM,CORP_PAY_WAY,CORP_DEPAPMENT,OCCUPATION
+         				,MONTH_SALARY,OTHER_INCOME,TOTAL_MONTH_SALARY,SETUP_DATE,SHARES_SCALE
+         				,REGISTER_FUNDS,PRI_ENTERPRISE_TYPE,BUSINESS_PLACE,MONTH_RENT,EMPLOYEE_NUM
+         				,ENTERPRISE_RATE,SHARES_NAME,SHARES_ID_NO,MONTH_AMT
+         				,CREATOR_ID,CREATOR,CREATED_TIME,LOAN_NO,HOME_POSTCODE
+         				,CORP_POSTCODE,BUSINESS_NET_WORK,CORP_STRUCTURE,CORP_TYPE,SNAP_VERSION,CORP_ADDRESS,ID_NO,NAME
+         				,ISSUER_STATE,ISSUER_CITY,ISSUER_ZONE,HOME_STATE,HOME_CITY,HOME_ZONE
+         				,CORP_PROVINCE,CORP_CITY,CORP_ZONE,HOME_SAME_REGISTERED,THE_THIRDPARTY_NOTE,THE_THIRDPARTY_NOTE_DETAILS)
+         	 VALUES(#{loanBaseId},  #{personId}, #{appNo}, #{applyPersonId}, #{org}, #{birthday}, #{gender}, #{age},
+         	 #{idLastDate}, #{idIssuerAddress}, #{issuerStateId}, #{issuerCityId},#{issuerZoneId}, #{issuerPostcode}, #{maritalStatus}, #{childrenNum},
+         	 #{qualification}, #{graduationDate}, #{houseOwnership}, #{houseType},#{houseRent}, 
+         	  #{liquidAsset}, #{cellphone}, #{cellphoneSec}, #{qqNum},#{weChatNum}, 
+         	  #{email}, #{familyMonthPay}, #{homeStateId}, #{homeCityId},#{homeZoneId}, 
+         	  #{homeAddress}, #{homePhone1}, #{monthMaxRepay}, #{cusWorkType},#{corpName}, 
+         	  #{corpProvinceId}, #{corpCityId}, #{corpZoneId}, #{corpPhone},#{corpPhoneSec}, 
+         	   #{corpPost}, #{corpStandFrom}, #{corpPayWay}, #{corpDepapment},#{occupation}, 
+         	    #{monthSalary}, #{otherIncome}, #{totalMonthSalary}, #{setupDate},#{sharesScale}, 
+         	     #{registerFunds}, #{priEnterpriseType}, #{businessPlace}, #{monthRent},#{employeeNum}, 
+         	      #{enterpriseRate}, #{sharesName}, #{sharesIdNO}, #{monthAmt},
+         	  #{creatorId}, #{creator}, #{createdTime},#{loanNo},#{homePostcode},
+         	  #{corpPostcode},#{businessNetWork},#{corpStructure},#{corpType},#{snapVersion},#{corpAddress},#{idNo},#{name},
+         	  #{issuerState},#{issuerCity},#{issuerZone},#{homeState},#{homeCity},#{homeZone},
+         	  #{corpProvince},#{corpCity},#{corpZone},#{homeSameRegistered},#{TheThirdPartyNote},#{TheThirdPartyNoteDetails})
+    </insert >
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="appPersonInfoMap">
+		select * from BMS_APP_PERSON_INFO
+		where id = #{id}
+	</select>
+        
+	  
+   <select id="listBy" parameterType="java.util.Map" resultMap="appPersonInfoMap">
+		select * from  BMS_APP_PERSON_INFO
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.APPPersonInfoEntity">
+		update 	BMS_APP_PERSON_INFO
+ 			set 	 
+ 	    <if test="birthday != null">
+        	BIRTHDAY = #{birthday},
+        </if>
+        <if test="gender != null and gender != ''">
+        	GENDER = #{gender},
+        </if>
+         <if test="age != null and age != ''">
+        	AGE = #{age},
+        </if>
+         <if test="idLastDate != null">
+        	ID_LAST_DATE = #{idLastDate},
+        </if>
+         <if test="idIssuerAddress != null and idIssuerAddress != ''">
+        	ID_ISSUER_ADDRESS = #{idIssuerAddress},
+        </if>
+         <if test="issuerCityId != null and issuerCityId != ''">
+        	ISSUER_CITY_ID = #{issuerCityId},
+        </if>
+        <if test="issuerZoneId != null and issuerZoneId != ''">
+        	ISSUER_ZONE_ID = #{issuerZoneId},
+        </if>
+         <if test="issuerPostcode != null and issuerPostcode != ''">
+        	ISSUER_POSTCODE = #{issuerPostcode},
+        </if>
+         <if test="maritalStatus != null and maritalStatus != ''">
+        	MARITAL_STATUS = #{maritalStatus},
+        </if>
+        <if test="childrenNum != null">
+        	CHILDREN_NUM = #{childrenNum},
+        </if>
+         <if test="qualification != null and qualification != ''">
+        	QUALIFICATION = #{qualification},
+        </if>
+        <if test="graduationDate != null">
+        	GRADUATION_DATE = #{graduationDate},
+        </if>
+         <if test="houseOwnership != null and houseOwnership != ''">
+        	HOUSE_OWNERSHIP = #{houseOwnership},
+        </if>
+         <if test="houseType != null and houseType != ''">
+        	HOUSE_TYPE = #{houseType},
+        </if>
+        <if test="houseRent != null">
+        	HOUSE_RENT = #{houseRent},
+        </if>
+         <if test="liquidAsset != null and liquidAsset != ''">
+        	LIQUID_ASSET = #{liquidAsset},
+        </if>
+         <if test="cellphone != null and cellphone != ''">
+        	CELLPHONE = #{cellphone},
+        </if>
+         <if test="cellphoneSec != null and cellphoneSec != ''">
+        	CELLPHONE_SEC = #{cellphoneSec},
+        </if>
+         <if test="qqNum != null and qqNum != ''">
+        	QQ_NUM = #{qqNum},
+        </if>
+        <if test="weChatNum != null and weChatNum != ''">
+        	WECHAT_NUM = #{weChatNum}, 
+        </if>
+         <if test="email != null and email != ''">
+        	EMAIL = #{email},
+        </if>
+          <if test="familyMonthPay != null">
+        	FAMILY_MONTH_PAY = #{familyMonthPay},
+        </if>
+         <if test="homeStateId != null and homeStateId != ''">
+        	HOME_STATE_ID = #{homeStateId},
+        </if>
+         <if test="homeCityId != null and homeCityId != ''">
+        	HOME_CITY_ID = #{homeCityId},
+        </if>
+        <if test="homeZoneId != null and homeZoneId != ''">
+        	HOME_ZONE_Id = #{homeZoneId}, 
+        </if>
+         <if test="homeAddress != null and homeAddress != ''">
+        	HOME_ADDRESS = #{homeAddress},
+        </if>
+          <if test="homePhone1 != null and homePhone1 != ''">
+        	HOME_PHONE1 = #{homePhone1},
+        </if>
+        
+        <if test="monthMaxRepay != null">
+        	MONTH_MAX_REPAY = #{monthMaxRepay},
+        </if>
+         <if test="cusWorkType != null and cusWorkType != ''">
+        	CUS_WORK_TYPE = #{cusWorkType},
+        </if>
+        <if test="corpName != null and corpName != ''">
+        	CORP_NAME = #{corpName}, 
+        </if>
+         <if test="corpProvinceId != null and corpProvinceId != ''">
+        	CORP_PROVINCE_ID = #{corpProvinceId},
+        </if>
+          <if test="corpCityId != null and corpCityId != ''">
+        	CORP_CITY_ID = #{corpCityId},
+        </if>
+       <if test="corpZoneId != null and corpZoneId != ''">
+        	CORP_ZONE_ID = #{corpZoneId}, 
+        </if>
+ 
+	   <if test="corpPhone != null and corpPhone != ''">
+        	CORP_PHONE = #{corpPhone},
+        </if>
+          <if test="corpPhoneSec != null and corpPhoneSec != ''">
+        	CORP_PHONE_SEC = #{corpPhoneSec},
+        </if>
+        <if test="corpPost != null and corpPost != ''">
+        	CORP_POST = #{corpPost}, 
+        </if>
+	    <if test="corpStandFrom != null">
+        	CORP_STAND_FROM = #{corpStandFrom},
+        </if>
+        <if test="corpPayWay != null and corpPayWay != ''">
+        	CORP_PAY_WAY = #{corpPayWay},
+        </if>
+        <if test="corpDepapment != null and corpDepapment != ''">
+        	CORP_DEPAPMENT = #{corpDepapment}, 
+        </if>
+	    <if test="occupation != null and occupation != ''">
+        	OCCUPATION = #{occupation},
+        </if>
+        <if test="monthSalary != null">
+        	MONTH_SALARY = #{monthSalary},
+        </if>
+        
+         <if test="otherIncome != null">
+        	OTHER_INCOME = #{otherIncome}, 
+        </if>
+	    <if test="totalMonthSalary != null">
+        	TOTAL_MONTH_SALARY = #{totalMonthSalary},
+        </if>
+        <if test="setupDate != null">
+        	SETUP_DATE = #{setupDate},
+        </if>
+         <if test="sharesScale != null">
+        	SHARES_SCALE = #{sharesScale}, 
+        </if>
+	    <if test="registerFunds != null">
+        	REGISTER_FUNDS = #{registerFunds},
+        </if>
+        <if test="priEnterpriseType != null and priEnterpriseType != ''">
+        	PRI_ENTERPRISE_TYPE = #{priEnterpriseType},
+        </if>
+        
+         <if test="businessPlace != null and businessPlace != ''">
+        	BUSINESS_PLACE = #{businessPlace}, 
+        </if>
+	    <if test="monthRent != null">
+        	MONTH_RENT = #{monthRent},
+        </if>
+        <if test="employeeNum != null and employeeNum != ''">
+        	EMPLOYEE_NUM = #{employeeNum},
+        </if>
+        
+	     <if test="enterpriseRate != null">
+        	ENTERPRISE_RATE = #{enterpriseRate}, 
+        </if>
+	    <if test="sharesName != null and sharesName != ''">
+        	SHARES_NAME = #{sharesName},
+        </if>
+        <if test="sharesIdNO != null and sharesIdNO != ''">
+        	SHARES_ID_NO = #{sharesIdNO},
+        </if>
+          <if test="monthAmt != null">
+        	MONTH_AMT = #{monthAmt},
+        </if>
+        <if	test="homePostcode != null and homePostcode != ''">
+        	HOME_POSTCODE = #{homePostcode},
+        </if>
+        <if	test="idNo != null and idNo != ''">
+        	ID_NO = #{idNo},
+        </if>
+        <if	test="name != null and name != ''">
+        	NAME = #{name},
+        </if>
+        <if	test="corpAddress != null and corpAddress != ''">
+        	CORP_ADDRESS = #{corpAddress},
+        </if>
+        
+        <if	test="TheThirdPartyNote != null and TheThirdPartyNote != ''">
+        	THE_THIRDPARTY_NOTE = #{TheThirdPartyNote},
+        </if>
+        <if	test="TheThirdPartyNoteDetails != null and TheThirdPartyNoteDetails != ''">
+        	THE_THIRDPARTY_NOTE_DETAILS = #{TheThirdPartyNoteDetails},
+        </if>
+        
+	    <if	test="issuerState != null and issuerState != ''">
+        	ISSUER_STATE = #{issuerState},
+        </if>
+        <if	test="issuerCity != null and issuerCity != ''">
+        	ISSUER_CITY = #{issuerCity},
+        </if>
+        <if	test="issuerZone != null and issuerZone != ''">
+        	ISSUER_ZONE = #{issuerZone},
+        </if>
+	    
+	    <if	test="homeState != null and homeState != ''">
+        	HOME_STATE = #{homeState},
+        </if>
+        <if	test="homeCity != null and homeCity != ''">
+        	HOME_CITY = #{homeCity},
+        </if>
+        <if	test="homeZone != null and homeZone != ''">
+        	HOME_ZONE = #{homeZone},
+        </if>
+	    <if	test="corpProvince != null and corpProvince != ''">
+        	CORP_PROVINCE = #{corpProvince},
+        </if>
+        <if	test="corpCity != null and corpCity != ''">
+        	CORP_CITY = #{corpCity},
+        </if>
+        <if	test="corpZone != null and corpZone != ''">
+        	CORP_ZONE = #{corpZone},
+        </if>
+        <if	test="issuerStateId != null and issuerStateId != ''">
+        	ISSUER_STATE_ID = #{issuerStateId},
+        </if>
+         
+        <if	test="businessNetWork != null and businessNetWork != ''">
+        	BUSINESS_NET_WORK = #{businessNetWork},
+        </if>
+        <if	test="corpType != null and corpType != ''">
+        	CORP_TYPE = #{corpType},
+        </if>
+        <if	test="corpStructure != null and corpStructure != ''">
+        	CORP_STRUCTURE = #{corpStructure},
+        </if>
+        <if	test="corpPostcode != null and corpPostcode != ''">
+        	CORP_POSTCODE = #{corpPostcode},
+        </if>
+        <if	test="homeSameRegistered != null">
+        	HOME_SAME_REGISTERED = #{homeSameRegistered},
+        </if>
+        
+        <if	test="reportId != null">
+        	REPORT_ID = #{reportId},
+        </if>
+        
+        <if	test="nfcsId != null">
+        	NFCS_ID = #{nfcsId},
+        </if>
+        
+        <if	test="hzzxId != null">
+        	HZZX_ID = #{hzzxId},
+        </if>
+        
+        <if	test="ifReportId != null">
+        	IF_REPORT_ID = #{ifReportId},
+        </if>
+        <if	test="modifierId != null">
+ 		  MODIFIER_ID = #{modifierId},
+        </if>
+        <if	test="modifier != null and modifier != ''">
+ 		  MODIFIER = #{modifier},
+        </if>
+        <if test="cellPhoneStatus != null and cellPhoneStatus != ''">
+ 		  CELLPHONE_STATUS = #{cellPhoneStatus},
+        </if>
+         <if test="cellPhoneSecStatus != null and cellPhoneSecStatus != ''">
+ 		  CELLPHONE_SEC_STATUS = #{cellPhoneSecStatus},
+        </if>
+ 		  MODIFIED_TIME = NOW()
+		<where>
+		<if	test="id != null">
+			and id = #{id}
+        </if>
+		<if	test="loanBaseId != null">
+			and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+		</where>
+	</update>
+	
+	
+	<update id="updateAll" parameterType="com.ymkj.cms.biz.entity.apply.APPPersonInfoEntity">
+		update 	BMS_APP_PERSON_INFO
+ 			set 	 
+        	ID_ISSUER_ADDRESS = #{idIssuerAddress},
+        	ISSUER_CITY_ID = #{issuerCityId},
+        	ISSUER_ZONE_ID = #{issuerZoneId},
+        	ISSUER_POSTCODE = #{issuerPostcode},
+        	MARITAL_STATUS = #{maritalStatus},
+        	CHILDREN_NUM = #{childrenNum},
+        	QUALIFICATION = #{qualification},
+        	GRADUATION_DATE = #{graduationDate},
+        	HOUSE_OWNERSHIP = #{houseOwnership},
+        	HOUSE_TYPE = #{houseType},
+        	HOUSE_RENT = #{houseRent},
+        	LIQUID_ASSET = #{liquidAsset},
+        	CELLPHONE = #{cellphone},
+        	CELLPHONE_SEC = #{cellphoneSec},
+        	QQ_NUM = #{qqNum},
+        	WECHAT_NUM = #{weChatNum}, 
+        	EMAIL = #{email},
+        	FAMILY_MONTH_PAY = #{familyMonthPay},
+        	HOME_STATE_ID = #{homeStateId},
+        	HOME_CITY_ID = #{homeCityId},
+        	HOME_ZONE_Id = #{homeZoneId}, 
+        	HOME_ADDRESS = #{homeAddress},
+        	HOME_PHONE1 = #{homePhone1},
+        	MONTH_MAX_REPAY = #{monthMaxRepay},
+        	CUS_WORK_TYPE = #{cusWorkType},
+        	CORP_NAME = #{corpName}, 
+        	CORP_PROVINCE_ID = #{corpProvinceId},
+        	CORP_CITY_ID = #{corpCityId},
+        	CORP_ZONE_ID = #{corpZoneId}, 
+        	CORP_PHONE = #{corpPhone},
+        	CORP_PHONE_SEC = #{corpPhoneSec},
+        	CORP_POST = #{corpPost}, 
+        	CORP_STAND_FROM = #{corpStandFrom},
+        	CORP_PAY_WAY = #{corpPayWay},
+        	CORP_DEPAPMENT = #{corpDepapment}, 
+        	OCCUPATION = #{occupation},
+        	MONTH_SALARY = #{monthSalary},
+        	OTHER_INCOME = #{otherIncome}, 
+        	TOTAL_MONTH_SALARY = #{totalMonthSalary},
+        	SETUP_DATE = #{setupDate},
+        	SHARES_SCALE = #{sharesScale}, 
+        	REGISTER_FUNDS = #{registerFunds},
+        	PRI_ENTERPRISE_TYPE = #{priEnterpriseType},
+        	BUSINESS_PLACE = #{businessPlace}, 
+        	MONTH_RENT = #{monthRent},
+        	EMPLOYEE_NUM = #{employeeNum},
+        	ENTERPRISE_RATE = #{enterpriseRate}, 
+        	SHARES_NAME = #{sharesName},
+        	SHARES_ID_NO = #{sharesIdNO},
+        	MONTH_AMT = #{monthAmt},
+        	HOME_POSTCODE = #{homePostcode},
+        	CORP_ADDRESS = #{corpAddress},
+        	ISSUER_STATE = #{issuerState},
+        	ISSUER_CITY = #{issuerCity},
+        	ISSUER_ZONE = #{issuerZone},
+        	HOME_STATE = #{homeState},
+        	HOME_CITY = #{homeCity},
+        	HOME_ZONE = #{homeZone},
+        	CORP_PROVINCE = #{corpProvince},
+        	CORP_CITY = #{corpCity},
+        	CORP_ZONE = #{corpZone},
+        	ISSUER_STATE_ID = #{issuerStateId},
+        	BUSINESS_NET_WORK = #{businessNetWork},
+        	CORP_TYPE = #{corpType},
+        	CORP_STRUCTURE = #{corpStructure},
+        	CORP_POSTCODE = #{corpPostcode},
+        	HOME_SAME_REGISTERED = #{homeSameRegistered},
+        	CELLPHONE_STATUS = #{cellPhoneStatus},
+        	CELLPHONE_SEC_STATUS = #{cellPhoneSecStatus},
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	<update id="updateById" parameterType="com.ymkj.cms.biz.entity.apply.APPPersonInfoEntity">
+		update 	BMS_APP_PERSON_INFO
+ 			set 	 
+ 		<if test="flag=='REP'">
+ 		 REPORT_ID = #{reportId},
+ 		</if>
+        <if test="flag=='NFC'">
+          NFCS_ID = #{nfcsId},
+        </if>
+       <if test="ifReportId != null and ifReportId !=''">
+          IF_REPORT_ID = #{ifReportId},
+        </if>
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = NOW()
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	<select id="findImportLoanInfo"  parameterType="java.util.Map" resultType="com.ymkj.cms.biz.api.vo.response.master.ResBMSLoanImportVO">
+		select m.BATCH_NUM as batchNum,t.LOAN_BASE_ID as loanId,t.CONTRACT_LMT
+		as contractNum,t.lOAN_NO as loanNo,
+		b.APPLY_DATE as applyDate,b.CONTRACT_BRANCH as contractBranch,b.CONTRACT_BRANCH_ID
+		as contractBranchId,
+		t.status as loanStatus,t.RTF_STATE as rtfState,t.RTF_NODE_STATE as
+		rtfNodeState
+		from v_bms_loan t
+		left join BMS_APP_person_info p on t.lOAN_NO=p.LOAN_NO
+		left join bms_loan_base b on b.LOAN_NO=t.lOAN_NO
+		left join BMS_LOAN_BATCHNUM m on m.LOAN_NO=t.lOAN_NO
+		left join bms_loan_contract c on c.LOAN_BASE_ID=b.id
+		<where>
+			<if test="idNum != null">
+				p.ID_NO=#{idNum}
+			</if>
+			<if test="contractNum != null">
+				AND c.CONTRACT_NUM=#{contractNum}
+			</if>
+			<if test="channelCode != null">
+				AND t.CHANNEL_CD =#{channelCode}
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	<update id="updateUserPhone" parameterType="com.ymkj.cms.biz.entity.apply.APPPersonInfoEntity">
+		update 	BMS_APP_PERSON_INFO
+ 			set 	 
+        	CELLPHONE = #{cellphone},
+        	CELLPHONE_SEC = #{cellphoneSec},
+        	CORP_PHONE = #{corpPhone},
+        	CORP_PHONE_SEC = #{corpPhoneSec}
+		<where>
+			LOAN_NO = #{loanNo}
+		</where>
+	</update>
+	
+	<select id="additionRecords" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+		  LB.LOAN_NO,
+		  LB.NAME,
+		  BP.CELLPHONE,
+		  BP.CELLPHONE_SEC,
+		  BP.CELLPHONE_STATUS,
+		  BP.CELLPHONE_SEC_STATUS,
+		  BP.CELLPHONE_TIME,
+		  BP.CELLPHONE_SEC_TIME
+		FROM
+		  BMS_LOAN_BASE LB
+		  LEFT JOIN BMS_APP_PERSON_INFO BP
+		    ON LB.ID = BP.LOAN_BASE_ID
+		WHERE LB.STATUS IN ('APPLY ', 'PASS')
+		  AND LB.APP_INPUT_FLAG = 'APP_INPUT'
+		  and lb.branch_manager_code = #{branchManagerCode}
+		 <if test="userName != '' and  userName != null ">
+		 	   AND LB.NAME = #{userName}
+		 </if>
+    </select>
+    
+    <select id="queryPhoneStatus" parameterType="java.util.Map" resultType="java.util.Map">
+		    	SELECT
+		  BP.CELLPHONE,
+		  BP.CELLPHONE_SEC,
+		  BP.CELLPHONE_STATUS,
+		  BP.CELLPHONE_SEC_STATUS,
+		  BP.CELLPHONE_TIME,
+		  BP.CELLPHONE_SEC_TIME
+		FROM BMS_APP_PERSON_INFO BP
+		WHERE BP.LOAN_NO=#{appNo}
+    </select>
+
+    <update id="updatePhoneCellStatus" parameterType="java.util.Map" >
+		update 	BMS_APP_PERSON_INFO
+ 			set 	
+         <if test="cellPhoneTime != null and cellPhoneTime != ''">
+        	CELLPHONE_TIME = #{cellPhoneTime},CELLPHONE_STATUS = #{cellPhoneStatus}
+        </if>
+        
+         <if test="cellPhoneSecTime != null and cellPhoneSecTime != ''">
+        	CELLPHONE_SEC_TIME = #{cellPhoneSecTime},CELLPHONE_SEC_STATUS = #{cellPhoneSecStatus}
+        </if>
+		<where>
+			LOAN_NO = #{loanNo}
+		</where>
+	</update>
+</mapper> 

@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.sign.impl.ContractLoanDaoImpl">
+
+<sql id="table">BMS_CONTRACT_LOAN</sql>
+<resultMap id="contractLoanMap" type="com.ymkj.cms.biz.entity.sign.BMSContractLoan">
+	<result property="loanId" column="LOAN_ID" />
+	<result property="loanBaseId" column="LOAN_BASE_ID" />
+	<result property="pactMoney" column="PACT_MONEY" />
+	<result property="thirdPartyId" column="THIRD_PARTYID" />
+	<result property="managerRateForPartyCFinance" column="MANAGER_RATEFINANCE" />
+	<result property="managerRateForPartyCTechnology" column="MANAGER_RATETECHNOLOGY" />
+	<result property="rateEM" column="RATEEM" />
+	<result property="time" column="TIME" />
+	<result property="MonthlyRepayment" column="MONTHLY_REPAYMENT" />
+	<result property="repaymentWay" column="REPAY_MENTWAY" />
+	<result property="huaAoThirdPartyId" column="HUAAO_THIRDPARTYID" />
+	<result property="firstLegalRepresentative" column="FIRST_LEGAL_REPRESENTATIVE" />
+	<result property="firstAddress" column="FIRST_ADDRESS" />
+	<result property="firstPostcode" column="FIRST_POSTCODE" />
+	<result property="thirdLegalRepresentative" column="THIRD_LEGAL_REPRESENTATIV" />
+	<result property="thirdAddress" column="THIRD_ADDRESS" />
+	<result property="thirdPostcode" column="THIRD_POSTCODE" />
+	<result property="mphone" column="M_PHONE" />
+	<result property="peiOuName" column="PEI_OUNAME" />
+	<result property="repaymentTotal" column="REPAYMENT_TOTAL" />
+	<result property="loanType" column="LOAN_TYPE" />
+	<result property="corpName" column="CORP_NAME" />
+	<result property="corpBankName" column="CORP_BANKNAME" />
+	<result property="corpBankAccount" column="CORP_BANKACCOUNT" />
+	<result property="grantMoney" column="GRANT_MONEY" />
+	<result property="accrualem" column="ACCRUALEM" />
+	<result property="rateey" column="RATEEY" />
+	<result property="rate" column="RATE" />
+</resultMap>
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.sign.BMSContractLoan"  keyProperty="id" useGeneratedKeys="true">
+		insert into
+		 <include refid="table" />
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			
+			<if test="loanBaseId != null and loanBaseId != ''">
+					 LOAN_BASE_ID,  
+			</if>
+			<if test="loanId != null and loanId != ''">
+				 LOAN_ID,  
+			</if>
+				
+			<if test="pactMoney != null and pactMoney != ''">
+				 PACT_MONEY,  
+				</if>
+				<if test="thirdPartyId != null and thirdPartyId != ''">
+	  			THIRD_PARTYID,
+	  			 </if>
+	  			 <if test="managerRateForPartyCFinance != null and managerRateForPartyCFinance != ''">
+		   		MANAGER_RATEFINANCE,
+		   		</if>
+		   		<if test="managerRateForPartyCTechnology != null and managerRateForPartyCTechnology != ''">
+	  			 MANAGER_RATETECHNOLOGY,
+	  			</if>
+	  			<if test="rateEM != null and rateEM != ''">
+				RATEEM,
+				</if>
+				<if test="time != null and time != ''">
+				TIME,
+				 </if>
+				 <if test="MonthlyRepayment != null and MonthlyRepayment != ''">
+				MONTHLY_REPAYMENT,
+				</if>
+				<if test="repaymentWay != null and repaymentWay != ''">
+		   		REPAY_MENTWAY,
+		   		</if>
+		   		<if test="huaAoThirdPartyId != null and huaAoThirdPartyId != ''">
+		   		HUAAO_THIRDPARTYID,
+		   		</if>
+				<if test="firstLegalRepresentative != null and firstLegalRepresentative != ''">
+			    FIRST_LEGAL_REPRESENTATIVE,
+			    </if>
+			    <if test="firstAddress != null and firstAddress != ''">
+	  			FIRST_ADDRESS,
+	  			 </if>
+	  			 <if test="firstPostcode != null and firstPostcode != ''">
+	   			FIRST_POSTCODE,
+	   			</if>
+	  			<if test="thirdLegalRepresentative != null and thirdLegalRepresentative != ''">
+	  			THIRD_LEGAL_REPRESENTATIV,
+	  			</if>
+	  			<if test="thirdAddress != null and thirdAddress != ''">
+	   			THIRD_ADDRESS,
+		   		</if>
+		   		<if test="thirdPostcode != null and thirdPostcode != ''">
+		   		THIRD_POSTCODE,
+		   		</if>
+				<if test="mphone != null and mphone != ''">
+			    M_PHONE,
+			    </if>
+			    <if test="peiOuName != null and peiOuName != ''">
+				PEI_OUNAME,
+				 </if>
+			   <if test="repaymentTotal != null and repaymentTotal != ''">
+			    REPAYMENT_TOTAL,
+			    </if>
+			    <if test="loanType != null and loanType != ''">
+			    LOAN_TYPE,
+			    </if>
+			   <if test="corpName != null and corpName != ''">
+			    CORP_NAME,
+			    </if>
+			    <if test="corpBankName != null and corpBankName != ''">
+			    CORP_BANKNAME,
+			    </if>
+			    <if test="corpBankAccount != null and corpBankAccount != ''">
+			    CORP_BANKACCOUNT,
+			    </if>
+			    <if test="grantMoney != null and grantMoney != ''">   
+			   	GRANT_MONEY,
+			    </if>
+			    <if test="accrualem != null and accrualem != ''">
+				ACCRUALEM,
+				</if>
+				<if test="rateey != null and rateey != ''">
+				RATEEY ,
+				</if>
+				<if test="rate != null and rate != ''">
+				RATE,
+				</if>
+			<if test="creator != null and creator != ''">
+			CREATOR,
+			 </if> <if test="creatorId != null">
+			CREATOR_ID,
+			</if> 
+			<if test="creatorDate != null">
+			CREATOR_DATE,
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED,
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID,
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE,
+			</if>
+			IS_DELETED,
+			VERSION
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		
+			<if test="loanBaseId != null and loanBaseId != ''">
+				 #{loanBaseId},  
+				</if>
+				<if test="loanId != null and loanId != ''">
+				 #{loanId},  
+				</if>
+				<if test="pactMoney != null and pactMoney != ''">
+				 #{pactMoney},  
+				</if>
+				<if test="thirdPartyId != null and thirdPartyId != ''">
+	  			 #{thirdPartyId},
+	  			 </if>
+	  			 <if test="managerRateForPartyCFinance != null and managerRateForPartyCFinance != ''">
+		   		#{managerRateForPartyCFinance},
+		   		</if>
+		   		<if test="managerRateForPartyCTechnology != null and managerRateForPartyCTechnology != ''">
+	  			 #{managerRateForPartyCTechnology},
+	  			</if>
+	  			<if test="rateEM != null and rateEM != ''">
+				#{rateEM},
+				</if>
+				<if test="time != null and time != ''">
+				#{time},
+				 </if>
+				 <if test="MonthlyRepayment != null and MonthlyRepayment != ''">
+				 #{MonthlyRepayment},
+				</if>
+				<if test="repaymentWay != null and repaymentWay != ''">
+		   		#{repaymentWay},
+		   		</if>
+		   		<if test="huaAoThirdPartyId != null and huaAoThirdPartyId != ''">
+		   		#{huaAoThirdPartyId},
+		   		</if>
+				<if test="firstLegalRepresentative != null and firstLegalRepresentative != ''">
+			    #{firstLegalRepresentative},
+			    </if>
+			    <if test="firstAddress != null and firstAddress != ''">
+	  			#{firstAddress},
+	  			 </if>
+	  			 <if test="firstPostcode != null and firstPostcode != ''">
+	   			#{firstPostcode},
+	   			</if>
+	  			<if test="thirdLegalRepresentative != null and thirdLegalRepresentative != ''">
+	  			#{thirdLegalRepresentative},
+	  			</if>
+	  			<if test="thirdAddress != null and thirdAddress != ''">
+	   			#{thirdAddress},
+		   		</if>
+		   		<if test="thirdPostcode != null and thirdPostcode != ''">
+		   		#{thirdPostcode},
+		   		</if>
+				<if test="mphone != null and mphone != ''">
+			    #{mphone},
+			    </if>
+			    <if test="peiOuName != null and peiOuName != ''">
+				#{peiOuName},
+				 </if>
+			   <if test="repaymentTotal != null and repaymentTotal != ''">
+			    #{repaymentTotal},
+			    </if>
+			    <if test="loanType != null and loanType != ''">
+			    #{loanType},
+			    </if>
+			   <if test="corpName != null and corpName != ''">
+			    #{corpName},
+			    </if>
+			    <if test="corpBankName != null and corpBankName != ''">
+			    #{corpBankName},
+			    </if>
+			    <if test="corpBankAccount != null and corpBankAccount != ''">
+			    #{corpBankAccount},
+			    </if>
+			    <if test="grantMoney != null and grantMoney != ''">   
+			    #{grantMoney},
+			    </if>
+			    <if test="accrualem != null and accrualem != ''">
+				#{accrualem},
+				</if>
+				<if test="rateey != null and rateey != ''">
+				#{rateey},
+				</if>
+				<if test="rate != null and rate != ''">
+				#{rate},
+				</if>
+				 <if test="creator != null and creator != ''">
+				  #{creator}, 
+				  </if>
+				 <if test="creatorId != null"> 
+				 #{creatorId}, 
+				 </if> 
+				<if test="creatorDate != null">
+				 #{creatorDate}, 
+				 </if>
+				<if test="modified != null and modified != ''">
+					#{modified},
+				</if>
+				<if test="modifiedId != null">
+					#{modifiedId},
+				</if>
+				<if test="modifiedDate != null">
+					#{modifiedDate},
+				</if>
+					0,
+					1
+			</trim>
+	</insert>
+
+	<select id="selectConutByLoanBaseId" resultType="int"
+		parameterType="long">
+		select
+		count(1)
+		from <include refid="table" />
+		where LOAN_BASE_ID = #{loanBaseId} and IS_DELETED=0
+	</select>
+	
+	<update id="deleteByLoanBaseId" parameterType="long">
+		update  <include refid="table" />
+		 set IS_DELETED = 1
+		where LOAN_BASE_ID = #{loanBaseId} 
+		and IS_DELETED=0;
+	</update> 
+	<select id="listBy" parameterType="java.util.Map" resultMap="contractLoanMap">
+		select
+		  LOAN_ID,
+		  LOAN_BASE_ID,
+		  PACT_MONEY,
+		  THIRD_PARTYID,
+		  MANAGER_RATEFINANCE,
+		  MANAGER_RATETECHNOLOGY,
+		  RATEEM,
+		  TIME,
+		  MONTHLY_REPAYMENT,
+		  REPAY_MENTWAY,
+		  HUAAO_THIRDPARTYID,
+		  FIRST_LEGAL_REPRESENTATIVE,
+		  FIRST_ADDRESS,
+		  FIRST_POSTCODE,
+		  THIRD_LEGAL_REPRESENTATIV,
+		  THIRD_ADDRESS,
+		  THIRD_POSTCODE,
+		  M_PHONE,
+		  PEI_OUNAME,
+		  REPAYMENT_TOTAL,
+		  LOAN_TYPE,
+		  CORP_NAME,
+		  CORP_BANKNAME,
+		  CORP_BANKACCOUNT,
+		  GRANT_MONEY,
+		  ACCRUALEM,
+		  RATEEY,
+		  RATE 
+		from <include refid="table" />
+		where  IS_DELETED=0
+		<if test="loanBaseId != null and loanBaseId != ''">
+			and LOAN_BASE_ID = #{loanBaseId} 
+		</if>
+	</select>
+	
+
+</mapper> 

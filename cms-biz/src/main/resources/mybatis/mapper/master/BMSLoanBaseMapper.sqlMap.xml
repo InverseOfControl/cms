@@ -1,0 +1,865 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSLoanBaseEntityDaoImpl">
+	<resultMap id="BMSLoanBaseMap" type="com.ymkj.cms.biz.entity.master.BMSLoanBase">
+		<!-- 申请信息表 -->
+		<!-- 主键Id -->
+		<id property="id" column="ID" />
+		<!-- 借款人编号 -->
+		<result property="personId" column="PERSON_ID" />
+		<!-- 借款编号 -->
+		<result property="loanNo" column="LOAN_NO" />
+		<!-- 申请件编号 -->
+		<result property="appNo" column="APP_NO" />
+		<!-- 申请件状态 -->
+		<result property="status" column="STATUS" />
+		<!-- 流程状态 -->
+		<result property="rtfState" column="RTF_STATE" />
+		<!-- 流程节点状态 -->
+		<result property="rtfNodeState" column="RTF_NODE_STATE" />
+		<!-- 签约时间 -->
+		<result property="signDate" column="SIGN_DATE" />
+		<!-- 客户经理code -->
+		<result property="branchManagerCode" column="BRANCH_MANAGER_CODE" />
+		<!-- 客户经理名字 -->
+		<result property="branchManagerName" column="BRANCH_MANAGER_NAME" />
+		<!-- 客服code -->
+		<result property="serviceCode" column="SERVICE_CODE" />
+		<!-- 客服姓名 -->
+		<result property="serviceName" column="SERVICE_NAME" />
+		<!-- 备注 -->
+		<result property="remark" column="REMARK" />
+		<!-- 复核人员code -->
+		<result property="reviewCode" column="REVIEW_CODE" />
+		<!-- 复核人员名字 -->
+		<result property="reviewName" column="REVIEW_NAME" />
+		<!-- 签约客服code -->
+		<result property="signCode" column="SIGN_CODE" />
+		<!-- 签约客服名字 -->
+		<result property="signName" column="SIGN_NAME" />
+		<!-- 签约营业部Id -->
+		<result property="contractBranchId" column="CONTRACT_BRANCH_ID" />
+		<!-- 签约营业部 -->
+		<result property="contractBranch" column="CONTRACT_BRANCH" />
+		<!-- 放款营业部Id -->
+		<result property="loanBranchId" column="LOAN_BRANCH_ID" />
+		<!-- 放款营业部 -->
+		<result property="loanBranch" column="LOAN_BRANCH" />
+		<!-- 管理营业部Id -->
+		<result property="manageBranchId" column="MANAGE_BRANCH_ID" />
+		<!-- 管理营业部 -->
+		<result property="manageBranch" column="MANAGE_BRANCH" />
+		<!-- 管理营业部变更时间 -->
+		<result property="manageUpdateDate" column="MANAGE_UPDATE_DATE" />
+		<!-- 业务组Id -->
+		<result property="groupForDirectorId" column="GROUP_FOR_DIRECTOR_ID" />
+		<!-- 业务组 -->
+		<result property="groupForDirector" column="GROUP_FOR_DIRECTOR" />
+		<!-- 业务主任 -->
+		<result property="director" column="DIRECTOR" />
+		<!-- 放款日期 -->
+		<result property="loanDate" column="LOAN_DATE" />
+		<!-- 进件门店Id -->
+		<result property="owningBranchId" column="OWNING_BRANCH_ID" />
+		<!-- 进件门店 -->
+		<result property="owningBranch" column="OWNING_BRANCH" />
+		<!-- 处理类型 -->
+		<result property="handleType" column="HANDLE_TYPE" />
+		<!-- 进件门店属性 -->
+		<result property="owningBranchAttribute" column="OWNING_BRANCH_ATTRIBUTE" />
+		<!-- 申请类型 -->
+		<result property="applyType" column="APPLY_TYPE" />
+		<!-- 申请件渠道标识 -->
+		<result property="applyInputFlag" column="APPLY_INPUT_FLAG" />
+		<!-- app进件标识 -->
+		<result property="appInputFlag" column="APP_INPUT_FLAG" />
+		<!-- 债券Id -->
+		<result property="loanId" column="LOAN_ID" />
+		<!-- 身份证号 -->
+		<result property="idNo" column="ID_NO" />
+		<!-- 姓名 -->
+		<result property="name" column="NAME" />
+		<!-- APP进件申请时间 -->
+		<result property="appApplyDate" column="APP_APPLY_DATE" />
+		<!-- 申请时间 -->
+		<result property="applyDate" column="APPLY_DATE" />
+		<!-- 创建用户 -->
+		<result property="creator" column="CREATOR" />
+		<!-- 创建时间 -->
+		<result property="createdTime" column="CREATED_TIME" />
+		<!-- 创建用户Id -->
+		<result property="creatorId" column="CREATOR_ID" />
+		<!-- 修改用户 -->
+		<result property="modifier" column="MODIFIER" />
+		<!-- 修改时间 -->
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<!-- 修改用户Id -->
+		<result property="modifierId" column="MODIFIER_ID" />
+		<!-- 版本号 -->
+		<result property="version" column="VERSION" />
+		<!-- 是否删除 -->
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="debtDio" column="DEBT_RADIO" />
+		<!-- 产品code -->
+		<result property="productCode" column="PRODUCT_CD" />
+		
+		<!-- 签约结束时间  -->
+		<result property="signEndDate" column="SIGN_END_DATE" />
+		<!-- 合同确认时间-->
+		<result property="confirmDate" column="CONFIRM_DATE" />
+		<!-- 合同确认结束时间 -->
+		<result property="confirmEndDate" column="CONFIRM_END_DATE" />
+		<!-- 财务审核时间 -->
+		<result property="financeAuditTime" column="FINANCE_AUDIT_TIME" />
+		<!-- 复核时间 -->
+		<result property="auditDate" column="AUDIT_DATE" />
+		<!-- 锁定标的 -->
+		<result property="lockTarget" column="LOCK_TARGET" />
+		<!-- 审 是否新生件 0否 1是 -->
+		<result property="ifNewLoanNo" column="IF_NEW_LOAN_NO" />
+		
+		<!-- 复核人员名字 -->
+		<result property="reviewName" column="REVIEW_NAME" />
+		<!-- 处理类型code -->
+		<result property="handleType" column="HANDLE_TYPE" />
+		<!-- 经理code -->
+		<result property="managerCode" column="MANAGER_CODE" />
+		<!-- 经理名称 -->
+		<result property="managerName" column="MANAGER_NAME" />
+		<!-- 借款前台标识 -->
+		<result property="zsIfNewLoanNo" column="ZS_IF_NEW_LOAN_NO" />
+		<!-- 签约客服code -->
+		<result property="enterBranchId" column="ENTER_BRANCH_ID" />
+		<!-- 签约客服code -->
+		<result property="enterBranch" column="ENTER_BRANCH" />
+		<!-- 签约客服code -->
+		<result property="enterBranchAttribute" column="ENTER_BRANCH_ATTRIBUTE" />
+		<!-- 借款前台标识 -->
+		<result property="logoFlag" column="LOGO_FLAG" />
+		<!-- 是否优惠费率用户 -->
+		<result property="ifPreferentialUser" column="IF_PREFERENTIAL_USER" />     
+		 <!-- 是否需要补件：0:不需要，1：需要，2：已补件 -->                                                      
+		<result property="ifNeedPatchbolt" column="IF_NEED_PATCHBOLT" />     
+		  <!--补件时间 -->                    
+		<result property="patchboltTime" column="PATCHBOLT_TIME" />         
+	</resultMap> 
+	
+	<resultMap id="ResBMSLoanBaseVOMap" type="com.ymkj.cms.biz.api.vo.response.master.ResBMSLoanBaseVO">
+		<!-- 主键Id -->
+		<id property="id" column="ID" />
+		<!-- 借款编号 -->
+		<result property="loanNo" column="LOAN_NO" />
+		<!-- 流程状态 -->
+		<result property="rtfState" column="RTF_STATE" />
+		<!-- 流程节点状态 -->
+		<result property="rtfNodeState" column="RTF_NODE_STATE" />
+		<!-- 进件门店Id -->
+		<result property="owningBranchId" column="OWNING_BRANCH_ID" />
+		<!-- 身份证号 -->
+		<result property="idNo" column="ID_NO" />
+		<!-- 姓名 -->
+		<result property="name" column="NAME" />
+		<!-- 产品code -->
+		<result property="productCode" column="PRODUCT_CD" />
+		<!-- 渠道Code -->
+		<result property="channelCd" column="CONTRACT_SOURCE" />
+	</resultMap> 
+	    
+	    
+	
+    
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSLoanBaseMap">
+		SELECT
+		b.ID,
+		b.PERSON_ID,
+		b.LOAN_NO,
+		b.APP_NO,
+		b.STATUS,
+		b.RTF_STATE,
+		b.RTF_NODE_STATE,
+		b.SIGN_DATE,
+		b.BRANCH_MANAGER_CODE,
+		b.BRANCH_MANAGER_NAME,
+		b.SERVICE_CODE,
+		b.SERVICE_NAME,
+		b.REMARK,
+		b.REVIEW_CODE,
+		b.REVIEW_NAME,
+		b.SIGN_CODE,
+		b.SIGN_NAME,
+		b.CONTRACT_BRANCH_ID,
+		b.CONTRACT_BRANCH,
+		b.LOAN_BRANCH_ID,
+		b.LOAN_BRANCH,
+		b.MANAGE_BRANCH_ID,
+		b.MANAGE_BRANCH,
+		b.MANAGE_UPDATE_DATE,
+		b.GROUP_FOR_DIRECTOR_ID,
+		b.GROUP_FOR_DIRECTOR,
+		b.DIRECTOR,
+		b.LOAN_DATE,
+		b.OWNING_BRANCH_ID,
+		b.OWNING_BRANCH,
+		b.HANDLE_TYPE,
+		b.OWNING_BRANCH_ATTRIBUTE,
+		b.APPLY_TYPE,
+		b.APPLY_INPUT_FLAG,
+		b.APP_INPUT_FLAG,
+		b.LOAN_ID,
+		SUBSTRING(b.ID_NO,-4) ID_NO,
+		b.NAME,
+		b.APP_APPLY_DATE,
+		b.APPLY_DATE,
+		b.SIGN_END_DATE,<!-- datetime NULL签约结束时间 -->
+		b.CONFIRM_DATE,   <!-- datetime NULL合同确认时间 -->
+		b.CONFIRM_END_DATE,<!-- datetime NULL合同确认结束时间 -->
+		b.FINANCE_AUDIT_TIME,<!-- datetime NULL财务审核时间 -->
+		b.AUDIT_DATE,
+		b.REVIEW_NAME,
+		b.HANDLE_TYPE,
+		b.MANAGER_CODE,
+		b.MANAGER_NAME,
+		b.LOCK_TARGET,
+		b.IF_NEW_LOAN_NO,
+		b.ZS_IF_NEW_LOAN_NO,
+		b.ENTER_BRANCH_ID,
+		b.ENTER_BRANCH,
+		b.ENTER_BRANCH_ATTRIBUTE,
+		b.logo_flag,
+		b.IF_PREFERENTIAL_USER,
+		b.IF_NEED_PATCHBOLT,
+		b.PATCHBOLT_TIME,
+		b.CREATOR,
+		b.CREATED_TIME,
+		b.CREATOR_ID,
+		b.MODIFIER,
+		b.MODIFIED_TIME,
+		b.MODIFIER_ID,
+		b.VERSION,
+		b.IS_DELETE
+		FROM bms_loan_base b
+		where  b.IS_DELETE = 0 
+		<if test="id != null and id != 0">
+			and b.id = #{id}
+		</if>
+		<if test="name != null and name != ''">
+        	and  b.NAME = #{name}
+        	
+		</if>
+		<if test="idNo != null and idNo != ''">
+        
+        	and  b.ID_NO =#{idNo}
+		</if>
+		<if test="appNo != null and appNo != ''">
+        
+        	and  b.APP_NO =#{appNo}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        
+        	and  b.LOAN_NO =#{loanNo}
+		</if>
+		<if test="version != null and version !=''">
+			and b.VERSION = #{version}
+		</if>
+		<if test="startDate !=null and startDate!=''">
+		<![CDATA[ and b.CREATED_TIME>= CONCAT(#{startDate},' 00:00:00')]]>
+		</if>
+		<if test="endDate!=null and endDate!=''">
+		<![CDATA[ and b.CREATED_TIME<= CONCAT(#{endDate},' 23:59:59')]]>
+		</if>
+		<if test="startVersion !=null and startVersion!=''">
+		<![CDATA[ and b.VERSION>=#{startVersion}]]>
+		</if>
+		<if test="endVersion !=null and endVersion!=''">
+		<![CDATA[ and b.VERSION<=#{endVersion}]]>
+		</if>
+		<if test="status != null and status.length > 0">
+        and	b.STATUS in 
+        <foreach collection="status" item="statu" index="index" open="(" separator="," close=")">
+        	#{statu}
+		</foreach>
+		</if>
+		<if test="owningBranch !=null and owningBranch!=''">
+		 	and b.OWNING_BRANCH = #{owningBranch}
+		</if>
+		<if test="contractBranch!=null and contractBranch!=''">
+		   and b.CONTRACT_BRANCH=#{contractBranch}
+		</if>
+		<if test="serviceCode!=null and serviceCode!=''">
+		   and b.SERVICE_CODE=#{serviceCode}
+		</if>
+		<if test="serviceName!=null and serviceName!='' ">
+		   and b.SERVICE_NAME=#{serviceName}
+		</if>
+		<if test="appInputFlag==1 ">
+		    and b.APP_INPUT_FLAG='app_input'
+		</if>
+		<if test="appInputFlag==2">
+		    and b.APP_INPUT_FLAG is null
+		</if>
+		<![CDATA[ order by b.CREATED_TIME desc]]>
+		
+	</select>
+	
+	
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1)
+		FROM bms_loan_base b
+		
+		where b.IS_DELETE = 0
+		<if test="id != null and id != 0">
+			and b.id = #{id}
+		</if>
+		<if test="name != null and name != ''">
+        	and  b.NAME = #{name}
+        	
+		</if>
+		<if test="idNo != null and idNo != ''">
+        
+        	and  b.ID_NO =#{idNo}
+		</if>
+		<if test="appNo != null and appNo != ''">
+        
+        	and  b.APP_NO =#{appNo}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        
+        	and  b.LOAN_NO =#{loanNo}
+		</if>
+		<if test="version != null and version !=''">
+			and b.VERSION = #{version}
+		</if>
+		<if test="startDate !=null and startDate!=''">
+		<![CDATA[ and b.CREATED_TIME>= CONCAT(#{startDate},' 00:00:00')]]>
+		</if>
+		
+		<if test="endDate!=null and endDate!=''">
+		<![CDATA[ and b.CREATED_TIME<= CONCAT(#{endDate},' 23:59:59')]]>
+		</if>
+		<if test="startVersion !=null and startVersion!=''">
+		<![CDATA[ and b.VERSION>=#{startVersion}]]>
+		</if>
+		<if test="endVersion !=null and endVersion!=''">
+		<![CDATA[ and b.VERSION<=#{endVersion}]]>
+		</if>
+		<if test="owningBranch !=null and owningBranch!=''">
+		 	and b.OWNING_BRANCH = #{owningBranch}
+		</if>
+		<if test="contractBranch!=null and contractBranch!=''">
+		   and b.CONTRACT_BRANCH=#{contractBranch}
+		</if>
+		<if test="serviceCode!=null and serviceCode!=''">
+		   and b.SERVICE_CODE=#{serviceCode}
+		</if>
+		<if test="serviceName!=null and serviceName!='' ">
+		   and b.SERVICE_NAME=#{serviceName}
+		</if>
+		<if test="appInputFlag==1 ">
+		    and b.APP_INPUT_FLAG='app_input'
+		</if>
+		<if test="appInputFlag==2">
+		    and b.APP_INPUT_FLAG is null
+		</if>
+		<if test="status != null and status.length > 0">
+        and	b.STATUS in 
+        <foreach collection="status" item="statu" index="index" open="(" separator="," close=")">
+        	#{statu}
+		</foreach>
+		</if>
+	<!-- <if test="status!=null and status!=''">
+		   and b.STATUS IN (#{status})
+		</if> -->
+	</select>
+    
+    <select id="listBy" parameterType="java.util.Map" resultMap="BMSLoanBaseMap">
+ 		SELECT
+		b.ID,
+		b.PERSON_ID,
+		b.LOAN_NO,
+		b.APP_NO,
+		b.STATUS,
+		b.RTF_STATE,
+		b.RTF_NODE_STATE,
+		b.SIGN_DATE,
+		b.BRANCH_MANAGER_CODE,
+		b.BRANCH_MANAGER_NAME,
+		b.SERVICE_CODE,
+		b.SERVICE_NAME,
+		b.REMARK,
+		b.REVIEW_CODE,
+		b.REVIEW_NAME,
+		b.SIGN_CODE,
+		b.SIGN_NAME,
+		b.CONTRACT_BRANCH_ID,
+		b.CONTRACT_BRANCH,
+		b.LOAN_BRANCH_ID,
+		b.LOAN_BRANCH,
+		b.MANAGE_BRANCH_ID,
+		b.MANAGE_BRANCH,
+		b.MANAGE_UPDATE_DATE,
+		b.GROUP_FOR_DIRECTOR_ID,
+		b.GROUP_FOR_DIRECTOR,
+		b.DIRECTOR,
+		b.LOAN_DATE,
+		b.OWNING_BRANCH_ID,
+		b.OWNING_BRANCH,
+		b.HANDLE_TYPE,
+		b.OWNING_BRANCH_ATTRIBUTE,
+		b.APPLY_TYPE,
+		b.APPLY_INPUT_FLAG,
+		b.APP_INPUT_FLAG,
+		b.LOAN_ID,
+		b.ID_NO,
+		b.NAME,
+		b.APP_APPLY_DATE,
+		b.APPLY_DATE,
+		b.CREATOR,
+		b.CREATED_TIME,
+		b.CREATOR_ID,
+		b.MODIFIER,
+		b.MODIFIED_TIME,
+		b.MODIFIER_ID,
+		b.VERSION,
+		b.IS_DELETE,
+  		blp.PRODUCT_CD
+		FROM bms_loan_base b
+		INNER JOIN bms_app_person_info bapi ON bapi.LOAN_NO = b.LOAN_NO 
+  		INNER JOIN bms_loan_product blp ON blp.loan_no = b.LOAN_NO 
+		LEFT JOIN bms_loan_audit bla ON b.LOAN_NO = bla.LOAN_NO
+	    LEFT JOIN bms_loan_ext ble ON b.LOAN_NO = ble.LOAN_NO
+	    LEFT JOIN uflo_task ut ON b.ID = ut.BUSINESS_ID_
+		WHERE b.IS_DELETE = 0 
+		  AND bapi.IS_DELETE = 0 
+		  AND blp.IS_DELETE = 0 
+		<if test="id != null and id != 0">
+			and b.id = #{id}
+		</if>
+		<if test="name != null and name != ''">
+        	and  b.NAME = #{name}
+        	
+		</if>
+		<if test="idNo != null and idNo != ''">
+        
+        	and  b.ID_NO =#{idNo}
+		</if>
+		<if test="appNo != null and appNo != ''">
+        
+        	and  b.APP_NO =#{appNo}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        
+        	and  b.LOAN_NO =#{loanNo}
+		</if>
+		<if test="version != null and version !=''">
+			and b.VERSION = #{version}
+		</if>
+		<if test="rtfNodeState != null and rtfNodeState != ''">
+        	AND	b.RTF_NODE_STATE =#{rtfNodeState}
+		</if>
+		<if test="taskName != null and taskName != ''">
+        	AND	ut.TASK_NAME_ =#{taskName}
+		</if>
+		<if test="channelList!=null and channelList.size>0">
+			AND blp.CONTRACT_SOURCE IN
+			<foreach collection="channelList" item="channelItem" open="(" close=")" separator=",">
+				#{channelItem}
+			</foreach>
+		</if>
+		<if test="logoFlag != null">
+			and b.logo_flag = #{logoFlag}
+		</if>
+		<if test="appInputFlag != null and appInputFlag !=''">
+			and b.APP_INPUT_FLAG = #{appInputFlag}
+		</if>
+		<if test="appInputFlagFalse != null and appInputFlagFalse !=''">
+			<![CDATA[ and (b.APP_INPUT_FLAG <> #{appInputFlagFalse} OR b.APP_INPUT_FLAG IS NULL) ]]>
+		</if>
+		<if test="auditEndTimeFalse != null and auditEndTimeFalse ==0">
+			<![CDATA[ AND ble.AUDIT_END_TIME IS NULL ]]>
+		</if>
+		<if test="auditCommitFalse != null and auditCommitFalse ==0">
+			<![CDATA[ AND bla.LOAN_NO IS NULL ]]>
+		</if>
+		<if test="creditReportFalse != null">
+			<![CDATA[ AND (bapi.REPORT_ID < #{creditReportFalse} OR bapi.REPORT_ID IS NULL) ]]>
+		</if>
+		<!-- 当前时间 — APP提交至录入修改的时间    跨度达到  n 天 -->
+		<if test="appApplydateDiff != null">
+			and DATEDIFF(NOW(),b.APP_APPLY_DATE)>= #{appApplydateDiff}
+		</if>
+		<!-- 当前时间 — 申请录入时间    跨度达到  n 天 -->
+		<if test="createTimedateDiff != null">
+			and DATEDIFF(NOW(),b.CREATED_TIME)>= #{createTimedateDiff}
+		</if>
+		<!-- 需要要显示的借款环节节点状态集合 -->
+		<if test="rtfNodeStateList!=null and rtfNodeStateList.size>0">
+			AND b.RTF_NODE_STATE IN
+			<foreach collection="rtfNodeStateList" item="rtfNodeStateItem" open="(" close=")" separator=",">
+				#{rtfNodeStateItem}
+			</foreach>
+		</if>
+		<!-- 需要要显示的联合状态   status+rtfState+rtfNodeState集合 -->
+		<if test="concatRtfStateList!=null and concatRtfStateList.size>0">
+			AND CONCAT_WS('_',b.STATUS,b.RTF_STATE,b.RTF_NODE_STATE) IN
+			<foreach collection="concatRtfStateList" item="concatRtfStateItem" open="(" close=")" separator=",">
+				#{concatRtfStateItem}
+			</foreach>
+		</if>
+		<!-- 需要要剔除的借款状态集合   联合状态   rtfNodeState+check集合 -->
+		<if test="concatRtfNodeStateNoCheckList!=null and concatRtfNodeStateNoCheckList.size>0">
+			AND CONCAT_WS('_',b.RTF_NODE_STATE,bla.CHECK_NODE_STATE) NOT IN
+			<foreach collection="concatRtfNodeStateNoCheckList" item="concatRtfNodeStateNoCheckItem" open="(" close=")" separator=",">
+				#{concatRtfNodeStateNoCheckItem}
+			</foreach>
+		</if>
+		<![CDATA[ order by b.CREATED_TIME desc]]>
+		<if test="limitMin != null and limitMax != null">
+			LIMIT #{limitMin},#{limitMax}
+		</if>
+    </select>
+    <select id="findBYLoanNo" parameterType="java.lang.String" resultMap="BMSLoanBaseMap">
+	SELECT 
+	  bp.DEBT_RADIO as debtDio,
+	  blb.id_no as idNo
+	  FROM bms_loan_base blb INNER JOIN
+	bms_loan_product blp ON blp.loan_no=blb.loan_no
+	INNER JOIN bms_product bp ON bp.code=blp.product_CD
+
+	WHERE blb.LOAN_NO=#{loanNo}
+	
+	</select>
+	
+	  <select id="findLoanBaseCount" parameterType="java.util.Map" resultType="int">
+	 		SELECT
+			count(1)
+			FROM bms_loan_base b
+			INNER JOIN bms_app_person_info bapi ON bapi.LOAN_NO = b.LOAN_NO 
+	  		INNER JOIN bms_loan_product blp ON blp.loan_no = b.LOAN_NO 
+			LEFT JOIN bms_loan_audit bla ON b.LOAN_NO = bla.LOAN_NO
+		    LEFT JOIN bms_loan_ext ble ON b.LOAN_NO = ble.LOAN_NO
+		    LEFT JOIN uflo_task ut ON b.ID = ut.BUSINESS_ID_
+			WHERE b.IS_DELETE = 0 
+			  AND bapi.IS_DELETE = 0 
+			  AND blp.IS_DELETE = 0 
+			<if test="id != null and id != 0">
+				and b.id = #{id}
+			</if>
+			<if test="name != null and name != ''">
+	        	and  b.NAME = #{name}
+	        	
+			</if>
+			<if test="idNo != null and idNo != ''">
+	        
+	        	and  b.ID_NO =#{idNo}
+			</if>
+			<if test="appNo != null and appNo != ''">
+	        
+	        	and  b.APP_NO =#{appNo}
+			</if>
+			<if test="loanNo != null and loanNo != ''">
+	        
+	        	and  b.LOAN_NO =#{loanNo}
+			</if>
+			<if test="version != null and version !=''">
+				and b.VERSION = #{version}
+			</if>
+			<if test="rtfNodeState != null and rtfNodeState != ''">
+	        	AND	b.RTF_NODE_STATE =#{rtfNodeState}
+			</if>
+			<if test="taskName != null and taskName != ''">
+	        	AND	ut.TASK_NAME_ =#{taskName}
+			</if>
+			<if test="channelList!=null and channelList.size>0">
+				AND blp.CONTRACT_SOURCE IN
+				<foreach collection="channelList" item="channelItem" open="(" close=")" separator=",">
+					#{channelItem}
+				</foreach>
+			</if>
+			<if test="logoFlag != null">
+				and b.logo_flag = #{logoFlag}
+			</if>
+			<if test="appInputFlag != null and appInputFlag !=''">
+				and b.APP_INPUT_FLAG = #{appInputFlag}
+			</if>
+			<if test="appInputFlagFalse != null and appInputFlagFalse !=''">
+				<![CDATA[ and (b.APP_INPUT_FLAG <> #{appInputFlagFalse} OR b.APP_INPUT_FLAG IS NULL) ]]>
+			</if>
+			<if test="auditEndTimeFalse != null and auditEndTimeFalse ==0">
+				<![CDATA[ AND ble.AUDIT_END_TIME IS NULL ]]>
+			</if>
+			<if test="auditCommitFalse != null and auditCommitFalse ==0">
+				<![CDATA[ AND bla.LOAN_NO IS NULL ]]>
+			</if>
+			<if test="creditReportFalse != null">
+				<![CDATA[ AND (bapi.REPORT_ID < #{creditReportFalse} OR bapi.REPORT_ID IS NULL) ]]>
+			</if>
+			<!-- 当前时间 — APP提交至录入修改的时间    跨度达到  n 天 -->
+			<if test="appApplydateDiff != null">
+				and DATEDIFF(NOW(),b.APP_APPLY_DATE)>= #{appApplydateDiff}
+			</if>
+			<!-- 当前时间 — 申请录入时间    跨度达到  n 天 -->
+			<if test="createTimedateDiff != null">
+				and DATEDIFF(NOW(),b.CREATED_TIME)>= #{createTimedateDiff}
+			</if>
+			<!-- 需要要显示的借款环节节点状态集合 -->
+			<if test="rtfNodeStateList!=null and rtfNodeStateList.size>0">
+				AND b.RTF_NODE_STATE IN
+				<foreach collection="rtfNodeStateList" item="rtfNodeStateItem" open="(" close=")" separator=",">
+					#{rtfNodeStateItem}
+				</foreach>
+			</if>
+			<!-- 需要要显示的联合状态   status+rtfState+rtfNodeState集合 -->
+			<if test="concatRtfStateList!=null and concatRtfStateList.size>0">
+				AND CONCAT_WS('_',b.STATUS,b.RTF_STATE,b.RTF_NODE_STATE) IN
+				<foreach collection="concatRtfStateList" item="concatRtfStateItem" open="(" close=")" separator=",">
+					#{concatRtfStateItem}
+				</foreach>
+			</if>
+			<!-- 需要要剔除的借款状态集合   联合状态   rtfNodeState+check集合 -->
+			<if test="concatRtfNodeStateNoCheckList!=null and concatRtfNodeStateNoCheckList.size>0">
+				AND CONCAT_WS('_',b.RTF_NODE_STATE,bla.CHECK_NODE_STATE) NOT IN
+				<foreach collection="concatRtfNodeStateNoCheckList" item="concatRtfNodeStateNoCheckItem" open="(" close=")" separator=",">
+					#{concatRtfNodeStateNoCheckItem}
+				</foreach>
+			</if>
+		
+	    </select>
+	    <select id="findGrantLoanUpdateByCoreJob" parameterType="java.util.Map" resultMap="ResBMSLoanBaseVOMap">
+		    SELECT 
+			  b.LOAN_NO
+			FROM
+			  bms_loan_base b 
+			  INNER JOIN bms_loan_product blp ON blp.loan_no = b.LOAN_NO 
+			  LEFT JOIN uflo_task ut ON b.ID = ut.BUSINESS_ID_
+			WHERE b.IS_DELETE = 0 
+			<if test="rtfNodeState != null and rtfNodeState != ''">
+	        	AND	b.RTF_NODE_STATE =#{rtfNodeState}
+			</if>
+	    	<if test="channelList!=null and channelList.size>0">
+				AND blp.CONTRACT_SOURCE IN
+				<foreach collection="channelList" item="channelItem" open="(" close=")" separator=",">
+					#{channelItem}
+				</foreach>
+			</if>
+	    	<if test="taskName != null and taskName != ''">
+	        	AND	ut.TASK_NAME_ =#{taskName}
+			</if>
+			<if test="versionMax != null ">
+				<![CDATA[ AND b.version <  #{versionMax} ]]>
+			</if>
+			<!-- 需要剔除的借款编号集合 -->
+			<if test="loanNoEliminateList!=null and loanNoEliminateList.size>0">
+				AND b.LOAN_NO NOT IN
+				<foreach collection="loanNoEliminateList" item="loanNoEliminateItem" open="(" close=")" separator=",">
+					#{loanNoEliminateItem}
+				</foreach>
+			</if>
+			<if test="limitMin != null and limitMax != null">
+				LIMIT #{limitMin},#{limitMax}
+			</if>
+		</select>
+   	    <select id="findGrantLoanUpdateByCoreJobCount" parameterType="java.util.Map" resultType="int">
+		    SELECT 
+			  count(1)
+			FROM
+			  bms_loan_base b 
+			  INNER JOIN bms_loan_product blp ON blp.loan_no = b.LOAN_NO 
+			  LEFT JOIN uflo_task ut ON b.ID = ut.BUSINESS_ID_
+			WHERE b.IS_DELETE = 0 
+			<if test="rtfNodeState != null and rtfNodeState != ''">
+	        	AND	b.RTF_NODE_STATE =#{rtfNodeState}
+			</if>
+	    	<if test="channelList!=null and channelList.size>0">
+				AND blp.CONTRACT_SOURCE IN
+				<foreach collection="channelList" item="channelItem" open="(" close=")" separator=",">
+					#{channelItem}
+				</foreach>
+			</if>
+	    	<if test="taskName != null and taskName != ''">
+	        	AND	ut.TASK_NAME_ =#{taskName}
+			</if>
+			<if test="versionMax != null ">
+				<![CDATA[ AND b.version <  #{versionMax} ]]>
+			</if>
+		</select>
+	    <select id="findLoanBaseJob" parameterType="java.util.Map" resultMap="ResBMSLoanBaseVOMap">
+			SELECT 
+			  b.ID,
+			  b.name,
+			  b.ID_NO,
+			  b.LOAN_NO,
+			  b.OWNING_BRANCH_ID,
+			  blp.PRODUCT_CD ,
+			  b.RTF_STATE,
+			  b.RTF_NODE_STATE,
+			  blp.CONTRACT_SOURCE
+			FROM
+			  bms_loan_base b 
+			  INNER JOIN bms_loan_product blp 
+			    ON blp.loan_no = b.LOAN_NO 
+			  LEFT JOIN bms_loan_audit bla 
+			    ON b.LOAN_NO = bla.LOAN_NO 
+			WHERE b.IS_DELETE = 0 
+			<if test="auditCommitFalse != null and auditCommitFalse ==0">
+				<![CDATA[ AND bla.LOAN_NO IS NULL ]]>
+			</if>
+			<if test="logoFlag != null">
+				and b.logo_flag = #{logoFlag}
+			</if>
+			<if test="appInputFlag != null and appInputFlag !=''">
+				and b.APP_INPUT_FLAG = #{appInputFlag}
+			</if>
+			<if test="appInputFlagFalse != null and appInputFlagFalse !=''">
+				<![CDATA[ and (b.APP_INPUT_FLAG <> #{appInputFlagFalse} OR b.APP_INPUT_FLAG IS NULL) ]]>
+			</if>
+		  	<!-- 需要要显示的借款环节节点状态集合 -->
+			<if test="rtfNodeStateList!=null and rtfNodeStateList.size>0">
+				AND b.RTF_NODE_STATE IN
+				<foreach collection="rtfNodeStateList" item="rtfNodeStateItem" open="(" close=")" separator=",">
+					#{rtfNodeStateItem}
+				</foreach>
+			</if>
+			<!-- 需要要剔除的借款状态集合   联合状态   rtfNodeState+check集合 -->
+			<if test="concatRtfNodeStateNoCheckList!=null and concatRtfNodeStateNoCheckList.size>0">
+				AND CONCAT_WS('_',b.RTF_NODE_STATE,bla.CHECK_NODE_STATE) NOT IN
+				<foreach collection="concatRtfNodeStateNoCheckList" item="concatRtfNodeStateNoCheckItem" open="(" close=")" separator=",">
+					#{concatRtfNodeStateNoCheckItem}
+				</foreach>
+			</if>
+			<if test="versionMax != null ">
+				<![CDATA[ AND b.version <  #{versionMax} ]]>
+			</if>
+		  	<!-- 需要剔除的借款编号集合 -->
+			<if test="loanNoEliminateList!=null and loanNoEliminateList.size>0">
+				AND b.LOAN_NO NOT IN
+				<foreach collection="loanNoEliminateList" item="loanNoEliminateItem" open="(" close=")" separator=",">
+					#{loanNoEliminateItem}
+				</foreach>
+			</if>
+			<if test="loanNo != null ">
+				<![CDATA[ AND b.loan_No =  #{loanNo} ]]>
+			</if>
+			<if test="limitMin != null and limitMax != null">
+				LIMIT #{limitMin},#{limitMax}
+			</if>
+		</select>
+	    <select id="findLoanBaseJobCount" parameterType="java.util.Map" resultType="int">
+			SELECT 
+			  count(1)
+			FROM
+			  bms_loan_base b 
+			  INNER JOIN bms_loan_product blp 
+			    ON blp.loan_no = b.LOAN_NO 
+			  LEFT JOIN bms_loan_audit bla 
+			    ON b.LOAN_NO = bla.LOAN_NO 
+			WHERE b.IS_DELETE = 0 
+			<if test="auditCommitFalse != null and auditCommitFalse ==0">
+				<![CDATA[ AND bla.LOAN_NO IS NULL ]]>
+			</if>
+			<if test="logoFlag != null">
+				and b.logo_flag = #{logoFlag}
+			</if>
+			<if test="appInputFlag != null and appInputFlag !=''">
+				and b.APP_INPUT_FLAG = #{appInputFlag}
+			</if>
+			<if test="appInputFlagFalse != null and appInputFlagFalse !=''">
+				<![CDATA[ and (b.APP_INPUT_FLAG <> #{appInputFlagFalse} OR b.APP_INPUT_FLAG IS NULL) ]]>
+			</if>
+		  	<!-- 需要要显示的借款环节节点状态集合 -->
+			<if test="rtfNodeStateList!=null and rtfNodeStateList.size>0">
+				AND b.RTF_NODE_STATE IN
+				<foreach collection="rtfNodeStateList" item="rtfNodeStateItem" open="(" close=")" separator=",">
+					#{rtfNodeStateItem}
+				</foreach>
+			</if>
+			<!-- 需要要剔除的借款状态集合   联合状态   rtfNodeState+check集合 -->
+			<if test="concatRtfNodeStateNoCheckList!=null and concatRtfNodeStateNoCheckList.size>0">
+				AND CONCAT_WS('_',b.RTF_NODE_STATE,bla.CHECK_NODE_STATE) NOT IN
+				<foreach collection="concatRtfNodeStateNoCheckList" item="concatRtfNodeStateNoCheckItem" open="(" close=")" separator=",">
+					#{concatRtfNodeStateNoCheckItem}
+				</foreach>
+			</if>
+			<if test="versionMax != null ">
+				<![CDATA[ AND b.version <  #{versionMax} ]]>
+			</if>
+			<if test="loanNo != null ">
+				<![CDATA[ AND b.loan_No =  #{loanNo} ]]>
+			</if>
+		</select>
+		<select id="findBindCreditReportJob" parameterType="java.util.Map" resultMap="ResBMSLoanBaseVOMap">
+			SELECT 
+			  b.ID,
+			  b.name,
+			  b.ID_NO,
+			  b.LOAN_NO
+			FROM
+			  bms_loan_base b 
+			  LEFT JOIN bms_loan_audit bla 
+			    ON b.LOAN_NO = bla.LOAN_NO 
+			  INNER JOIN bms_app_person_info bapi 
+			  	ON bapi.LOAN_NO = b.LOAN_NO 
+			WHERE b.IS_DELETE = 0 
+		  	<!-- 需要要显示的借款环节节点状态集合 -->
+			<if test="rtfNodeStateList!=null and rtfNodeStateList.size>0">
+				AND b.RTF_NODE_STATE IN
+				<foreach collection="rtfNodeStateList" item="rtfNodeStateItem" open="(" close=")" separator=",">
+					#{rtfNodeStateItem}
+				</foreach>
+			</if>
+			<if test="creditReportFalse != null">
+				<![CDATA[ AND (bapi.REPORT_ID < #{creditReportFalse} OR bapi.REPORT_ID IS NULL) ]]>
+			</if>
+			<!-- 需要要剔除的借款状态集合   联合状态   rtfNodeState+check集合 -->
+			<if test="concatRtfNodeStateNoCheckList!=null and concatRtfNodeStateNoCheckList.size>0">
+				AND CONCAT_WS('_',b.RTF_NODE_STATE,bla.CHECK_NODE_STATE) NOT IN
+				<foreach collection="concatRtfNodeStateNoCheckList" item="concatRtfNodeStateNoCheckItem" open="(" close=")" separator=",">
+					#{concatRtfNodeStateNoCheckItem}
+				</foreach>
+			</if>
+			<if test="versionMax != null ">
+				<![CDATA[ AND b.version <  #{versionMax} ]]>
+			</if>
+			<!-- 需要剔除的借款编号集合 -->
+			<if test="loanNoEliminateList!=null and loanNoEliminateList.size>0">
+				AND b.LOAN_NO NOT IN
+				<foreach collection="loanNoEliminateList" item="loanNoEliminateItem" open="(" close=")" separator=",">
+					#{loanNoEliminateItem}
+				</foreach>
+			</if>
+			<if test="limitMin != null and limitMax != null">
+				LIMIT #{limitMin},#{limitMax}
+			</if>
+		</select>
+	    <select id="findBindCreditReportJobCount" parameterType="java.util.Map" resultType="int">
+			SELECT 
+			  count(1)
+			FROM
+			  bms_loan_base b 
+			  LEFT JOIN bms_loan_audit bla 
+			    ON b.LOAN_NO = bla.LOAN_NO 
+			  INNER JOIN bms_app_person_info bapi 
+			  	ON bapi.LOAN_NO = b.LOAN_NO 
+			WHERE b.IS_DELETE = 0 
+		  	<!-- 需要要显示的借款环节节点状态集合 -->
+			<if test="rtfNodeStateList!=null and rtfNodeStateList.size>0">
+				AND b.RTF_NODE_STATE IN
+				<foreach collection="rtfNodeStateList" item="rtfNodeStateItem" open="(" close=")" separator=",">
+					#{rtfNodeStateItem}
+				</foreach>
+			</if>
+			<if test="creditReportFalse != null">
+				<![CDATA[ AND (bapi.REPORT_ID < #{creditReportFalse} OR bapi.REPORT_ID IS NULL) ]]>
+			</if>
+			<!-- 需要要剔除的借款状态集合   联合状态   rtfNodeState+check集合 -->
+			<if test="concatRtfNodeStateNoCheckList!=null and concatRtfNodeStateNoCheckList.size>0">
+				AND CONCAT_WS('_',b.RTF_NODE_STATE,bla.CHECK_NODE_STATE) NOT IN
+				<foreach collection="concatRtfNodeStateNoCheckList" item="concatRtfNodeStateNoCheckItem" open="(" close=")" separator=",">
+					#{concatRtfNodeStateNoCheckItem}
+				</foreach>
+			</if>
+			<if test="versionMax != null ">
+				<![CDATA[ AND b.version <  #{versionMax} ]]>
+			</if>
+		</select>
+</mapper> 

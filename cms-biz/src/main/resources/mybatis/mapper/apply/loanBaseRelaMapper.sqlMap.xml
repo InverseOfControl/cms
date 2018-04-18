@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.LoanBaseRelaDaoImpl">
+   <resultMap id="loanBaseRelaMap" type="com.ymkj.cms.biz.entity.apply.LoanBaseRelaEntity">
+		<id property="id" column="ID" />
+		<result property="personId" column="PERSON_ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="bmsAppPersonInfoId" column="BMS_APP_PERSON_INFO_ID" />
+		<result property="tmAppEstateInfoId" column="BMS_TM_APP_ESTATE_INFO_ID" />
+	    <result property="tmAppProvidentInfoId" column="BMS_TM_APP_PROVIDENT_INFO_ID" />
+		<result property="tmAppPolicyInfoId" column="BMS_TM_APP_POLICY_INFO_ID" />
+		<result property="tmAppMasterLoanInfoId" column="BMS_TM_APP_MASTER_LOAN_INFO_ID" />
+		<result property="tmAppMerchanLoanInfoId" column="BMS_TM_APP_MERCHANT_LOAN_INFO_ID" />
+		<result property="tmAppCarInfoId" column="BMS_TM_APP_CAR_INFO_ID" />
+		<result property="tmAppSalaryLoanInfoId" column="BMS_TM_APP_SALARY_LOAN_INFO_ID" />
+		<result property="tmAppCardLoanInfoId" column="BMS_TM_APP_CARD_LOAN_INFO_ID"/>
+		<result property="tmAppContatcInfoId" column="BMS_TM_APP_CONTACT_INFO_ID"/>
+		
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+	</resultMap>
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+  
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.LoanBaseRelaEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_LOAN_BASE_RELA( PERSON_ID,LOAN_BASE_ID
+         				, BMS_APP_PERSON_INFO_ID, BMS_TM_APP_ESTATE_INFO_ID,BMS_TM_APP_PROVIDENT_INFO_ID
+         				,BMS_TM_APP_POLICY_INFO_ID ,BMS_TM_APP_MASTER_LOAN_INFO_ID,BMS_TM_APP_MERCHANT_LOAN_INFO_ID
+         				,BMS_TM_APP_CAR_INFO_ID,BMS_TM_APP_SALARY_LOAN_INFO_ID
+         				,BMS_TM_APP_CONTACT_INFO_ID
+         				,CREATOR_ID,CREATOR,CREATED_TIME,BMS_TM_APP_CARD_LOAN_INFO_ID)
+         	 VALUES(   #{personId}, #{loanBaseId},#{bmsAppPersonInfoId}, #{tmAppEstateInfoId}, #{tmAppProvidentInfoId},
+         	 #{tmAppPolicyInfoId}, #{tmAppMasterLoanInfoId}, #{tmAppMerchanLoanInfoId},
+         	 #{tmAppCarInfoId}, #{tmAppSalaryLoanInfoId},  
+         	 #{tmAppContatcInfoId},
+         	 #{creatorId}, #{creator}, #{createdTime},#{tmAppCardLoanInfoId})
+    </insert >
+    
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="loanBaseRelaMap">
+		select * from BMS_LOAN_BASE_RELA
+		where id = #{id}
+	</select>
+	 
+	<select id="getByBaseId" parameterType="java.util.Map" resultMap="loanBaseRelaMap">
+		select * from BMS_LOAN_BASE_RELA
+		where loan_base_id = #{baseId}
+	</select>
+    
+    
+    
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.LoanBaseRelaEntity">
+		update 	BMS_LOAN_BASE_RELA
+ 			set 	 
+	 
+ 	    <if test="personId != null">
+        	PERSON_ID = #{personId}
+        </if>
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+</mapper> 

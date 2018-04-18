@@ -1,0 +1,132 @@
+.header {
+    font-size: 14px;
+    height: 42px;
+    background-color: #444444;
+    border-bottom: 1px solid #dddddd;
+}
+
+.logo1 {
+    overflow:hidden;
+    height: 32px;
+    width:271px;
+    float:left;
+    margin-left:5px;
+    margin-right:10px;
+}
+
+.logo2{
+    font-size: 18px;
+    margin-top:5px;
+    float:left;
+}
+.header .panel{
+    padding:4px 20px 0px 0px;
+}
+.fa{
+    font-size:16px;
+}
+.header .l-btn-text{
+    font-size:12px;
+}
+.header:after {
+    content: "";
+    display: block;
+    clear:both;
+}
+#theme .menu-line{
+    border:none;
+}
+#theme .menu-item .menu-text{
+    padding-left: 15px;
+}
+
+.default {
+    background-image: url(../images/login_bg.jpg);
+    background-repeat: repeat-x;
+    background-color: #1d8bd8;
+    background-position: top center;
+    overflow: hidden;
+}
+
+#switch .content {
+    font-size: 18px;
+    padding-top: 30px;
+    padding-left: 50px;
+}
+
+#switch .content select {
+    font-size: 15px;
+}
+
+#switch .window .window-header {
+    padding: 10px 4px;
+}
+
+#switch .window-shadow {
+    width: 396px;
+}
+
+.circleNumber{
+    font-size: 450%; color: green; font-weight: 600;
+}
+.index_img{
+	background-image:url(../images/bg_index.jpg);
+	background-position:left center;
+	background-repeat:no-repeat;
+}
+.index_img_btn{
+	width:150px;
+	position:absolute;
+	top:235px;
+	left:50%;
+	margin-left:-75px;
+	text-align:center;
+	cursor:pointer;
+}
+
+.header .opt{
+        background-color: #fff;
+        color:#000;
+    }
+    .header .nav .fa{
+    	margin-bottom:2px;
+    }
+    .header .l-btn{
+        border-radius: 0px;
+    }
+    .header .l-btn-plain{
+        padding: 0px;
+    }
+    .header .l-btn-plain:hover{
+
+        border:none;
+        background-color:#a0a3a5;
+        border-radius: 0px;
+        color:#fff;
+    }
+    .header .m-btn-plain-active{
+        border:none;
+        background-color:#a0a3a5;
+        border-radius: 0px;
+        color:#fff;
+    }
+    .header .nav{
+        line-height:24px;
+        padding: 0px 3px;
+        display: inline-block;
+    }
+    .header .nav:hover{
+        background-color:#a0a3a5;
+        height:24px;
+    }
+    .header  select{
+        margin-right:10px;
+        vertical-align: middle;
+        background: transparent;
+        color: #fff;
+        border: 0px;
+        cursor: pointer;
+        height: 24px;
+    	padding-bottom: 3px;
+    	FONT: 14px/1.6em "微软雅黑", Verdana, Arial, sans-serif;
+    }

@@ -1,0 +1,1345 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.audit.impl.BMSFirstAuditDaoImpl">
+	<resultMap id="firstAuditMap"
+		type="com.ymkj.cms.biz.entity.audit.BMSFirstAuditEntity">
+		<id property="id" column="ID" />
+		<result property="ifPri" column="IF_PRI" />
+		<result property="appInputFlag" column="APP_INPUT_FLAG" />
+		<result property="personName" column="NAME" />
+		<result property="personName" column="personId" />
+		<result property="applyLmt" column="APPLY_LMT" />
+		<result property="owningBranceId" column="OWNING_BRANCH_ID" />
+		<result property="auditEndTime" column="CREATED_TIME" />
+		<result property="checkPersonCode" column="CHECK_PERSON_CODE" />
+		<result property="applyType" column="APPLY_TYPE" />
+		<result property="refNodeStatus" column="RTF_NODE_STATE" />
+		<result property="loanNo" column="LOAN_NO" />
+		<result property="productName" column="PRODUCT_NAME"/>
+		<result property="ifSuspectCheat" column="IF_SUSPECT_CHEAT"/>
+		<result property="version" column="VERSION" />
+		<result property="accDate" column="ACC_DATE" />
+		<result property="idNo" column="ID_NO"/>
+		<result property="ifNewLoanNo" column="IF_NEW_LOAN_NO"/>
+		<result property="zSIfNewLoanNo" column="ZS_IF_NEW_LOAN_NO"/>
+		<result property="accLmt" column="ACC_LMT"/>
+		<result property="zsStartDate" column="FINAL_ALLOT_DATE"/>
+		<result property="csStartDate" column="CHECK_ALLOT_DATE"/>
+		<result property="ifCreditRecord" column="IF_CREDIT_RECORD"/>
+		<result property="amoutIncome" column="AMOUT_INCOME"/>
+		<result property="approvalPersonCode" column="APPROVAL_PERSON_CODE"/>
+		<result property="operationTime" column="OPERATION_TIME"/>
+		<result property="primaryReason" column="PRIMARY_REASON"/>
+		<result property="secodeReason" column="SECODE_REASON"/>
+		<result property="submitAuditDate" column="CREATED_TIME"/>
+		<result property="finalPersonCode" column="final_person_code"/>
+		<result property="checkNodeState" column="check_NODE_STATE"/>
+		<result property="owningBrance" column="ENTER_BRANCH"/>
+		<result property="ifPreferentialUser" column="IF_PREFERENTIAL_USER"/>
+	</resultMap>
+	<!-- queryByPage 这里有几个字段没有确定比如submitAuditDate暂时定为APP_APPLY_DATE -->
+	<select id="listPage" parameterType="java.util.Map" resultMap="firstAuditMap">
+		SELECT
+		blb.ID ,
+		blb.LOAN_NO,
+		blb.NAME,
+		blb.ID_NO,
+		blp.APPLY_LMT,
+		blp.IF_PRI,
+		blp.IF_SUSPECT_CHEAT,
+		blp.PRODUCT_NAME,
+		blb.OWNING_BRANCH_ID,
+		blb.APP_APPLY_DATE,
+		blb.APPLY_TYPE,
+		blb.RTF_NODE_STATE,
+		blb.APP_INPUT_FLAG,
+		bla.CHECK_PERSON_CODE,
+		blb.VERSION,
+		bla.ACC_DATE,
+		blb.IF_NEW_LOAN_NO,
+		blb.ZS_IF_NEW_LOAN_NO,
+		bla.ACC_LMT,
+		bla.FINAL_ALLOT_DATE,
+		bla.CHECK_ALLOT_DATE,
+		bla.IF_CREDIT_RECORD,
+		bla.AMOUT_INCOME,
+		bla.final_person_code, 
+		bla.APPROVAL_PERSON_CODE,
+		bla.CREATED_TIME,
+		bla.CHECK_NODE_STATE,
+		blb.ENTER_BRANCH,
+		blb.IF_PREFERENTIAL_USER
+		FROM bms_loan_base blb
+		LEFT JOIN BMS_LOAN_PRODUCT blp ON blp.loan_no=blb.loan_no
+		LEFT JOIN bms_loan_audit bla on bla.loan_no=blb.loan_no
+		left join bms_loan_ext ble on ble.loan_no=blb.loan_no
+		where 1=1
+				<if test="caseType==1"><!-- 优先队列 -->
+					and blb.RTF_NODE_STATE='XSCS-ASSIGN' and blb.IF_NEW_LOAN_NO ="0"
+				</if>
+				<if test="caseType==2"><!-- 正常队列 -->
+					and blb.IF_NEW_LOAN_NO ="1" and blb.RTF_NODE_STATE='XSCS-ASSIGN'<!-- 新生件 -->
+				</if>
+				<if test="caseType==3"><!-- 挂起队列 -->
+					and blb.RTF_NODE_STATE = 'XSCS-HANGUP'
+				</if>	
+				<if test="isAdmin!=1"><!-- 不是admin -->
+					<if test="flag2==1"><!--审核台-->				
+						and bla.CHECK_PERSON_CODE=#{checkPersonCd}	
+					</if>		
+				 </if>		
+				<if test="loans!=null and loans.size()>0">
+						and blb.loan_no in(
+							<foreach item="firstAuditEntity" index="index" collection="loans"
+						separator=",">
+							#{firstAuditEntity.loanNo}
+						</foreach>
+						) 	
+						AND (bla.CHECK_PERSON_CODE !=(#{checkPersonCd}) OR blb.RTF_NODE_STATE NOT IN('XSCS-ASSIGN','XSCS-HANGUP'))
+						
+				</if>		
+			order by ${sortValue} 
+			
+	</select>
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select 	
+		count(1)
+		FROM bms_loan_base blb
+		LEFT JOIN BMS_LOAN_PRODUCT blp ON blp.loan_no=blb.loan_no
+		LEFT JOIN bms_loan_audit bla on bla.loan_no=blb.loan_no
+		left join bms_loan_ext ble on ble.loan_no=blb.loan_no
+		where 1=1
+		<if test="caseType==1"><!-- 优先队列 -->
+					and blb.RTF_NODE_STATE='XSCS-ASSIGN' and blb.IF_NEW_LOAN_NO ="0"
+				</if>
+				<if test="caseType==2"><!-- 正常队列 -->
+					and blb.IF_NEW_LOAN_NO ="1" and blb.RTF_NODE_STATE='XSCS-ASSIGN'<!-- 新生件 -->
+				</if>
+				<if test="caseType==3"><!-- 挂起队列 -->
+					and blb.RTF_NODE_STATE = 'XSCS-HANGUP'
+				</if>	
+				<if test="isAdmin!=1"><!-- 不是admin -->
+					<if test="flag2==1"><!--审核台-->				
+						and bla.CHECK_PERSON_CODE=#{checkPersonCd}	
+					</if>		
+				 </if>		
+				<if test="loans!=null and loans.size()>0">
+						and blb.loan_no in(
+							<foreach item="firstAuditEntity" index="index" collection="loans"
+						separator=",">
+							#{firstAuditEntity.loanNo}
+						</foreach>
+						) 	
+						AND (bla.CHECK_PERSON_CODE !=(#{checkPersonCd}) OR blb.RTF_NODE_STATE NOT IN('XSCS-ASSIGN','XSCS-HANGUP'))	
+				</if>		
+	</select>
+
+	<select id="byAppRovalPersonCodeQueryLoanNo" parameterType="String" resultType="String">
+	select 
+		APPROVAL_PERSON_CODE 
+	from bms_loan_audit where FINAL_PERSON_CODE=#{serviceCode} and APPROVAL_PERSON_CODE is not null
+	</select>
+
+	<select id="queryBmsLogByLoan" parameterType="Map" resultMap="firstAuditMap">
+		select loan_no,RTF_NODE_STATE,OPERATION_TIME from (SELECT * FROM (
+		SELECT DISTINCT loan_no,
+		RTF_NODE_STATE,
+		OPERATION_TIME FROM
+		bms_loan_log
+		where 1=1
+			<if test="flag2!=2"><!-- 如果不是经理角色 -->
+				and CHECK_PERSON_CODE in( #{checkPersonCd} )
+			</if>
+			and RTF_NODE_STATE in('XSCS-RETURN','XSCS-REJECT','XSCS-PASS','HIGH-PASS')
+			and RTF_STATE='XSCS'
+		and OPERATION_TIME &gt;=#{offStartDate}
+		<if test="offEndDate!=null and offEndDate!=''">
+			and OPERATION_TIME &lt;=#{offEndDate}
+		</if>
+	     AND CHECK_NODE_STATE IN('CHECK','NO_CHECK')
+		ORDER BY id DESC
+		) b GROUP BY b.loan_no) c
+	</select>
+	<select id="queryFirstOperationTime" parameterType="map" resultMap="firstAuditMap">
+	 <if test="overIsAuth!=2">
+	     SELECT OPERATION_TIME  FROM bms_loan_log 
+	     WHERE  RTF_NODE_STATE='XSZS-ASSIGN' 
+	     AND (FINAL_PERSON_CODE=#{personCode} OR APPPOVAL_PERSON_CODE=#{personCode}) 
+	     and loan_no=#{loanNo} ORDER BY id ASC LIMIT 1
+	 </if>
+	</select>
+	<!-- 初审派单查询SQL -->
+	<select id="csQueryAutomaticDis" parameterType="Map"
+		resultType="com.ymkj.cms.biz.entity.audit.BMSAutomaticDispatchEntity">
+		SELECT
+	tt.LOAN_NO loanNo,
+	tt.PRODUCT_CD productCode,
+	tt.OWNING_BRANCH_ID owningBranchId,
+	tt.APP_INPUT_FLAG appInputFlag,
+	tt.IF_PRI ifPri,
+	tt.IF_SUSPECT_CHEAT ifSuspectCheatis,
+	tt.RTF_STATE rtfStatus,
+	tt.RTF_NODE_STATE rtfNodeStatus,
+	tt.CHECK_PERSON_CODE checkPersonCode,
+	tt.FINAL_PERSON_CODE finalPersonCode,
+	tt.ACC_LMT accLmt,
+	tt.VERSION VERSION,
+	tt.ID personId,
+	tt.ID_NO custmerIDNo,
+	tt.`NAME`custmerName,
+	tt.FIRST_SUB_ZS_DATE firstSubZsDate,
+	tt.APPROVAL_PERSON_CODE apppovalPersonCode,
+	tt.CREATED_TIME applyDate,
+	tt.IF_NEW_LOAN_NO ifNewLoanNo,
+	tt.ZS_IF_NEW_LOAN_NO zSIfNewLoanNo,
+	tt.LOGGED_AREA areaCode,
+	tt.APPLY_TYPE applyType
+
+	FROM (SELECT
+	blb.LOAN_NO ,
+	blp.PRODUCT_CD ,
+	blb.OWNING_BRANCH_ID ,
+	blb.APP_INPUT_FLAG ,
+	blp.IF_PRI ,
+	blp.IF_SUSPECT_CHEAT ,
+	blb.RTF_STATE ,
+	blb.RTF_NODE_STATE ,
+	bla.CHECK_PERSON_CODE ,
+	bla.FINAL_PERSON_CODE ,
+	bla.ACC_LMT ,
+	blb.VERSION ,
+	bap.ID ,
+	bap.ID_NO ,
+	bap.`NAME`,
+	bla.FIRST_SUB_ZS_DATE ,
+	bla.APPROVAL_PERSON_CODE ,
+	bla.CREATED_TIME ,
+	blb.IF_NEW_LOAN_NO ,
+	blb.ZS_IF_NEW_LOAN_NO ,
+	ble.LOGGED_AREA ,
+	blb.APPLY_TYPE
+	FROM bms_loan_base blb 
+	LEFT JOIN BMS_APP_PERSON bap ON bap.ID = blb.PERSON_ID
+	LEFT JOIN bms_loan_product blp ON blp.loan_no=blb.LOAN_NO
+	LEFT JOIN bms_loan_audit bla ON bla.loan_no = blb.loan_no
+	LEFT JOIN BMS_LOAN_EXT ble ON ble.loan_no=blb.LOAN_NO
+	WHERE
+	blb.RTF_NODE_STATE='CSFP-SUBMIT'
+	OR blb.RTF_NODE_STATE ='XSZS-RTNCS'
+	OR (blb.RTF_NODE_STATE ='XSCS-RETURN' AND bla.CHECK_NODE_STATE='CHECK_NO_PASS')
+	OR (blb.RTF_NODE_STATE ='XSCS-PASS' AND bla.CHECK_NODE_STATE='CHECK_NO_PASS')
+	OR (blb.RTF_NODE_STATE= 'HIGH-PASS' AND bla.CHECK_NODE_STATE='CHECK_NO_PASS')
+	UNION ALL
+	SELECT
+	blb.LOAN_NO ,
+	blp.PRODUCT_CD ,
+	blb.OWNING_BRANCH_ID ,
+	blb.APP_INPUT_FLAG ,
+	blp.IF_PRI ,
+	blp.IF_SUSPECT_CHEAT ,
+	blb.RTF_STATE ,
+	blb.RTF_NODE_STATE ,
+	bla.CHECK_PERSON_CODE ,
+	bla.FINAL_PERSON_CODE ,
+	bla.ACC_LMT ,
+	blb.VERSION ,
+	bap.ID ,
+	bap.ID_NO ,
+	bap.`NAME`,	bla.FIRST_SUB_ZS_DATE ,
+	bla.APPROVAL_PERSON_CODE ,
+	bla.CREATED_TIME ,
+	blb.IF_NEW_LOAN_NO ,
+	blb.ZS_IF_NEW_LOAN_NO ,
+	ble.LOGGED_AREA ,
+	blb.APPLY_TYPE
+	FROM bms_loan_base blb 
+	LEFT JOIN BMS_APP_PERSON bap ON bap.ID = blb.PERSON_ID
+	LEFT JOIN bms_loan_product blp ON blp.loan_no=blb.LOAN_NO	
+	LEFT JOIN bms_loan_audit bla ON bla.loan_no = blb.loan_no
+	LEFT JOIN BMS_LOAN_EXT ble ON ble.loan_no=blb.LOAN_NO
+	WHERE
+	(blb.RTF_NODE_STATE ='XSCS-REJECT' AND bla.CHECK_NODE_STATE='CHECK_NO_PASS')) tt
+ ORDER BY tt.IF_NEW_LOAN_NO ASC,tt.IF_PRI DESC,tt.CREATED_TIME ASC 
+	</select>
+	
+	<!-- 根据serviceCode查询复核信息SQL -->
+	<select id="queryCheckInfoByCode" parameterType="Map"
+		resultType="com.ymkj.cms.biz.entity.audit.BMSCheckEntity">
+		select
+		bla.loan_no loanNo,
+		bla.FIRST_SUB_ZS_DATE accDate,
+		blb.`name` personName,
+		blb.APPLY_TYPE applyType,
+		blb.RTF_NODE_STATE rtfNodeStatus,
+		blb.RTF_NODE_STATE assistStatus,
+		blp.PRODUCT_NAME productName,
+		ble.PRIMARY_REASON primaryReason,
+		ble.SECODE_REASON secodeReason,
+		bla.CHECK_PERSON_CODE checkPersonCode,
+		bla.COMPLEX_PERSON_CODE complexPersonCode,
+		bla.ACC_LMT accLmt,
+		blb.version version
+		from bms_loan_base blb
+		inner join bms_loan_audit bla on blb.loan_no=bla.loan_no
+		inner join bms_loan_product blp on blp.loan_no=blb.loan_no
+		inner join bms_loan_ext ble on ble.loan_no=blb.loan_no
+		<where>
+			<if test="flag!=2"><!-- 如果非初审初经理 -->
+				bla.COMPLEX_PERSON_CODE in(
+						<foreach item="checkPersonCd" index="index" collection="checkPersonCdList"
+						separator=",">
+							#{checkPersonCd}
+						</foreach>
+						)	
+			</if>				
+			and blb.RTF_STATE='XSCS' and blb.RTF_NODE_STATE
+			in('XSCS-RETURN','XSCS-PASS','XSCS-REJECT','HIGH-PASS')
+			and bla.CHECK_NODE_STATE ='CHECK'
+			order by ${sortValue}
+		</where>
+	</select>
+
+	<select id="queryCheckInfoCount" parameterType="Map"
+		resultType="int">
+		select count(1)
+		from bms_loan_base blb
+		inner join bms_loan_audit bla on blb.loan_no=bla.loan_no
+		inner join bms_loan_product blp on blp.loan_no=blb.loan_no
+		inner join bms_loan_ext ble on ble.loan_no=blb.loan_no
+		<where>
+			<if test="flag!=2"><!-- 如果非初审初经理 -->
+				bla.COMPLEX_PERSON_CODE in(
+						<foreach item="checkPersonCd" index="index" collection="checkPersonCdList"
+						separator=",">
+							#{checkPersonCd}
+						</foreach>
+						)	
+			</if>			
+			and blb.RTF_STATE='XSCS' and blb.RTF_NODE_STATE
+			in('XSCS-RETURN','XSCS-PASS','XSCS-REJECT','HIGH-PASS')
+			and bla.CHECK_NODE_STATE ='CHECK'
+		</where>
+	</select>
+
+	<select id="checkIsHositoryLoanNo" parameterType="Map" resultType="int">
+		select count(1) from BMS_LOAN_LOG where loan_no=#{loanNo}
+	</select>
+	<!-- 验证流程节点状态是否在可办理的状态 -->
+	<select id="checkRtfNodeStatus" parameterType="Map" resultType="int">
+		select count(1) from bms_loan_base 
+		where loan_no=#{loanNo} and RTF_NODE_STATE in ('XSCS-ASSIGN','XSCS-HANGUP')
+	</select>
+	
+	<!-- 根据登录人编码判断是否是协审 -->
+	<select id="byPersonCodeQueryJuse" parameterType="String" resultType="int">
+		select count(1) from BMS_LOAN_AUDIT where APPROVAL_PERSON_CODE=#{serviceCode}
+	</select>
+	<!-- 修改审批表节点状态 -->
+	<update id="updAuditNo" parameterType="Map">
+		update bms_loan_audit
+		<set>
+			<if test="loanNo!=null and loanNo!=''">
+				loan_no=#{loanNo},
+			</if>
+			<if test="checkNodeStatus!=null">
+				CHECK_NODE_STATE=#{checkNodeStatus},
+			</if>
+			<if test="checkPersonCode!=null">
+				CHECK_PERSON_CODE=#{checkPersonCode},
+			</if>
+			<if test="checkPerson!=null">
+				CHECK_PERSON=#{checkPerson},
+			</if>
+			<if test="finalPersonCode!=null">
+				FINAL_PERSON_CODE=#{finalPersonCode},
+			</if>
+			<if test="finalPerson!=null">
+				FINAL_PERSON=#{finalPerson},
+			</if>
+			<if test="finalAllotDate!=null">
+				FINAL_ALLOT_DATE=#{finalAllotDate},
+			</if>
+			<if test="accLmt!=null">
+				ACC_LMT=#{accLmt},
+			</if>
+			<if test="accTime!=null">
+				ACC_TERM=#{accTime},
+			</if>
+			<if test="accDate!=null">
+				ACC_DATE=#{accDate},
+			</if>
+			<if test="allotDate!=null">
+				CHECK_ALLOT_DATE=#{allotDate},
+			</if>
+			<if test="apppovalPersonCode!=null">
+				APPROVAL_PERSON_CODE=#{apppovalPersonCode},
+			</if>
+			<if test="apppovalPerson!=null">
+				APPROVAL_PERSON=#{apppovalPerson},
+			</if>
+			<if test="complexPerson!=null">
+				COMPLEX_PERSON=#{complexPerson},
+			</if>
+			<if test="complexPersonCode!=null">
+				COMPLEX_PERSON_CODE=#{complexPersonCode},
+			</if>
+			
+			<if test="firstSubZsDate!=null">
+				FIRST_SUB_ZS_DATE=#{firstSubZsDate},
+			</if>
+			<if test="loanNoTopClass!=null">
+				LOAN_NO_TOP_CLASS=#{loanNoTopClass},
+			</if>
+			<if test="ifCreditRecode!=null">
+				IF_CREDIT_RECORD=#{ifCreditRecode},
+			</if>
+			<if test="amoutIncome!=null">
+				AMOUT_INCOME=#{amoutIncome},
+			</if>
+			<if test="refustDate!=null">
+				REFUSE_DATE=#{refustDate},
+			</if>
+			<if test="auditReviewTime!=null">
+				AUDIT_REVIEW_TIME=#{auditReviewTime},
+			</if>
+			<if test="ifCheckReturn!=null">
+				IF_CHECK_RETURN=#{ifCheckReturn},
+			</if>
+		</set>
+		<where>
+			loan_no=#{loanNo}
+		</where>
+	</update>
+	
+	<update id="updLoanAdExtIsBlackNull" parameterType="Map">
+		update bms_loan_ext
+		set BLACKLIST_ID=null
+		<where>
+			LOAN_NO=#{loanNo}
+		</where>
+	</update>
+	
+	<update id="updOnlineAWithinMonthsAddress" parameterType="Map">
+		update BMS_TM_APP_MASTER_LOAN_INFO
+		set ONLINE_A_WITHIN3_MONTHS_ADDRESS=#{onlineAWithin3MonthsAddress},
+		ONLINE_A_WITHIN6_MONTHS_ADDRESS=#{onlineAWithin6MonthsAddress},
+		ONLINE_A_WITHIN12_MONTHS_ADDRESS=#{onlineAWithin12MonthsAddress}
+		where LOAN_NO=#{loanNo}
+	</update>
+	
+	<update id="updatePolicyCheckIsVerify" parameterType="Map">
+		update BMS_TM_APP_POLICY_INFO
+		set POLICY_CHECKISVERIFY=#{policyCheckIsVerify}
+		where LOAN_NO=#{loanNo}
+	</update>
+	
+	<update id="updateCarCheckIsVerify" parameterType="Map">
+		update BMS_TM_APP_CAR_INFO
+		set CAR_CHECKIS_VERIFY=#{carCheckIsVerify}
+		where LOAN_NO=#{loanNo}
+	</update>
+	
+	<update id="updLoanBase" parameterType="Map">
+		update bms_loan_base
+		<set>
+			<if test="status!=null and status!=''">
+				STATUS=#{status},
+			</if>
+			<if test="rtfStatus!=null and rtfStatus!=''">
+				RTF_STATE=#{rtfStatus},
+			</if>
+			<if test="rtfNodeState!=null and rtfNodeState!=''">
+				RTF_NODE_STATE=#{rtfNodeState},
+			</if>
+			<if test="serviceCode!=null and serviceCode!=''">
+				SERVICE_CODE=#{serviceCode},
+			</if>
+			<if test="ifNewLoanNo!=null and ifNewLoanNo!=''">
+				IF_NEW_LOAN_NO=#{ifNewLoanNo},
+			</if>
+			<if test="zSIfNewLoanNo!=null and zSIfNewLoanNo!=''">
+				ZS_IF_NEW_LOAN_NO=#{zSIfNewLoanNo},
+			</if>
+			<if test="loanNoTopClass!=null and loanNoTopClass!=''">
+				LOAN_NO_TOP_CLASS=#{loanNoTopClass},
+			</if>
+			<if test="version!=null and version!=''">
+				VERSION=#{version}+1,
+			</if>
+			<if test="logoFlag!=null">
+				logo_Flag=#{logoFlag},
+			</if>
+			modified_time=SYSDATE() 
+		</set>
+		<where>
+			LOAN_NO=#{loanNo} and VERSION=#{version}
+		</where>
+	</update>
+	<update id="updLoanAdExt" parameterType="Map">
+		update bms_loan_ext set 
+		
+			<if test="firstLevelReasons!=null and firstLevelReasons!=''">
+				PRIMARY_REASON=#{firstLevelReasons},
+			</if>
+			
+			<if test="blackList!=null and blackList!=''">
+				BLACKLIST_ID=#{blackList},
+			</if>
+			<if test="firstLevelReasonCode!=null and firstLevelReasonCode!=''">
+				FIRST_LEVLE_REASONS_CODE=#{firstLevelReasonCode},
+			</if>
+				TWO_LEVLE_REASONS_CODE=#{twoLevelReasonCode},
+				SECODE_REASON=#{twoLevelReasons}
+		<where>
+			LOAN_NO=#{loanNo}
+		</where>
+	</update>
+	
+	
+	<update id="updLoanAdExtReject" parameterType="Map">
+		update bms_loan_ext
+		<set>
+			<if test="blackList!=null and blackList!=''">
+				BLACKLIST_ID=#{blackList},
+			</if>
+			<if test="rejectPersonName!=null and rejectPersonName!=''">
+				REJECT_PERSON_NAME=#{rejectPersonName},
+			</if>	
+			<if test="rejectPersonCode!=null and rejectPersonCode!=''">
+				REJECT_PERSON_CODE=#{rejectPersonCode},
+			</if>	
+				PRIMARY_REASON=#{firstLevelReasons},
+				SECODE_REASON=#{twoLevelReasons},
+				FIRST_LEVLE_REASONS_CODE=#{firstLevelReasonCode},
+				TWO_LEVLE_REASONS_CODE=#{twoLevelReasonCode}
+		</set>
+		<where>
+			LOAN_NO=#{loanNo}
+		</where>
+	</update>
+	
+	<update id="updLoanProductInfo" parameterType="Map">
+		update BMS_LOAN_PRODUCT
+		<set>
+			<if test="name!=null and name!=''">
+				PRODUCT_NAME=#{name},
+			</if>
+			<if test="code!=null and code!=''">
+				PRODUCT_CD=#{code}
+			</if>
+		</set>
+		<where>
+			LOAN_NO=#{loanNo}
+		</where>
+	</update>
+	
+	<select id="findTrialByStatus" parameterType="String" resultType="int">
+		select 
+			count(1) 
+		from 
+		bms_loan_base a, BMS_LOAN_AUDIT b 
+		where a.id=b.LOAN_BASE_ID 
+		and a.RTF_NODE_STATE in('XSCS-ASSIGN','XSCS-HANGUP') 
+		and b.CHECK_PERSON_CODE=#{code}
+	</select>
+	
+	
+	<!--CS改派查询SQL 拆分  update-->
+<select id="queryCsReassignMentInfoUpdate" parameterType="Map" resultType="com.ymkj.cms.biz.entity.audit.BMSReassigMentEntity">
+	select 
+			a.loan_no loanNo,
+			a.OWNING_BRANCH_ID owningBranchId,
+			a.RTF_STATE rtfStatus,
+			a.RTF_NODE_STATE rtfNodeStatus,
+			a.IF_NEW_LOAN_NO ifNewLoanNo,
+			a.`name` customerName,
+			a.ID_NO customerIDNO,
+			a.CHECK_PERSON_CODE checkPersonCode,
+			a.CREATED_TIME xsSubDate,
+			a.PRODUCT_NAME productName,
+			a.IF_PRI ifPri,
+			a.IF_SUSPECT_CHEAT ifSuspectCheat,
+			a.APP_INPUT_FLAG appInputFlag,
+			a.version version,
+			a.PRODUCT_CD productCd,
+			a.APPLY_TYPE applyType,
+			a.LOGGED_AREA specialOrg,
+			a.person_id	personId,
+			a.CHECK_PERSON checkPerson,
+			a.IF_PREFERENTIAL_USER ifPreferentialUser 
+		from(	
+			SELECT
+			blb.loan_no,
+			blb.OWNING_BRANCH_ID,
+			blb.RTF_STATE,
+			blb.RTF_NODE_STATE,
+			blb.IF_NEW_LOAN_NO,
+			bap.`name`,
+			bap.ID_NO,
+			bla.CHECK_PERSON_CODE,
+			bla.CHECK_PERSON,
+			bla.CHECK_ALLOT_DATE,
+			blp.PRODUCT_NAME,
+			blp.PRODUCT_CD,
+			blp.IF_PRI,
+			blp.IF_SUSPECT_CHEAT,
+			blb.APP_INPUT_FLAG,
+			blb.APPLY_DATE,
+			blb.version,
+			blb.APPLY_TYPE,
+			blb.person_id,
+			ble.LOGGED_AREA,
+			blb.BRANCH_MANAGER_CODE,
+			bla.CREATED_TIME,
+			bla.CHECK_NODE_STATE,
+			ble.FINALAUDIT_BACK_SNAP_VERSION,
+			bla.IF_CHECK_RETURN,
+			bla.IF_LASTCHECK_RETURN,
+			blb.IF_PREFERENTIAL_USER
+			from bms_loan_base blb 
+			INNER JOIN bms_app_person bap on blb.PERSON_ID=bap.ID
+			INNER JOIN bms_loan_audit bla on bla.loan_no=blb.loan_no 
+			INNER JOIN bms_loan_product blp on blp.LOAN_NO=blb.LOAN_NO
+			INNER JOIN BMS_LOAN_EXT ble on ble.LOAN_NO=blb.LOAN_NO
+			where 1=1
+			
+				<if test="fpStatus==null or fpStatus==''">
+					<choose>
+						<when test="flag2==2"><!-- 经理以上的角色 -->
+							and blb.RTF_STATE ='CSFP' and blb.RTF_NODE_STATE ='CSFP-SUBMIT'
+						or(
+						 blb.RTF_NODE_STATE ='XSCS-ASSIGN' and blb.RTF_STATE ='XSCS'
+						<!-- or blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK'
+						or blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_PASS' -->
+						or blb.RTF_NODE_STATE = 'XSCS-HANGUP' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK' 
+						or blb.RTF_NODE_STATE = 'XSCS-RETURN' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'HIGH-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						OR blb.RTF_STATE = 'XSZS'  AND blb.RTF_NODE_STATE = 'XSZS-RTNCS'
+						)
+						UNION ALL
+								SELECT
+								blb.loan_no,
+								blb.OWNING_BRANCH_ID,
+								blb.RTF_STATE,
+								blb.RTF_NODE_STATE,
+								blb.IF_NEW_LOAN_NO,
+								bap.`name`,
+								bap.ID_NO,
+								bla.CHECK_PERSON_CODE,
+								bla.CHECK_PERSON,
+								bla.CHECK_ALLOT_DATE,
+								blp.PRODUCT_NAME,
+								blp.PRODUCT_CD,
+								blp.IF_PRI,
+								blp.IF_SUSPECT_CHEAT,
+								blb.APP_INPUT_FLAG,
+								blb.APPLY_DATE,
+								blb.version,
+								blb.APPLY_TYPE,
+								blb.person_id,
+								ble.LOGGED_AREA,
+								blb.BRANCH_MANAGER_CODE,
+								bla.CREATED_TIME,
+								bla.CHECK_NODE_STATE,
+								ble.FINALAUDIT_BACK_SNAP_VERSION,
+								bla.IF_CHECK_RETURN,
+								bla.IF_LASTCHECK_RETURN,
+								blb.IF_PREFERENTIAL_USER
+								from bms_loan_base blb 
+								INNER JOIN bms_app_person bap ON blb.PERSON_ID = bap.ID
+								INNER JOIN bms_loan_audit bla ON bla.loan_no = blb.loan_no
+								INNER JOIN bms_loan_product blp ON blp.LOAN_NO = blb.LOAN_NO
+								INNER JOIN BMS_LOAN_EXT ble ON ble.LOAN_NO = blb.LOAN_NO
+								WHERE
+									1 = 1
+								AND bla.CHECK_NODE_STATE = 'CHECK_NO_PASS'
+								AND blb.RTF_STATE = 'XSCS'
+								AND blb.RTF_NODE_STATE = 'XSCS-REJECT'
+						</when>
+						<otherwise>
+						and (blb.RTF_NODE_STATE ='XSCS-ASSIGN' and blb.RTF_STATE ='XSCS'
+						or blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK'
+						or blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_PASS'
+						or blb.RTF_NODE_STATE = 'XSCS-HANGUP' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK' 
+						or blb.RTF_NODE_STATE = 'XSCS-REJECT' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'XSCS-RETURN' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'HIGH-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS')
+						</otherwise>
+					</choose>
+				</if>
+				<if test="fpStatus==2"><!-- 未分派-->			
+					<if test="flag2==2"><!-- 经理以上的角色 -->
+						and blb.RTF_STATE ='CSFP' and blb.RTF_NODE_STATE ='CSFP-SUBMIT'
+						or(
+						blb.RTF_NODE_STATE = 'XSCS-REJECT' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS' and blb.if_new_loan_no=0
+						or blb.RTF_NODE_STATE = 'XSCS-RETURN' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS' and blb.if_new_loan_no=0
+						or blb.RTF_NODE_STATE = 'HIGH-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS' and blb.if_new_loan_no=0
+						or blb.RTF_NODE_STATE = 'XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS' and blb.if_new_loan_no=0
+						OR blb.RTF_STATE = 'XSZS'  AND blb.RTF_NODE_STATE = 'XSZS-RTNCS'
+						)
+					</if>
+					<if test="flag2==0">
+						and blb.id is null
+					</if>
+				</if>
+				<if test="fpStatus==1"><!-- 已分派 所有人都能查-->
+						<if test="flag2==2">
+						and blb.RTF_NODE_STATE ='XSCS-ASSIGN' and blb.RTF_STATE ='XSCS'
+						or blb.RTF_NODE_STATE ='XSCS-HANGUP' and blb.RTF_STATE ='XSCS' 
+						</if>
+						<if test="flag2==0">
+						and (blb.RTF_NODE_STATE ='XSCS-ASSIGN' and blb.RTF_STATE ='XSCS'
+						or blb.RTF_NODE_STATE ='XSCS-HANGUP' and blb.RTF_STATE ='XSCS')
+						</if>
+						<!-- 
+						and blb.RTF_NODE_STATE ='XSCS-ASSIGN' and blb.RTF_STATE ='XSCS'
+						or blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_PASS'
+						or blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK'
+						or blb.RTF_NODE_STATE = 'XSCS-HANGUP' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK' 
+						or blb.RTF_NODE_STATE = 'XSCS-REJECT' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'XSCS-RETURN' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'HIGH-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						 -->
+				</if>
+					
+	<if test="handleCode==null or handleCode==''">	
+		<if test="flag2!=2">		
+				<if test="flag2==0">
+					<!-- 循环 -->
+					and bla.CHECK_PERSON_CODE IN (
+						<foreach  item="checkPersonCd" index="index" collection="saveCsPersonCodes" separator=",">
+							#{checkPersonCd}
+						</foreach>
+					)
+				</if>
+		</if>
+	</if>
+			)a
+			where 1=1
+			<if test="loanNo!=null and loanNo!=''">
+				and a.loan_no=#{loanNo}
+			</if>
+			
+			<if test="ifPreferentialUser!=null and ifPreferentialUser!=''">
+				and a.IF_PREFERENTIAL_USER=#{ifPreferentialUser}
+			</if>
+			
+			<if test="customerName!=null and customerName!=''">
+				and a.`name` like CONCAT('%',trim(#{customerName}),'%')
+			</if>
+			<if test="customerIDNO!=null and customerIDNO!=''">
+				and a.ID_NO=#{customerIDNO}
+			</if>
+		
+			<if test="productCd!=null and productCd!=''">
+				and a.PRODUCT_CD in (${productCd})
+			</if>
+			<if test="owningBranchId!=null and owningBranchId!=''">
+				and a.OWNING_BRANCH_ID in (${owningBranchId})
+			</if>
+			<if test="caseType!=null and caseType!=''"> 
+				<!-- <if test="ifPri==1">
+					and a.IF_PRI=1
+				</if>
+				<if test="ifPri==1 and appInputFlag==2" >
+					and a.IF_PRI=1 or a.APP_INPUT_FLAG='app_input'
+				</if>
+				<if test="ifPri==1 and ifSuspectCheat==3">
+					and a.IF_PRI=1 or a.IF_SUSPECT_CHEAT=1
+				</if>
+				<if test="appInputFlag==2 and ifSuspectCheat==3">
+					and a.APP_INPUT_FLAG='app_input' or a.IF_SUSPECT_CHEAT=1
+				</if>
+				<if test="ifPri==1 and appInputFlag==2 and ifSuspectCheat==3" >
+					and a.IF_PRI=1 or a.APP_INPUT_FLAG='app_input' or a.IF_SUSPECT_CHEAT=1
+				</if> -->
+				and (
+				<if test="ifPri==1">
+					(a.IF_PRI=1) or
+				</if>
+				<if test="appInputFlag==2 " >
+					 (a.APP_INPUT_FLAG='app_input') or
+				</if>
+				<if test="ifSuspectCheat==3" >
+					 (a.IF_SUSPECT_CHEAT=1) or
+				</if>
+				<if test="returnFile==4" >
+					 ((a.RTF_NODE_STATE='XSZS-RTNCS') or (a.RTF_NODE_STATE='CSFP-SUBMIT' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.RTF_NODE_STATE='XSCS-ASSIGN' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.RTF_NODE_STATE='XSCS-HANGUP' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.CHECK_NODE_STATE='CHECK_NO_PASS')
+					 or (a.RTF_NODE_STATE='CSFP-SUBMIT' and a.IF_CHECK_RETURN is not null) or (a.RTF_NODE_STATE='XSCS-ASSIGN' and a.IF_CHECK_RETURN is not null) or (a.RTF_NODE_STATE='XSCS-HANGUP' and a.IF_CHECK_RETURN is not null)) or
+				</if>
+				1!=1
+				)
+			</if>
+			<if test="caseIdentifyList!=null and caseIdentifyList.size()>0">
+			 	and 
+				<foreach item="caseIdentifyItem" index="index" collection="caseIdentifyList" separator=" or " open="(" close=")">
+					<if test='caseIdentifyItem=="1"'>a.IF_PRI=1</if>
+					<if test='caseIdentifyItem=="2"'>a.APP_INPUT_FLAG='app_input'</if>
+					<if test='caseIdentifyItem=="3"'>a.IF_SUSPECT_CHEAT=1</if>
+					<if test='caseIdentifyItem=="4"'>
+					((a.RTF_NODE_STATE='XSZS-RTNCS') or (a.RTF_NODE_STATE='CSFP-SUBMIT' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.RTF_NODE_STATE='XSCS-ASSIGN' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.RTF_NODE_STATE='XSCS-HANGUP' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.CHECK_NODE_STATE='CHECK_NO_PASS')
+					 or (a.RTF_NODE_STATE='CSFP-SUBMIT' and a.IF_CHECK_RETURN is not null) or (a.RTF_NODE_STATE='XSCS-ASSIGN' and a.IF_CHECK_RETURN is not null) or (a.RTF_NODE_STATE='XSCS-HANGUP' and a.IF_CHECK_RETURN is not null))
+					 </if>
+					<if test='caseIdentifyItem=="5"'>a.IF_PREFERENTIAL_USER='Y'</if>
+		        </foreach>
+	        </if>
+			<if test="xsStartDate!=null and xsStartDate!=''">
+				and a.CREATED_TIME <![CDATA[>=]]> #{xsStartDate}
+			</if>
+			<if test="xsEndDate!=null and xsEndDate!=''">
+				and a.CREATED_TIME <![CDATA[<=]]> #{xsEndDate}
+			</if>
+			<if test="branchManagerName!=null and branchManagerName!=''">
+				and a.BRANCH_MANAGER_CODE =#{branchManagerName}
+			</if>
+			
+			<!-- <if test="null!=handleCode">
+				and a.CHECK_PERSON_CODE in(
+				<foreach item="stringDate" index="index" collection="handleCode"
+				separator=",">
+					#{stringDate}
+				</foreach>
+				) 
+			</if> -->
+			<if test="handleCode!=null and handleCode!=''">
+				<if test="flag2!=2">
+					and a.CHECK_PERSON_CODE in(${handleCode})
+				</if>
+			</if>
+			
+			
+		<if test="flag2==0">
+		<!-- and a.RTF_STATE ='XSCS' and a.RTF_NODE_STATE ='XSCS-ASSIGN' -->
+			AND (
+      				   (a.RTF_NODE_STATE ='XSCS-ASSIGN' and a.RTF_STATE ='XSCS'
+						or a.RTF_NODE_STATE ='XSCS-HANGUP' and a.RTF_STATE ='XSCS')
+  					) 
+		</if>
+		<if test="flag2==2">		
+			AND (
+    				( a.RTF_STATE = 'CSFP' 
+      				  AND a.RTF_NODE_STATE = 'CSFP-SUBMIT') 
+    				  OR ( a.RTF_STATE = 'XSCS' 
+      				  AND a.RTF_NODE_STATE = 'XSCS-ASSIGN') 
+    				  OR ( a.RTF_STATE = 'XSZS' 
+      				  AND a.RTF_NODE_STATE = 'XSZS-RTNCS')
+      				  OR (
+      				  	a.RTF_STATE = 'XSCS'
+      				  	AND a.RTF_NODE_STATE = 'XSCS-HANGUP'
+      				  )
+      				  OR (
+      				  	a.RTF_STATE = 'XSCS'
+      				  	AND a.RTF_NODE_STATE = 'XSCS-REJECT'
+      				  )
+      				  OR (
+      				  	a.RTF_STATE = 'XSCS'
+      				  	AND a.RTF_NODE_STATE = 'XSCS-RETURN'
+      				  )
+      				  OR(
+      				  	a.RTF_STATE = 'XSCS'
+      				  	AND a.RTF_NODE_STATE = 'XSCS-PASS'
+      				  )
+      				  OR(
+      				  	a.RTF_STATE = 'XSCS'
+      				  	AND a.RTF_NODE_STATE = 'HIGH-PASS'
+      				  )
+  					) 
+			</if>
+		order by ${sortValue}
+	</select>
+	
+	<!--Cs改派数量SQL 拆分     update-->
+<select id="reassignMentCsCountUpdate" parameterType="Map" resultType="int">
+	select count(1)
+		from(	
+			SELECT 
+			blb.loan_no,
+			blb.OWNING_BRANCH_ID,
+			blb.RTF_STATE,
+			blb.RTF_NODE_STATE,
+			blb.IF_NEW_LOAN_NO,
+			bap.`name`,
+			bap.ID_NO,
+			bla.CHECK_PERSON_CODE,
+			bla.CHECK_PERSON,
+			bla.CHECK_ALLOT_DATE,
+			blp.PRODUCT_NAME,
+			blp.PRODUCT_CD,
+			blp.IF_PRI,
+			blp.IF_SUSPECT_CHEAT,
+			blb.APP_INPUT_FLAG,
+			blb.APPLY_DATE,
+			blb.version,
+			blb.BRANCH_MANAGER_CODE,
+			bla.CREATED_TIME,
+			bla.CHECK_NODE_STATE,
+			ble.FINALAUDIT_BACK_SNAP_VERSION,
+			bla.IF_CHECK_RETURN,
+			bla.IF_LASTCHECK_RETURN,
+			blb.IF_PREFERENTIAL_USER
+			from bms_loan_base blb 
+			INNER JOIN bms_app_person bap on blb.PERSON_ID=bap.ID
+			INNER JOIN bms_loan_audit bla on bla.loan_no=blb.loan_no 
+			INNER JOIN bms_loan_product blp on blp.LOAN_NO=blb.LOAN_NO
+			INNER JOIN BMS_LOAN_EXT ble on ble.LOAN_NO=blb.LOAN_NO
+			where 1=1
+			
+			
+				<if test="fpStatus==null or fpStatus==''">
+					<choose>
+						<when test="flag2==2"><!-- 经理以上的角色 -->
+							and blb.RTF_STATE ='CSFP' and blb.RTF_NODE_STATE ='CSFP-SUBMIT'
+						or(
+						 blb.RTF_NODE_STATE ='XSCS-ASSIGN' and blb.RTF_STATE ='XSCS'
+						<!-- or blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK'
+						or blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_PASS' -->
+						or blb.RTF_NODE_STATE = 'XSCS-HANGUP' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK' 
+						or blb.RTF_NODE_STATE = 'XSCS-RETURN' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'HIGH-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						OR blb.RTF_STATE = 'XSZS'  AND blb.RTF_NODE_STATE = 'XSZS-RTNCS'
+						)
+						UNION ALL
+								SELECT
+								blb.loan_no,
+								blb.OWNING_BRANCH_ID,
+								blb.RTF_STATE,
+								blb.RTF_NODE_STATE,
+								blb.IF_NEW_LOAN_NO,
+								bap.`name`,
+								bap.ID_NO,
+								bla.CHECK_PERSON_CODE,
+								bla.CHECK_PERSON,
+								bla.CHECK_ALLOT_DATE,
+								blp.PRODUCT_NAME,
+								blp.PRODUCT_CD,
+								blp.IF_PRI,
+								blp.IF_SUSPECT_CHEAT,
+								blb.APP_INPUT_FLAG,
+								blb.APPLY_DATE,
+								blb.version,
+								blb.BRANCH_MANAGER_CODE,
+								bla.CREATED_TIME,
+								bla.CHECK_NODE_STATE,
+								ble.FINALAUDIT_BACK_SNAP_VERSION,
+								bla.IF_CHECK_RETURN,
+								bla.IF_LASTCHECK_RETURN,
+								blb.IF_PREFERENTIAL_USER
+								from bms_loan_base blb 
+								INNER JOIN bms_app_person bap ON blb.PERSON_ID = bap.ID
+								INNER JOIN bms_loan_audit bla ON bla.loan_no = blb.loan_no
+								INNER JOIN bms_loan_product blp ON blp.LOAN_NO = blb.LOAN_NO
+								INNER JOIN BMS_LOAN_EXT ble ON ble.LOAN_NO = blb.LOAN_NO
+								WHERE
+									1 = 1
+								AND bla.CHECK_NODE_STATE = 'CHECK_NO_PASS'
+								AND blb.RTF_STATE = 'XSCS'
+								AND blb.RTF_NODE_STATE = 'XSCS-REJECT'
+						</when>
+						<otherwise>
+						and ((blb.RTF_NODE_STATE ='XSCS-ASSIGN' and blb.RTF_STATE ='XSCS')
+						or (blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK')
+						or (blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_PASS')
+						or (blb.RTF_NODE_STATE = 'XSCS-HANGUP' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK') 
+						or (blb.RTF_NODE_STATE = 'XSCS-REJECT' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS')
+						or (blb.RTF_NODE_STATE = 'XSCS-RETURN' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS')
+						or (blb.RTF_NODE_STATE = 'HIGH-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS')
+						or (blb.RTF_NODE_STATE = 'XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'))
+						</otherwise>
+					</choose>
+				</if>
+				<if test="fpStatus==2"><!-- 未分派-->			
+					<if test="flag2==2"><!-- 经理以上的角色 -->
+						and blb.RTF_STATE ='CSFP' and blb.RTF_NODE_STATE ='CSFP-SUBMIT'
+						or(
+						blb.RTF_NODE_STATE = 'XSCS-REJECT' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS' and blb.if_new_loan_no=0
+						or blb.RTF_NODE_STATE = 'XSCS-RETURN' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS' and blb.if_new_loan_no=0
+						or blb.RTF_NODE_STATE = 'HIGH-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS' and blb.if_new_loan_no=0
+						or blb.RTF_NODE_STATE = 'XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS' and blb.if_new_loan_no=0
+						OR blb.RTF_STATE = 'XSZS'  AND blb.RTF_NODE_STATE = 'XSZS-RTNCS'
+						)
+					</if>
+					<if test="flag2==0">
+						and blb.id is null
+					</if>
+				</if>
+				<if test="fpStatus==1"><!-- 已分派 所有人都能查-->
+						<if test="flag2==2">
+						and blb.RTF_NODE_STATE ='XSCS-ASSIGN' and blb.RTF_STATE ='XSCS'
+						or blb.RTF_NODE_STATE ='XSCS-HANGUP' and blb.RTF_STATE ='XSCS'
+						</if>
+						<if test="flag2==0">
+						and (blb.RTF_NODE_STATE ='XSCS-ASSIGN' and blb.RTF_STATE ='XSCS'
+						or blb.RTF_NODE_STATE ='XSCS-HANGUP' and blb.RTF_STATE ='XSCS')
+						</if>
+						<!--
+						and blb.RTF_NODE_STATE ='XSCS-ASSIGN' and blb.RTF_STATE ='XSCS'
+						or blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_PASS'
+						or blb.RTF_NODE_STATE ='XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK'
+						or blb.RTF_NODE_STATE = 'XSCS-HANGUP' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='NO_CHECK' 
+						or blb.RTF_NODE_STATE = 'XSCS-REJECT' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'XSCS-RETURN' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'HIGH-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+						or blb.RTF_NODE_STATE = 'XSCS-PASS' and blb.RTF_STATE ='XSCS' and bla.CHECK_NODE_STATE='CHECK_NO_PASS' -->
+				</if>
+						
+	<if test="handleCode==null or handleCode==''">			
+		<if test="flag2!=2">		
+				<if test="flag2==0">
+					<!-- 循环 -->
+					and bla.CHECK_PERSON_CODE IN (
+						<foreach  item="checkPersonCd" index="index" collection="saveCsPersonCodes" separator=",">
+							#{checkPersonCd}
+						</foreach>
+					)
+				</if>
+		</if>
+	</if>	
+			)a
+			where 1=1
+			
+			<if test="loanNo!=null and loanNo!=''">
+				and a.loan_no=#{loanNo}
+			</if>
+			
+			<if test="ifPreferentialUser!=null and ifPreferentialUser!=''">
+				and a.IF_PREFERENTIAL_USER=#{ifPreferentialUser}
+			</if>
+			
+			<if test="customerName!=null and customerName!=''">
+				and a.`name` like CONCAT('%',trim(#{customerName}),'%')
+			</if>
+			<if test="customerIDNO!=null and customerIDNO!=''">
+				and a.ID_NO=#{customerIDNO}
+			</if>
+		
+			<if test="productCd!=null and productCd!=''">
+				and a.PRODUCT_CD in (${productCd})
+			</if>
+			<if test="owningBranchId!=null and owningBranchId!=''">
+				and a.OWNING_BRANCH_ID in (${owningBranchId})
+			</if>
+			<if test="caseType!=null and caseType!=''"> 
+				<!-- <if test="ifPri==1">
+					and a.IF_PRI=1
+				</if>
+				<if test="ifPri==1 and appInputFlag==2" >
+					and a.IF_PRI=1 or a.APP_INPUT_FLAG='app_input'
+				</if>
+				<if test="ifPri==1 and ifSuspectCheat==3">
+					and a.IF_PRI=1 or a.IF_SUSPECT_CHEAT=1
+				</if>
+				<if test="appInputFlag==2 and ifSuspectCheat==3">
+					and a.APP_INPUT_FLAG='app_input' or a.IF_SUSPECT_CHEAT=1
+				</if>
+				<if test="ifPri==1 and appInputFlag==2 and ifSuspectCheat==3" >
+					and a.IF_PRI=1 or a.APP_INPUT_FLAG='app_input' or a.IF_SUSPECT_CHEAT=1
+				</if> -->
+				and (
+				<if test="ifPri==1">
+					(a.IF_PRI=1) or
+				</if>
+				<if test="appInputFlag==2 " >
+					 (a.APP_INPUT_FLAG='app_input') or
+				</if>
+				<if test="ifSuspectCheat==3" >
+					 (a.IF_SUSPECT_CHEAT=1) or
+				</if>
+				<if test="returnFile==4" >
+					 ((a.RTF_NODE_STATE='XSZS-RTNCS') or (a.RTF_NODE_STATE='CSFP-SUBMIT' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.RTF_NODE_STATE='XSCS-ASSIGN' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.RTF_NODE_STATE='XSCS-HANGUP' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.CHECK_NODE_STATE='CHECK_NO_PASS')
+					 or (a.RTF_NODE_STATE='CSFP-SUBMIT' and a.IF_CHECK_RETURN is not null) or (a.RTF_NODE_STATE='XSCS-ASSIGN' and a.IF_CHECK_RETURN is not null) or (a.RTF_NODE_STATE='XSCS-HANGUP' and a.IF_CHECK_RETURN is not null)) or
+				</if>
+				1!=1
+				)
+			</if>
+			<if test="caseIdentifyList!=null and caseIdentifyList.size()>0">
+			 	and 
+				<foreach item="caseIdentifyItem" index="index" collection="caseIdentifyList" separator=" or " open="(" close=")">
+					<if test='caseIdentifyItem=="1"'>a.IF_PRI=1</if>
+					<if test='caseIdentifyItem=="2"'>a.APP_INPUT_FLAG='app_input'</if>
+					<if test='caseIdentifyItem=="3"'>a.IF_SUSPECT_CHEAT=1</if>
+					<if test='caseIdentifyItem=="4"'>
+					((a.RTF_NODE_STATE='XSZS-RTNCS') or (a.RTF_NODE_STATE='CSFP-SUBMIT' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.RTF_NODE_STATE='XSCS-ASSIGN' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.RTF_NODE_STATE='XSCS-HANGUP' and a.FINALAUDIT_BACK_SNAP_VERSION is not null and a.IF_LASTCHECK_RETURN ='1') or (a.CHECK_NODE_STATE='CHECK_NO_PASS')
+					 or (a.RTF_NODE_STATE='CSFP-SUBMIT' and a.IF_CHECK_RETURN is not null) or (a.RTF_NODE_STATE='XSCS-ASSIGN' and a.IF_CHECK_RETURN is not null) or (a.RTF_NODE_STATE='XSCS-HANGUP' and a.IF_CHECK_RETURN is not null))
+					 </if>
+					<if test='caseIdentifyItem=="5"'>a.IF_PREFERENTIAL_USER='Y'</if>
+		        </foreach>
+	        </if>
+			<if test="xsStartDate!=null and xsStartDate!=''">
+				and a.CREATED_TIME <![CDATA[>=]]> #{xsStartDate}
+			</if>
+			<if test="xsEndDate!=null and xsEndDate!=''">
+				and a.CREATED_TIME <![CDATA[<=]]> #{xsEndDate}
+			</if>
+			<if test="branchManagerName!=null and branchManagerName!=''">
+				and a.BRANCH_MANAGER_CODE =#{branchManagerName}
+			</if>
+			
+			<!--  
+			<if test="null!=handleCode">
+				and a.CHECK_PERSON_CODE in(
+				<foreach item="stringDate" index="index" collection="handleCode"
+				separator=",">
+					#{stringDate}
+				</foreach>
+				) 
+			</if>-->
+			<if test="handleCode!=null and handleCode!=''">
+				<if test="flag2!=2">
+					and a.CHECK_PERSON_CODE in(${handleCode})
+				</if>
+			</if>
+			
+		<if test="flag2==0">
+			<!--  and a.RTF_STATE ='XSCS' and a.RTF_NODE_STATE ='XSCS-ASSIGN'-->
+			AND (
+      				   (a.RTF_NODE_STATE ='XSCS-ASSIGN' and a.RTF_STATE ='XSCS'
+						or a.RTF_NODE_STATE ='XSCS-HANGUP' and a.RTF_STATE ='XSCS')
+  					) 
+		</if>
+		<if test="flag2==2"><!-- 如果是经理 -->
+			AND (
+    				( a.RTF_STATE = 'CSFP' 
+      				  AND a.RTF_NODE_STATE = 'CSFP-SUBMIT') 
+    				  OR ( a.RTF_STATE = 'XSCS' 
+      				  AND a.RTF_NODE_STATE = 'XSCS-ASSIGN') 
+    				  OR ( a.RTF_STATE = 'XSZS' 
+      				  AND a.RTF_NODE_STATE = 'XSZS-RTNCS')
+      				  OR (
+      				  	a.RTF_STATE = 'XSCS'
+      				  	AND a.RTF_NODE_STATE = 'XSCS-HANGUP'
+      				  )
+      				  OR (
+      				  	a.RTF_STATE = 'XSCS'
+      				  	AND a.RTF_NODE_STATE = 'XSCS-REJECT'
+      				  )
+      				  OR (
+      				  	a.RTF_STATE = 'XSCS'
+      				  	AND a.RTF_NODE_STATE = 'XSCS-RETURN'
+      				  )
+      				  OR(
+      				  	a.RTF_STATE = 'XSCS'
+      				  	AND a.RTF_NODE_STATE = 'XSCS-PASS'
+      				  )
+      				  OR(
+      				  	a.RTF_STATE = 'XSCS'
+      				  	AND a.RTF_NODE_STATE = 'HIGH-PASS'
+      				  )
+  					) 
+			</if>
+	</select>
+	<!-- 初审待办任务查询 -->
+	<select id="queryCsWaitForTheStocks" resultMap="firstAuditMap" parameterType="java.util.Map">
+	SELECT
+	blb.ID ,
+	blb.LOAN_NO,
+	bap.NAME,
+	bap.ID_NO,
+	blp.APPLY_LMT,
+	blp.IF_PRI,
+	blp.IF_SUSPECT_CHEAT,
+	blp.PRODUCT_NAME,
+	blb.OWNING_BRANCH_ID,
+	blb.APP_APPLY_DATE,
+	blb.APPLY_TYPE,
+	blb.RTF_NODE_STATE,
+	blb.APP_INPUT_FLAG,
+	bla.CHECK_PERSON_CODE,
+	blb.VERSION,
+	bla.ACC_DATE,
+	blb.IF_NEW_LOAN_NO,
+	blb.ZS_IF_NEW_LOAN_NO,
+	bla.ACC_LMT,
+	bla.FINAL_ALLOT_DATE,
+	bla.CHECK_ALLOT_DATE,
+	bla.IF_CREDIT_RECORD,
+	bla.AMOUT_INCOME,
+	bla.final_person_code,
+	bla.APPROVAL_PERSON_CODE,
+	bla.CREATED_TIME,
+	bla.CHECK_NODE_STATE
+	FROM bms_loan_base blb
+	LEFT JOIN BMS_APP_PERSON bap ON blb.person_id=bap.id
+	LEFT JOIN BMS_LOAN_PRODUCT blp ON blp.loan_no=blb.loan_no
+	LEFT JOIN bms_loan_audit bla on bla.loan_no=blb.loan_no
+	left join bms_loan_ext ble on ble.loan_no=blb.loan_no
+	where 1=1
+	<if test="caseType==1"><!-- 优先队列 -->
+		and blb.RTF_NODE_STATE='XSCS-ASSIGN' and blb.IF_NEW_LOAN_NO ="0"
+	</if>
+	<if test="caseType==2"><!-- 正常队列 -->
+		and blb.IF_NEW_LOAN_NO ="1" and blb.RTF_NODE_STATE='XSCS-ASSIGN'<!-- 新生件 -->
+	</if>
+	<if test="caseType==3"><!-- 挂起队列 -->
+		and blb.RTF_NODE_STATE = 'XSCS-HANGUP'
+	</if>
+	<if test="isAdmin!=1"><!-- 不是admin -->
+			and bla.CHECK_PERSON_CODE=#{checkPersonCd}
+	</if>	
+		order by bla.CREATED_TIME asc 
+	</select>
+	<select id="cSWaitForTheStocksCount" resultType="long" parameterType="java.util.Map">
+	SELECT count(1)
+	FROM bms_loan_base blb
+	LEFT JOIN BMS_APP_PERSON bap ON blb.person_id=bap.id
+	LEFT JOIN BMS_LOAN_PRODUCT blp ON blp.loan_no=blb.loan_no
+	LEFT JOIN bms_loan_audit bla on bla.loan_no=blb.loan_no
+	left join bms_loan_ext ble on ble.loan_no=blb.loan_no
+	where 1=1
+	<if test="caseType==1"><!-- 优先队列 -->
+		and blb.RTF_NODE_STATE='XSCS-ASSIGN' and blb.IF_NEW_LOAN_NO ="0"
+	</if>
+	<if test="caseType==2"><!-- 正常队列 -->
+		and blb.IF_NEW_LOAN_NO ="1" and blb.RTF_NODE_STATE='XSCS-ASSIGN'<!-- 新生件 -->
+	</if>
+	<if test="caseType==3"><!-- 挂起队列 -->
+		and blb.RTF_NODE_STATE = 'XSCS-HANGUP'
+	</if>
+	<if test="isAdmin!=1"><!-- 不是admin -->
+			and bla.CHECK_PERSON_CODE=#{checkPersonCd}
+	</if>	
+		order by bla.CREATED_TIME asc 
+	
+	</select>
+	<!-- 初审已完成任务查询 -->
+	<select id="queryCsAduditOffTheStocks"  parameterType="java.util.Map" resultMap="firstAuditMap">
+	SELECT
+	blb.ID ,
+	blb.LOAN_NO,
+	bap.NAME,
+	bap.ID_NO,
+	blp.APPLY_LMT,
+	blp.IF_PRI,
+	blp.IF_SUSPECT_CHEAT,
+	blp.PRODUCT_NAME,
+	blb.OWNING_BRANCH_ID,
+	blb.APP_APPLY_DATE,
+	blb.APPLY_TYPE,
+	blb.RTF_NODE_STATE,
+	blb.APP_INPUT_FLAG,
+	bla.CHECK_PERSON_CODE,
+	blb.VERSION,
+	bla.ACC_DATE,
+	blb.IF_NEW_LOAN_NO,
+	blb.ZS_IF_NEW_LOAN_NO,
+	bla.ACC_LMT,
+	bla.FINAL_ALLOT_DATE,
+	bla.CHECK_ALLOT_DATE,
+	bla.IF_CREDIT_RECORD,
+	bla.AMOUT_INCOME,
+	bla.final_person_code,
+	bla.APPROVAL_PERSON_CODE,
+	bla.CREATED_TIME,
+	bla.CHECK_NODE_STATE
+	FROM bms_loan_base blb
+	LEFT JOIN BMS_APP_PERSON bap ON blb.person_id=bap.id
+	LEFT JOIN BMS_LOAN_PRODUCT blp ON blp.loan_no=blb.loan_no
+	LEFT JOIN bms_loan_audit bla on bla.loan_no=blb.loan_no
+	left join bms_loan_ext ble on ble.loan_no=blb.loan_no
+	where 1=1
+	<if test="loans!=null and loans.size()>0">
+	and blb.loan_no in(
+	<foreach item="firstAuditEntity" index="index" collection="loans" separator=",">
+		#{firstAuditEntity.loanNo}
+	</foreach>
+	)
+	</if>
+	<if test="flag2!=2"><!-- 如果不是经理角色 -->
+		AND (bla.CHECK_PERSON_CODE !=(#{checkPersonCd}) OR blb.RTF_NODE_STATE!='XSCS-ASSIGN')
+	</if>
+	</select>
+	<select id="cSAduditOffTheStocksCount" resultType="long" parameterType="java.util.Map">
+		SELECT count(1)
+		FROM bms_loan_base blb
+		LEFT JOIN BMS_APP_PERSON bap ON blb.person_id=bap.id
+		LEFT JOIN BMS_LOAN_PRODUCT blp ON blp.loan_no=blb.loan_no
+		LEFT JOIN bms_loan_audit bla on bla.loan_no=blb.loan_no
+		left join bms_loan_ext ble on ble.loan_no=blb.loan_no
+		where 1=1
+		<if test="loans!=null and loans.size()>0">
+			and blb.loan_no in(
+			<foreach item="firstAuditEntity" index="index" collection="loans"
+				separator=",">
+				#{firstAuditEntity.loanNo}
+			</foreach>
+			)
+			<if test="flag2!=2"><!-- 如果不是经理角色 -->
+				AND (bla.CHECK_PERSON_CODE !=(#{checkPersonCd}) OR
+				blb.RTF_NODE_STATE!='XSCS-ASSIGN')
+			</if>
+		</if>
+	</select>
+	<select id="querycSFirstOperationTime" parameterType="map" resultMap="firstAuditMap">
+		<if test="flag2!=2">
+	  SELECT OPERATION_TIME FROM bms_loan_log
+	 WHERE (RTF_NODE_STATE='XSCS-ASSIGN' OR(OPERATION_TYPE='104' AND RTF_NODE_STATE='CSFP-SUBMIT'))
+	AND CHECK_PERSON_CODE=#{checkPersonCd}
+	AND LOAN_NO=#{loanNo} ORDER BY id ASC LIMIT 1
+		</if>
+	</select>
+	
+	
+	<update id="updLoanBaseTwo" parameterType="Map">
+		update bms_loan_base
+		<set>
+			<if test="status!=null and status!=''">
+				STATUS=#{status},
+			</if>
+			<if test="rtfStatus!=null and rtfStatus!=''">
+				RTF_STATE=#{rtfStatus},
+			</if>
+			<if test="rtfNodeState!=null and rtfNodeState!=''">
+				RTF_NODE_STATE=#{rtfNodeState},
+			</if>
+			<if test="serviceCode!=null and serviceCode!=''">
+				SERVICE_CODE=#{serviceCode},
+			</if>
+			<if test="ifNewLoanNo!=null and ifNewLoanNo!=''">
+				IF_NEW_LOAN_NO=#{ifNewLoanNo},
+			</if>
+			<if test="zSIfNewLoanNo!=null and zSIfNewLoanNo!=''">
+				ZS_IF_NEW_LOAN_NO=#{zSIfNewLoanNo},
+			</if>
+			<if test="loanNoTopClass!=null and loanNoTopClass!=''">
+				LOAN_NO_TOP_CLASS=#{loanNoTopClass},
+			</if>
+			<if test="version!=null and version!=''">
+				VERSION=#{version},
+			</if>
+			modified_time=SYSDATE() 
+		</set>
+		<where>
+			LOAN_NO=#{loanNo} and VERSION=#{version}
+		</where>
+	</update>
+	
+	<!-- 获取申请人手机号信息 -->
+	<select id="getPersonPhone"  parameterType="java.lang.String" resultType="java.util.Map">
+		select t.id,api.id_no,api.name,api.cellphone,api.cellphone_sec,long_online_id,real_name_auth_id,hz_report_change_info from( 
+		select id from bms_loan_base where loan_no = #{loanNo}) t
+		left join bms_app_person_info api on t.id = api.loan_base_id
+	</select>
+	
+	<!-- 插入华征报告ID -->
+	<update id="updateHZReportId" parameterType="java.util.Map">
+		update bms_app_person_info set long_online_id = #{mobileOnlineId}, real_name_auth_id=#{idCardCheckId} where loan_base_id = #{id}
+	</update>
+	
+	<!-- 华征报告前置条件 -->
+	<select id="hzReportIdPreCondition" parameterType="java.lang.String" resultType="java.util.Map">
+		select lb.*,la.check_node_state from (select id,rtf_node_state,loan_no from bms_loan_base where loan_no = #{loanNo}) lb
+		left join bms_loan_audit la on lb.id = la.loan_base_id 
+		where lb.rtf_node_state in ('XSCS-PASS','HIGH-PASS')
+		and la.check_node_state in ('NO_CHECK', 'CHECK_PASS')
+	</select>
+	
+	<!-- 插入华征报告ID -->
+	<update id="updateHZReportChangeInfo" parameterType="java.util.Map">
+		update bms_app_person_info set hz_report_change_info = #{hzReportChangeInfo} where loan_base_id = #{id}
+	</update>
+</mapper> 

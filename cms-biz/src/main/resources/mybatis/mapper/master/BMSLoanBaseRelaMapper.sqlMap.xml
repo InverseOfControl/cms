@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSLoanBaseRelaDaoImpl">
+<!-- 借款申请资产信息表 -->
+   <resultMap id="BMSLoanBaseRelaMap" type="com.ymkj.cms.biz.entity.master.BMSLoanBaseRela">
+       <!--ID  -->
+		<id property="id" column="ID" />
+		<!-- LOAN_BASE_ID -->
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<!-- 客户主表ID  -->
+		<result property="personId" column="PERSON_ID" />
+		<!-- 借款编号 -->
+		<!-- <result property="loanNo" column="LOAN_NO" /> -->
+		<!-- 申请件编号 -->
+		<!-- <result property="appNo" column="APP_NO" /> -->
+		<!-- 机构号 -->
+		<!-- <result property="org" column="ORG" /> -->
+		<!-- 主卡申请人信息表主键 -->
+		<result property="bmsAppPersonInfoId" column="BMS_APP_PERSON_INFO_ID" />
+		<!-- 房产信息表主键 -->
+		<result property="bmsTmAppEstateInfoId" column="BMS_TM_APP_ESTATE_INFO_ID" />
+		<!-- 公积金信息表主键 -->
+		<result property="bmsTmAppProvidentInfoId" column="BMS_TM_APP_PROVIDENT_INFO_ID" />
+		<!-- 保单信息表主键 -->
+		<result property="bmsTmAppPolicyInfoId" column="BMS_TM_APP_POLICY_INFO_ID" />
+		<!-- 淘宝达人贷信息表主键 -->
+		<result property="bmsTmAppMasterLoanInfoId" column="BMS_TM_APP_MASTER_LOAN_INFO_ID" />
+		<!-- 淘宝商户贷信息表主键 -->
+		<result property="bmsTmAppMerchantLoanInfoId" column="BMS_TM_APP_MERCHANT_LOAN_INFO_ID" />
+		<!-- 车辆信息表主键 -->
+		<result property="bmsTmAppCarInfoId" column="BMS_TM_APP_CAR_INFO_ID" />
+		<!-- 随薪贷信息表主键 -->
+		<result property="bmsTmAppSalaryLoanInfoId" column="BMS_TM_APP_SALARY_LOAN_INFO_ID" />
+		<!-- 卡友贷信息表主键 -->
+		<result property="bmsTmAppCardLoanInfoId" column="BMS_TM_APP_CARD_LOAN_INFO_ID" />
+		<!-- 联系人主表Id -->
+		<result property="bmsTmAppContactInfoId" column="BMS_TM_APP_CONTACT_INFO_ID" />
+
+	    
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="createdTime" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modifier" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedTime" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifierId" column="MODIFIER_ID" />
+	    <!-- 版本号 -->
+	    <result property="version" column="VERSION" />
+	    <!-- 是否删除 -->
+	    <result property="isDelete" column="IS_DELETE" />
+	    
+	    <!-- 流程状态 -->
+		<!-- <result property="flowState" column="FLOW_STATE" /> -->
+		<!-- 快照版本 -->
+		<!-- <result property="snapVersion" column="SNAP_VERSION" /> -->
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		 <if test="personId != null and personId != ''">
+        	and PERSON_ID = #{personId}
+        </if> 
+       <!--  <if test="appNo != null and appNo != ''">
+        	and APP_NO = #{appNo}
+        </if> -->
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	 </sql>	
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSLoanBaseRelaMap">
+		     select 
+		    `ID`,
+             `PERSON_ID`,
+             `LOAN_BASE_ID`,
+             `BMS_APP_PERSON_INFO_ID`,
+             `BMS_TM_APP_CONTACT_INFO_ID`,
+             `BMS_TM_APP_ESTATE_INFO_ID`,
+             `BMS_TM_APP_PROVIDENT_INFO_ID`,
+             `BMS_TM_APP_POLICY_INFO_ID`,
+             `BMS_TM_APP_MASTER_LOAN_INFO_ID`,
+             `BMS_TM_APP_MERCHANT_LOAN_INFO_ID`,
+             `BMS_TM_APP_CAR_INFO_ID`,
+             `BMS_TM_APP_SALARY_LOAN_INFO_ID`,
+             `BMS_TM_APP_CARD_LOAN_INFO_ID`,
+             `CREATOR_ID`,
+             `CREATOR`,
+             `CREATED_TIME`,
+             `MODIFIER_ID`,
+             `MODIFIER`,
+             `MODIFIED_TIME`,
+             `VERSION`,
+             `IS_DELETE`
+		      from BMS_LOAN_BASE_RELA
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by CREATED_TIME desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_LOAN_BASE_RELA
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+     
+</mapper> 

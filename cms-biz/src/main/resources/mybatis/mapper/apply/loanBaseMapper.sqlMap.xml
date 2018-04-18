@@ -1,0 +1,1071 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.LoanBaseDaoImpl">
+
+   <resultMap id="loanBaseMap" type="com.ymkj.cms.biz.entity.apply.LoanBaseEntity">
+		<id property="id" column="ID" />
+		<result property="personId" column="PERSON_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="loanNo" column="LOAN_NO" />
+		<result property="status" column="STATUS" />
+		<result property="rtfState" column="RTF_STATE" />
+		<result property="rtfNodeState" column="RTF_NODE_STATE" />
+		<result property="signDate" column="SIGN_DATE" />
+		<result property="branchManagerCode" column="BRANCH_MANAGER_CODE" />
+		<result property="branchManagerName" column="BRANCH_MANAGER_NAME" />
+		<result property="serviceCode" column="SERVICE_CODE" />
+		<result property="serviceName" column="SERVICE_NAME" />
+		<result property="remark" column="REMARK" />
+		<result property="reviewCode" column="REVIEW_CODE" />
+		<result property="reviewName" column="REVIEW_NAME" />
+		<result property="contractBranch" column="CONTRACT_BRANCH" />
+	    <result property="contractBranchId" column="CONTRACT_BRANCH_ID" />
+		<result property="loanBranch" column="LOAN_BRANCH" />
+		<result property="loanBranchId" column="LOAN_BRANCH_ID" />
+		<result property="manageBranch" column="MANAGE_BRANCH" />
+		<result property="manageBranchId" column="MANAGE_BRANCH_ID" />
+		<result property="manageUpdateDate" column="MANAGE_UPDATE_DATE" />
+		<result property="groupForDirector" column="GROUP_FOR_DIRECTOR" />
+		<result property="groupForDirectorId" column="GROUP_FOR_DIRECTOR_ID" />
+	    <result property="director" column="DIRECTOR" />
+	    <result property="directorCode" column="DIRECTOR_CODE" />
+	    <result property="loanDate" column="LOAN_DATE" />
+		<result property="owningBranchId" column="OWNING_BRANCH_ID" />
+		<result property="owningBranch" column="OWNING_BRANCH" />
+		<result property="owningBranchAttribute" column="OWNING_BRANCH_ATTRIBUTE" />
+	    <result property="applyType" column="APPLY_TYPE" />
+	    <result property="applyInputFlag" column="APPLY_INPUT_FLAG" />
+		<result property="appInputFlag" column="APP_INPUT_FLAG" />
+	    <result property="loanId" column="LOAN_ID" />
+	    <result property="lockTarget" column="LOCK_TARGET" />
+	    <result property="appApplyDate" column="APP_APPLY_DATE" />
+	    <result property="applyDate" column="APPLY_DATE" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		<result property="rtfNodeState" column="RFT_NODE_STATE" />
+		<result property="signCode" column="SIGN_CODE" />
+		<result property="signName" column="SIGN_NAME" />
+		<result property="ifNewLoanNo" column="IF_NEW_LOAN_NO" />
+		<result property="handleType" column="HANDLE_TYPE" />
+		<result property="name" column="NAME" />
+		<result property="idNo" column="ID_NO" />
+		<result property="managerCode" column="MANAGER_CODE" />
+		<result property="managerName" column="MANAGER_NAME" />
+		<result property="enterBranchId" column="ENTER_BRANCH_ID"/>
+		<result property="enterBranch" column="ENTER_BRANCH"/>
+		<result property="checkNodeState" column="CHECK_NODE_STATE"/>
+		<result property="ifPreferentialUser" column="IF_PREFERENTIAL_USER"/>
+		<result property="pactMoney" column="PACT_MONEY"/>
+		<result property="sqlrUserCode" column="SQLR_USER_CODE"/>
+		<result property="productName" column="PRODUCT_NAME"/>
+		<result property="productCd" column="PRODUCT_CD"/>
+		<result property="initProductName" column="INIT_PRODUCT_NAME"/>
+		<result property="initProductCd" column="INIT_PRODUCT_CD"/>
+	</resultMap>
+ 
+	<resultMap id="entrySearchMap" type="com.ymkj.cms.biz.entity.apply.EntrySearchEntity">
+		<result property="id" column="ID"/>
+  		<result property="loanNo" column="LOAN_NO" />
+ 		<result property="name" column="NAME" />
+	    <result property="idNo" column="ID_NO" />
+	    <result property="status" column="STATUS" />
+        <result property="productName" column="PRODUCT_NAME" />
+	    <result property="applyType" column="APPLY_TYPE" />
+	    <result property="applyLmt" column="APPLY_LMT" />
+	    <result property="appInputFlag" column="APP_INPUT_FLAG" />
+   		<result property="endTime" column="END_TIME" />
+   		<result property="startTime" column="START_TIME" />
+   		<result property="ifPri" column="IF_PRI" />
+   		<result property="rtfNodeStatus" column="RTF_NODE_STATE" />
+   		
+   		<result property="owningBranchId" column="OWNING_BRANCH_ID" />
+   		<result property="productCd" column="PRODUCT_CD" />
+   		<result property="accTerm" column="ACC_TERM" />
+   		<result property="accLmt" column="ACC_LMT" />
+   		<result property="logoFlag" column="LOGO_FLAG" />
+   		<result property="initProductName" column="INIT_PRODUCT_NAME" />
+   		<result property="initProductCd" column="INIT_PRODUCT_CD" />
+   		<result property="ifPreferentialUser" column="IF_PREFERENTIAL_USER" />
+  	</resultMap>
+  	
+  	<resultMap id="contractSignSearchMap" type="com.ymkj.cms.biz.entity.audit.BMSContractSignSearchEntity">
+  		<result property="loanNo" column="LOAN_NO" />
+ 		<result property="name" column="NAME" />
+	    <result property="channelName" column="CHANNEL_NAME" />
+        <result property="productName" column="PRODUCT_NAME" />
+	    <result property="applyTerm" column="APPLY_TERM" />
+	    <result property="accLmt" column="ACC_LMT" />
+	    <result property="owningBranch" column="OWNING_BRANCH" />
+   		<result property="endTime" column="END_TIME" />
+  	</resultMap>
+  	
+  	<resultMap id="InformationMap" type="com.ymkj.cms.biz.entity.audit.InformationEntity">
+  		<result property="loanNo" column="LOAN_NO" />
+		<result property="idNo" column="ID_NO" />
+		<result property="name" column="NAME" />
+		<result property="productCd" column="PRODUCT_CD" />
+		<result property="productName" column="PRODUCT_NAME" />
+		<result property="applyTerm" column="APPLY_TERM" />
+		<result property="applyLmt" column="APPLY_LMT" />
+		<result property="creditApplication" column="CREDIT_APPLICATION" />
+		<result property="contractBranch" column="CONTRACT_BRANCH" />
+		<result property="barnchManagerName" column="BRANCH_MANAGER_NAME" />
+		<result property="ifPri" column="IF_PRI" />
+		<result property="corpName" column="CORP_NAME" />
+		<result property="corpProvinceId" column="CORP_PROVINCE_ID" />
+		<result property="corpCityId" column="CORP_CITY_ID" />
+		<result property="corpZoneId" column="CORP_ZONE_ID" />
+		<result property="corpAddress" column="CORP_ADDRESS" />
+		<result property="homeStateId" column="HOME_STATE_ID" />
+		<result property="homeCityId" column="HOME_CITY_ID" />
+		<result property="homeZoneId" column="HOME_ZONE_ID" />
+		<result property="homeAddress" column="HOME_ADDRESS" />
+		<result property="version" column="VERSION"/>
+		<result property="monthMaxRepay" column="MONTH_MAX_REPAY"/>
+		<result property="cusWorkType" column="CUS_WORK_TYPE"/>
+		<result property="corpPayWay" column="CORP_PAY_WAY"/>
+		<result property="monthSalary" column="MONTH_SALARY"/>
+		<result property="otherIncome" column="OTHER_INCOME"/>
+		<result property="totalMonthSalary" column="TOTAL_MONTH_SALARY"/>
+		<result property="ifNewLoanNo" column="IF_NEW_LOAN_NO"/>
+		<result property="rtfState" column="RTF_STATE"/>
+		<result property="rtfNodeState" column="RTF_NODE_STATE"/>
+		<result property="checkNodeState" column="CHECK_NODE_STATE"/>
+		<result property="cellPhone" column="CELLPHONE"/>
+		<result property="cellPhone_sec" column="CELLPHONE_SEC"/>
+		<result property="remark" column="REMARK"/>
+		<result property="nfcsId" column="NFCS_ID"/>
+		<result property="reportId" column="REPORT_ID"/>
+		<result property="hzzxId" column="HZZX_ID"/>
+		<result property="createdTime" column="CREATED_TIME"/>
+		<result property="theThirdPartyNote" column="THE_THIRDPARTY_NOTE"/>
+		<result property="theThirdPartyNoteDetails" column="THE_THIRDPARTY_NOTE_DETAILS"/>
+		<result property="auditEndTime" column="AUDIT_END_TIME"/>
+		<result property="applyType" column="APPLY_TYPE"/>
+		<result property="owningBranchId" column="OWNING_BRANCH_ID"/>
+		<result property="owningBranch" column="OWNING_BRANCH"/>
+		<result property="initProductCode" column="INIT_PRODUCT_CD"/>
+		<result property="initProductName" column="INIT_PRODUCT_NAME"/>
+		<result property="amoutIncome" column="AMOUT_INCOME"/>
+		<result property="ifCreditRecord" column="IF_CREDIT_RECORD"/>
+		<result property="enterBranchId" column="ENTER_BRANCH_ID"/>
+		<result property="enterBranch" column="ENTER_BRANCH"/>
+		<result property="enterBranchAttribute" column="ENTER_BRANCH_ATTRIBUTE"/>
+		<result property="antiFraudScore" column="ANTI_FRAUD_SCORE"/>
+		<result property="antiFraudWarning" column="ANTI_FRAUD_WARNING"/>
+		<result property="antiRiskRate" column="ANTI_RISK_RATE"/>
+		<result property="maritalStatus" column="MARITAL_STATUS"/>
+		<result property="ifReportId" column="IF_REPORT_ID"/>
+		<result property="firstLevelReasonCode" column="FIRST_LEVLE_REASONS_CODE"/>
+		<result property="twoLevelReasonCode" column="TWO_LEVLE_REASONS_CODE"/>
+		<result property="approvalPersonCode" column="APPROVAL_PERSON_CODE"/>
+		<result property="primaryReason" column="PRIMARY_REASON"/>
+		<result property="secodeReason" column="SECODE_REASON"/>
+		
+		<result property="corpPhone" column="CORP_PHONE"/>
+		<result property="corpPhoneSec" column="CORP_PHONE_SEC"/>
+		<result property="firstSubmitAudit" column="FIRST_SUBMIT_AUDIT"/>
+		<result property="ifPreferentialUser" column="IF_PREFERENTIAL_USER"/>
+		<result property="zsIfNewLoanNo" column="ZS_IF_NEW_LOAN_NO"/>
+		<result property="isAntifraud" column="IS_ANTIFRAUD"/>
+  	</resultMap>
+  	
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+          <if test="loanNo != null and loanNo != ''">
+        	and	LOAN_NO = #{loanNo}
+      	</if>
+      	<!-- 借款编号集合-->
+		<if test="loanNos!=null and loanNos.size>0">
+			AND LOAN_NO IN
+			<foreach collection="loanNos" item="loanNoItem" open="(" close=")" separator=",">
+				#{loanNoItem}
+			</foreach>
+		</if>
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+    
+    
+    <select id="listBy" parameterType="java.util.Map" resultMap="loanBaseMap">
+		select * from  bms_loan_base blb
+		inner join bms_loan_audit bla on blb.loan_no=bla.loan_no 
+		<where>
+			<if test="id != null and id != 0">
+        	and blb.id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and blb.status = #{status}
+        </if>
+          <if test="loanNo != null and loanNo != ''">
+        	and	blb.LOAN_NO = #{loanNo}
+      	</if>
+      	<!-- 借款编号集合-->
+		<if test="loanNos!=null and loanNos.size>0">
+			AND blb.LOAN_NO IN
+			<foreach collection="loanNos" item="loanNoItem" open="(" close=")" separator=",">
+				#{loanNoItem}
+			</foreach>
+		</if>
+		</where>
+	</select> 
+ 
+ <select id="listByLoanBase" parameterType="java.util.Map" resultMap="loanBaseMap">
+		select * from  bms_loan_base blb
+		left join bms_loan_audit bla on blb.loan_no=bla.loan_no 
+		<where>
+			<if test="id != null and id != 0">
+        	and blb.id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and blb.status = #{status}
+        </if>
+          <if test="loanNo != null and loanNo != ''">
+        	and	blb.LOAN_NO = #{loanNo}
+      	</if>
+      	<!-- 借款编号集合-->
+		<if test="loanNos!=null and loanNos.size>0">
+			AND blb.LOAN_NO IN
+			<foreach collection="loanNos" item="loanNoItem" open="(" close=")" separator=",">
+				#{loanNoItem}
+			</foreach>
+		</if>
+		</where>
+	</select>
+	
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.LoanBaseEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into bms_loan_base( PERSON_ID,APP_NO,LOAN_NO,SERVICE_NAME
+         				, STATUS,RTF_STATE,RTF_NODE_STATE,BRANCH_MANAGER_CODE,BRANCH_MANAGER_NAME, SERVICE_CODE,REMARK,CONTRACT_BRANCH,CONTRACT_BRANCH_ID
+         				,GROUP_FOR_DIRECTOR ,GROUP_FOR_DIRECTOR_ID,DIRECTOR,OWNING_BRANCH_ID,OWNING_BRANCH,OWNING_BRANCH_ATTRIBUTE
+         				,APPLY_TYPE,APPLY_INPUT_FLAG,APP_INPUT_FLAG,LOCK_TARGET
+         				,CREATOR_ID,CREATOR,CREATED_TIME,NAME,ID_NO,SIGN_CODE,SIGN_NAME,APP_APPLY_DATE,APPLY_DATE,
+         				REVIEW_CODE,REVIEW_NAME,DIRECTOR_CODE,ENTER_BRANCH_ID,ENTER_BRANCH,ENTER_BRANCH_ATTRIBUTE,IF_PREFERENTIAL_USER)
+         	 VALUES(   #{personId}, #{appNo},#{loanNo},#{serviceName},#{status}, #{rtfState},#{rtfNodeState}, #{branchManagerCode},#{branchManagerName}, #{serviceCode},
+         	 #{remark}, #{contractBranch}, #{contractBranchId}, #{groupForDirector},#{groupForDirectorId}, #{director}, #{owningBranchId}, #{owningBranch},
+         	 #{owningBranchAttribute}, #{applyType}, #{applyInputFlag}, #{appInputFlag},#{lockTarget}, 
+         	  #{creatorId}, #{creator}, #{createdTime} ,#{name} ,#{idNo} ,#{signCode},#{signName},#{appApplyDate},#{applyDate} ,
+         	  #{reviewCode},#{reviewName},#{directorCode},#{enterBranchId},#{enterBranch},#{enterBranchAttribute},#{ifPreferentialUser})
+    </insert >
+    
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="loanBaseMap">
+		select * from bms_loan_base
+		where id = #{id}
+	</select>
+	
+	
+	<!-- 根据条件查询，可扩展 -->
+	<select id="getByMap" parameterType="java.util.Map" resultMap="loanBaseMap">
+		select * from bms_loan_base 
+		where 1=1
+		<if test="loanNo != null and loanNo != ''">
+			and LOAN_NO = #{loanNo}
+		</if>
+	</select>
+	
+	<!-- 根据借款编号查询 审核产品，期限，金额 -->
+	<select id="queryAuditProduct" parameterType="java.util.Map" resultMap="entrySearchMap">
+		SELECT b.`OWNING_BRANCH_ID`,p.`PRODUCT_CD`,a.ACC_TERM,a.ACC_LMT FROM bms_loan_base b
+		LEFT JOIN bms_loan_product p ON (b.`LOAN_NO` = p.`LOAN_NO`)
+		LEFT JOIN bms_loan_audit a ON (b.`LOAN_NO` = a.`LOAN_NO`)
+		where 1=1
+		and b.LOAN_NO = #{loanNo}
+	</select>
+	
+	
+	
+	<!-- 门店改派查询 -->
+	<sql id="getReassignmentSQL">
+		<if test="name != null and name != ''">
+			and tt.NAME = #{name}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+			and tt.LOAN_NO = #{loanNo}
+		</if>
+		<if test="idNo != null and idNo != ''">
+			and tt.ID_NO = #{idNo}
+		</if>
+		<if test="operatorCode != null and operatorCode != ''">
+			and tt.SERVICE_CODE = #{operatorCode}
+			<!-- 
+			AND (lb.SERVICE_CODE=#{operatorCode} OR lb.SIGN_CODE=#{operatorCode} OR lb.MANAGER_CODE=#{operatorCode})
+			 -->
+		</if>
+		
+		<if test="rtfNodeState !=null and rtfNodeState.size() > 0">
+			AND tt.RTF_NODE_STATE in(
+			<foreach item="guard" index="index" collection="rtfNodeState" separator=",">
+				#{guard}
+			</foreach>
+			)
+		</if>
+		<if test="minAccLmt !=null and maxAccLmt !=null">
+				 AND tt.ACC_LMT >= #{minAccLmt} 
+			<![CDATA[ AND tt.ACC_LMT <= #{maxAccLmt}]]>
+		</if>
+		<if test="accTerms !=null and accTerms.size() >0">
+			AND tt.ACC_TERM in(
+			<foreach item="accTerm" index="index" collection="accTerms" separator=",">
+				#{accTerm}
+			</foreach>
+			)
+		</if>
+		
+		
+		<!-- 
+		<if test="owningBranchIds !=null and owningBranchIds.size() > 0">
+			and tt.OWNING_BRANCH_ID in(
+			<foreach item="owbs" index="index" collection="owningBranchIds" separator=",">
+				#{owbs}
+			</foreach>
+			)
+		</if>
+		 -->
+			
+			<if test="owningBranchIds !=null and owningBranchIds.size() > 0">
+			and ((
+			tt.STATUS='APPLY'
+			AND tt.OWNING_BRANCH_ID in(
+				<foreach item="owbs" index="index" collection="owningBranchIds" separator=",">
+					#{owbs}
+				</foreach>
+			)
+	<!-- 		and 
+				tt.CONTRACT_BRANCH_ID in(
+				<foreach item="owbs" index="index" collection="owningBranchIds" separator=",">
+					#{owbs}
+				</foreach>
+			) -->
+			)
+			or(
+			tt.STATUS='PASS'
+			AND	tt.CONTRACT_BRANCH_ID in(
+				<foreach item="owbs" index="index" collection="owningBranchIds" separator=",">
+					#{owbs}
+				</foreach>
+			)
+			))
+			</if>
+		 	
+		
+	</sql>
+	
+	<select id="getReassignment" parameterType="java.util.Map" resultMap="loanBaseMap">
+		select * from (
+			SELECT 
+			lb.name,
+			lb.LOAN_NO,
+			lb.ID_NO,
+			lp.INIT_PRODUCT_NAME,
+			lp.PRODUCT_NAME,
+			lb.CONTRACT_BRANCH,
+			lb.CONTRACT_BRANCH_ID,
+			lb.APPLY_INPUT_FLAG,
+			lb.OWNING_BRANCH_ID,
+			lb.OWNING_BRANCH,
+			lb.STATUS,
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SAVE','LRFH-RETURN','CSFP-RETURN','XSCS-RETURN','XSZS-RETURN'),lb.SERVICE_NAME,
+			IF(lb.RTF_NODE_STATE IN ('HTQY-ASSIGN','HTQR-RETURN','FKSH-RETURN','FKQR-RETURN'),lb.SIGN_NAME,
+			IF(lb.RTF_NODE_STATE IN ('HTQY-SUBMIT'),lb.MANAGER_NAME, 
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SUBMIT'),lb.REVIEW_NAME,'未知')))) AS SERVICE_NAME,
+			
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SAVE','LRFH-RETURN','CSFP-RETURN','XSCS-RETURN','XSZS-RETURN'),lb.SERVICE_CODE,
+			IF(lb.RTF_NODE_STATE IN ('HTQY-ASSIGN','HTQR-RETURN','FKSH-RETURN','FKQR-RETURN'),lb.SIGN_CODE,
+			IF(lb.RTF_NODE_STATE IN ('HTQY-SUBMIT'),lb.MANAGER_CODE, 
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SUBMIT'),lb.REVIEW_CODE,'未知')))) AS SERVICE_CODE,
+			
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SAVE','LRFH-RETURN','CSFP-RETURN','XSCS-RETURN','XSZS-RETURN'),'SQLR',
+			IF(lb.RTF_NODE_STATE IN ('HTQY-ASSIGN','HTQR-RETURN','FKSH-RETURN','FKQR-RETURN'),'HTQY',
+			IF(lb.RTF_NODE_STATE IN ('HTQY-SUBMIT'),'HTQR', 
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SUBMIT'),'LRFH','未知')))) AS RTF_STATE,
+			lb.VERSION,
+			lb.RTF_NODE_STATE,
+			le.ACC_LMT,
+			le.ACC_TERM,
+			lc.PACT_MONEY,
+			lb.SERVICE_CODE SQLR_USER_CODE
+			FROM bms_loan_base lb
+			LEFT JOIN BMS_LOAN_PRODUCT lp ON (lp.LOAN_BASE_ID = lb.ID)
+			LEFT JOIN BMS_LOAN_AUDIT le ON (le.LOAN_BASE_ID = lb.ID)
+			LEFT JOIN bms_loan_contract lc ON (lc.LOAN_BASE_ID = lb.ID
+			AND lc.IS_DELETED = 0)	
+		) tt
+		where 1=1
+		and tt.STATUS in ('APPLY','PASS')
+		<include refid="getReassignmentSQL"></include>
+	</select>
+	
+	<select id="getReassignmentCount" parameterType="java.util.Map" resultType="long">
+		select count(1) from (
+			SELECT 
+			lb.name,
+			lb.LOAN_NO,
+			lb.ID_NO,
+			lp.PRODUCT_NAME AS REMARK,
+			lb.CONTRACT_BRANCH,
+			lb.CONTRACT_BRANCH_ID,
+			lb.APPLY_INPUT_FLAG,
+			lb.OWNING_BRANCH_ID,
+			lb.OWNING_BRANCH,
+			lb.STATUS,
+			
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SAVE','LRFH-RETURN','CSFP-RETURN','XSCS-RETURN','XSZS-RETURN'),lb.SERVICE_NAME,
+			IF(lb.RTF_NODE_STATE IN ('HTQY-ASSIGN','HTQR-RETURN','FKSH-RETURN','FKQR-RETURN'),lb.SIGN_NAME,
+			IF(lb.RTF_NODE_STATE IN ('HTQY-SUBMIT'),lb.MANAGER_NAME, 
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SUBMIT'),lb.REVIEW_NAME,'未知')))) AS SERVICE_NAME,
+			
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SAVE','LRFH-RETURN','CSFP-RETURN','XSCS-RETURN','XSZS-RETURN'),lb.SERVICE_CODE,
+			IF(lb.RTF_NODE_STATE IN ('HTQY-ASSIGN','HTQR-RETURN','FKSH-RETURN','FKQR-RETURN'),lb.SIGN_CODE,
+			IF(lb.RTF_NODE_STATE IN ('HTQY-SUBMIT'),lb.MANAGER_CODE, 
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SUBMIT'),lb.REVIEW_CODE,'未知')))) AS SERVICE_CODE,
+			
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SAVE','LRFH-RETURN','CSFP-RETURN','XSCS-RETURN','XSZS-RETURN'),'SQLR',
+			IF(lb.RTF_NODE_STATE IN ('HTQY-ASSIGN','HTQR-RETURN','FKSH-RETURN','FKQR-RETURN'),'HTQY',
+			IF(lb.RTF_NODE_STATE IN ('HTQY-SUBMIT'),'HTQR', 
+			IF(lb.RTF_NODE_STATE IN ('SQLR-SUBMIT'),'LRFH','未知')))) AS RTF_STATE,
+			
+			lb.VERSION,
+			lb.RTF_NODE_STATE,
+			le.ACC_LMT,
+			le.ACC_TERM
+			FROM bms_loan_base lb
+			LEFT JOIN BMS_LOAN_PRODUCT lp ON (lp.LOAN_BASE_ID = lb.ID)
+			LEFT JOIN BMS_LOAN_AUDIT le ON (le.LOAN_BASE_ID = lb.ID)
+		) tt
+		where 1=1
+		and tt.STATUS in ('APPLY','PASS')
+		<include refid="getReassignmentSQL"></include>
+	</select>
+	
+	<!-- 门店改派  改派接口 -->
+	<update id="updateOperatingStaff" parameterType="java.util.Map">
+		update bms_loan_base t
+		<set>
+			<if test="LRXG != null and LRXG != ''">
+				<if test="LRXG_code != null and LRXG_code != ''">
+					t.SERVICE_CODE = #{LRXG_code},
+				</if>
+				<if test="LRXG_name != null and LRXG_name != ''">
+					t.SERVICE_NAME = #{LRXG_name},
+				</if>
+				 <if test="LRXG_sign_code != null and LRXG_sign_code != ''">
+					t.SIGN_CODE = #{LRXG_sign_code},
+				</if>
+				<if test="LRXG_sign_name != null and LRXG_sign_name != ''">
+					t.SIGN_NAME = #{LRXG_sign_name},
+				</if> 
+				
+			</if>
+			<if test="LRFH != null and LRFH != ''">
+				<if test="LRFH_code != null and LRFH_code != ''">
+					t.REVIEW_CODE = #{LRFH_code},
+				</if>
+				<if test="LRFH_name != null and LRFH_name != ''">
+					t.REVIEW_NAME = #{LRFH_name},
+				</if>
+		<!-- 		<if test="LRXG_sign_code != null and LRXG_sign_code != ''">
+					t.SIGN_CODE = #{LRXG_sign_code},
+				</if>
+				<if test="LRXG_sign_name != null and LRXG_sign_name != ''">
+					t.SIGN_NAME = #{LRXG_sign_name},
+				</if>  -->
+				
+			</if>
+			<if test="HTQY != null and HTQY != ''">
+				<if test="HTQY_code != null and HTQY_code != ''">
+					t.SIGN_CODE = #{HTQY_code},
+				</if>
+				<if test="HTQY_name != null and HTQY_name != ''">
+					t.SIGN_NAME = #{HTQY_name},
+				</if>
+			</if>
+			<if test="HTQR != null and HTQR != ''">
+				<if test="HTQR_code != null and HTQR_code != ''">
+					t.MANAGER_CODE = #{HTQR_code},
+				</if>
+				<if test="HTQR_name != null and HTQR_name != ''">
+					t.MANAGER_NAME = #{HTQR_name},
+				</if>
+			</if>
+			modified_time=SYSDATE() 
+		</set>
+		where LOAN_NO = #{loanNo}
+	
+	</update>
+	
+	
+	<!-- 根据用户姓名和证件号  查询用户最近一次借款信息 -->
+    
+    <select id="getLatelyLoanByPersonId" parameterType="java.util.Map" resultMap="loanBaseMap">		  
+ 			SELECT * FROM bms_loan_base  
+ 			WHERE 1=1
+ 			AND ID_NO=#{idNo} 
+ 			AND NAME=#{name}  
+			<if test="statusList !=null and statusList.size() > 0">
+				 AND STATUS IN(
+					<foreach item="guard" index="index" collection="statusList" separator=",">
+						#{guard}
+					</foreach>
+					)
+			</if>
+			ORDER BY ID DESC LIMIT 1  
+	</select>
+	
+    <!-- 根据用户ID 查询用户最近一次拒绝取消状态的借款 或 未结清的借款 -->
+    
+    <select id="getLatelyLoanByPersonIdAndStatus" parameterType="java.util.Map" resultMap="loanBaseMap">		  
+ 		 SELECT * FROM(
+				SELECT * FROM bms_loan_base  WHERE PERSON_ID=#{personId}   ORDER BY ID ASC   LIMIT 1
+				) A  
+			WHERE 
+			<if test="statusList !=null and statusList.size() > 0">
+				   STATUS IN(
+					<foreach item="guard" index="index" collection="statusList" separator=",">
+						#{guard}
+					</foreach>
+					)
+			</if>
+			<if test="notStatusList !=null and notStatusList.size() > 0">
+				OR   STATUS NOT IN(
+					<foreach item="guard" index="index" collection="notStatusList" separator=",">
+						#{guard}
+					</foreach>
+					)
+			</if>
+		 
+	</select>
+
+
+    <select id="getLoanBaseByNameIdNo" parameterType="java.util.Map" resultMap="loanBaseMap">		  
+ 		 SELECT * FROM bms_loan_base  WHERE 1=1
+ 		 
+ 		 <if test="name != null and name != ''">
+        	 AND NAME = #{name}
+        </if>
+ 		 <if test="IdNo != null and IdNo != ''">
+        	 AND ID_NO = #{IdNo}
+        </if>
+        
+        <if test="loanNo != null and loanNo != ''">
+        	 AND LOAN_NO != #{loanNo}
+        </if>
+        	 AND PERSON_ID !=0
+ 		 ORDER BY CREATED_TIME DESC   LIMIT 1
+	</select>
+
+		<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.LoanBaseEntity">
+		update  bms_loan_base
+ 			set 
+ 			
+ 		<if test="personId != null">
+        	 PERSON_ID = #{personId},
+        </if>
+ 	    <if test="status != null and status != ''">
+        	 STATUS = #{status},
+        </if>
+        <if test="rtfState != null and rtfState != ''">
+        	 RTF_STATE = #{rtfState},
+        </if>
+         <if test="signDate != null">
+        	 SIGN_DATE = #{signDate},
+        </if>
+        <if test="branchManagerCode != null and branchManagerCode != ''">
+        	 BRANCH_MANAGER_CODE = #{branchManagerCode},
+        </if>
+        <if test="branchManagerName != null and branchManagerName != ''">
+        	 BRANCH_MANAGER_NAME = #{branchManagerName},
+        </if>
+        <if test="serviceCode != null and serviceCode != ''">
+        	 SERVICE_CODE = #{serviceCode},
+        </if>
+         <if test="remark != null and remark != ''">
+        	 REMARK = #{remark},
+        </if>
+          <if test="reviewCode != null and reviewCode != ''">
+        	 REVIEW_CODE = #{reviewCode},
+        </if>
+        <if test="reviewName != null and reviewName != ''">
+        	REVIEW_NAME = #{reviewName},
+        </if>
+     
+     	<!-- 当签约营业部有变动时候，签约客服置空 -->
+      	<if test="contractBranch != null and contractBranch != ''">
+        	 CONTRACT_BRANCH = #{contractBranch},
+        	 SIGN_NAME = null,
+        </if>
+        <if test="contractBranchId != null and contractBranchId != ''">
+        	 CONTRACT_BRANCH_ID = #{contractBranchId},
+        	 SIGN_CODE = null,
+        </if>
+        
+         <if test="loanBranch != null and loanBranch != ''">
+        	 LOAN_BRANCH = #{loanBranch},
+        </if>
+          <if test="loanBranchId != null and loanBranchId != ''">
+        	 LOAN_BRANCH_ID = #{loanBranchId},
+        </if>
+	   <if test="manageBranch != null and manageBranch != ''">
+        	 MANAGE_BRANCH = #{manageBranch},
+        </if>
+        <if test="manageBranchId != null and manageBranchId != ''">
+        	 MANAGE_BRANCH_ID = #{manageBranchId},
+        </if>
+         <if test="manageUpdateDate != null">
+        	 manageUpdateDate = #{manageUpdateDate},
+         </if>
+         <if test="groupForDirector != null and groupForDirector != ''">
+        	 GROUP_FOR_DIRECTOR = #{groupForDirector},
+        </if>
+	    <if test="groupForDirectorId != null and groupForDirectorId != ''">
+        	GROUP_FOR_DIRECTOR_ID = #{groupForDirectorId},
+        </if>
+	 
+	    <if test="director != null and director != ''">
+        	 DIRECTOR = #{director},
+        </if>
+        <if test="loanDate != null">
+        	LOAN_DATE = #{loanDate},
+        </if>
+         <if test="owningBranchId != null and owningBranchId != ''">
+        	OWNING_BRANCH_ID = #{owningBranchId},
+         </if>
+         <if test="owningBranch != null and owningBranch != ''">
+        	OWNING_BRANCH = #{owningBranch},
+        </if>
+	    <if test="owningBranchAttribute != null and owningBranchAttribute != ''">
+        	OWNING_BRANCH_ATTRIBUTE = #{owningBranchAttribute},
+        </if>
+	  
+	   <if test="applyType != null and applyType != ''">
+        	APPLY_TYPE = #{applyType},
+         </if>
+         <if test="applyInputFlag != null and applyInputFlag != ''">
+        	 APPLY_INPUT_FLAG = #{applyInputFlag},
+        </if>
+	    <if test="appInputFlag != null and appInputFlag != ''">
+        	APP_INPUT_FLAG = #{appInputFlag},
+        </if>
+	  
+		 <if test="loanId != null and loanId != ''">
+        	LOAN_ID = #{loanId},
+         </if>
+         <if test="lockTarget != null and lockTarget != ''">
+        	LOCK_TARGET = #{lockTarget},
+        </if>
+	    <if test="appApplyDate != null">
+        	 APP_APPLY_DATE = #{appApplyDate},
+        </if>
+        <if test="applyDate != null">
+        	 APPLY_DATE = #{applyDate},
+        </if>
+         <if test="modifierId != null and modifierId != ''">
+ 		  MODIFIER_ID = #{modifierId},
+ 		  </if>
+ 		<if test="modifier != null and modifier != ''">
+ 		  MODIFIER = #{modifier},
+ 		  </if>
+ 		  <if test="modifiedTime != null">
+ 		  	MODIFIED_TIME = #{modifiedTime},
+ 		  </if>
+ 		  <!-- <if test="signCode != null and signCode != ''">
+ 		  	SIGN_CODE = #{signCode},
+ 		  </if>
+ 		  <if test="signName != null and signName != ''">
+ 		  	SIGN_NAME = #{signName},
+ 		  </if> -->
+ 		  
+ 		  <if test="rtfNodeState !=null and rtfNodeState != ''">
+ 		  	RTF_NODE_STATE = #{rtfNodeState},
+ 		  </if>
+ 		  <if test="handleType !=null and handleType != ''">
+ 		  	HANDLE_TYPE = #{handleType},
+ 		  </if>
+ 		  <if test="directorCode !=null and directorCode != ''">
+ 		  	DIRECTOR_CODE = #{directorCode},
+ 		  </if>
+ 		  
+ 		  <if test="enterBranchId !=null and enterBranchId != ''">
+ 		  	ENTER_BRANCH_ID = #{enterBranchId},
+ 		  </if>
+ 		  <if test="enterBranch !=null and enterBranch != ''">
+ 		  	ENTER_BRANCH = #{enterBranch},
+ 		  </if>
+ 		  <if test="enterBranchAttribute !=null and enterBranchAttribute != ''">
+ 		  	ENTER_BRANCH_ATTRIBUTE = #{enterBranchAttribute},
+ 		  </if>
+ 		  
+ 		  <if test="name !=null and name != ''">
+ 		  	NAME = #{name},
+ 		  </if>
+ 		  <if test="idNo !=null and idNo != ''">
+ 		  	ID_NO = #{idNo},
+ 		  </if>
+ 		  <if test="ifNewLoanNo !=null">		 
+		  	IF_NEW_LOAN_NO = #{ifNewLoanNo},		 
+		  </if>
+		  
+		  <if test="ifPreferentialUser !=null and ifPreferentialUser != ''">		 
+		  	IF_PREFERENTIAL_USER = #{ifPreferentialUser},		 
+		  </if>
+		  <if test="logoFlag !=null">		 
+		  	logo_flag = #{logoFlag},		 
+		  </if>
+		  <if test="logoFlag !=null">		 
+		  	logo_flag = #{logoFlag},		 
+		  </if>
+		  
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+ 		  
+ 		  where 1=1
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+      	</if>
+      	<if test="id != null and id != ''">
+        	and id = #{id}
+      	</if>
+	</update>
+	
+	
+	
+	<sql id="listPageEntrySearchSQL">
+		<if test="loanNo != null and loanNo != ''">
+        	and blb.LOAN_NO = #{loanNo}
+      	</if>
+      	<if test="name != null and name != ''">
+        	and bap.name = #{name}
+      	</if>
+		<if test="idNo != null and idNo != ''">
+        	and bap.ID_NO = #{idNo}
+      	</if>
+      	
+  		<if test="appInputFlag != null and appInputFlag != ''">
+        	and blb.APP_INPUT_FLAG = #{appInputFlag}
+      	</if>
+      	<if test="noAppInputFlag != null and noAppInputFlag != ''">
+        	and blb.APP_INPUT_FLAG  is null
+      	</if>
+      	
+      	<if test="owningBranchId != null and owningBranchId != ''">
+        	and blb.OWNING_BRANCH_ID = #{owningBranchId}
+      	</if>
+      	
+      	<if test="reviewCode != null  and reviewCode != ''">
+      		and blb.REVIEW_CODE = #{reviewCode}
+      	</if>
+      	
+      	<if test="inServiceCode != null and inServiceCode !=''">
+      		and blb.SERVICE_CODE = #{inServiceCode}
+      	</if>
+      	
+      	<if test="notInServiceCode != null and notInServiceCode != ''">
+      		and blb.SERVICE_CODE != #{notInServiceCode}
+      	</if>
+      	<!-- 代办  无需找出quxiao -->
+      	<if test="inStatus !=null and inStatus != ''">
+      		and blb.RTF_NODE_STATE = #{inStatus}
+      		
+      		AND blb.STATUS NOT IN ('CANCEL','REFUSE')
+      	</if>
+      	
+      	<if test="notStatus !=null and notStatus.size() > 0">
+      		and blb.RTF_NODE_STATE NOT IN 
+      		<foreach collection="notStatus" item="item" index="index" open="(" separator="," close=")">
+                 #{item}
+            </foreach>
+		</if>
+		
+		<if	test="applyStartTime != null">
+			<!-- <![CDATA[   and DATE_FORMAT(le.APPLY_END_TIME, '%Y-%m-%d') >=  DATE_FORMAT(#{applyStartTime}, '%Y-%m-%d')   ]]> -->
+			<![CDATA[   and le.APPLY_END_TIME >= #{applyStartTime}  ]]>
+		</if>
+		<if	test="applyEndTime != null">
+			<!-- <![CDATA[  and DATE_FORMAT(le.APPLY_END_TIME, '%Y-%m-%d') <= DATE_FORMAT(#{applyEndTime}, '%Y-%m-%d')    ]]> -->
+			<![CDATA[  and le.APPLY_END_TIME <= #{applyEndTime}    ]]>
+		</if>
+		<if test="auditStartTime != null">
+			<!-- <![CDATA[   and DATE_FORMAT(le.AUDIT_END_TIME, '%Y-%m-%d')>=  DATE_FORMAT(#{auditStartTime}, '%Y-%m-%d')   ]]> -->
+			<![CDATA[   and le.AUDIT_END_TIME >= #{auditStartTime} ]]>
+		</if>
+		<if test="auditEndTime != null">
+			<!-- <![CDATA[  and DATE_FORMAT(le.AUDIT_END_TIME, '%Y-%m-%d') <= DATE_FORMAT(#{auditEndTime}, '%Y-%m-%d')    ]]> -->
+			<![CDATA[  and le.AUDIT_END_TIME <= #{auditEndTime}  ]]>
+		</if>
+		
+		<!-- 不同模块，不同排序 -->
+		
+		<!-- 待办任务排序规则，，，加急件在前面，入单时间早在前面 -->
+		<if test="DBRB != null and DBRB != ''">
+      		<![CDATA[ ORDER BY blp.IF_PRI DESC , blb.CREATED_TIME ASC ]]>
+      	</if>
+		
+		<!-- 录入修改已完成列表    加急件在前面，按录入完成时间倒序  -->
+		<if test="LRXG_complete != null and LRXG_complete != ''">
+      		<![CDATA[ ORDER BY le.APPLY_END_TIME DESC ]]>
+      	</if>
+      	
+      	<!-- 录入修改已完成列表    加急件在前面，按复核完成时间倒序 -->
+		<if test="LRFH_complete != null and LRFH_complete != ''">
+      		<![CDATA[ ORDER BY le.AUDIT_END_TIME DESC ]]>
+      	</if>
+		
+	</sql>
+	
+	 <select id="listPageEntrySearch" parameterType="java.util.Map" resultMap="entrySearchMap">
+	 	SELECT  blb.`id`, blb.`LOAN_NO`,bap.`NAME`,blb.IF_PREFERENTIAL_USER,
+	 	bap.`ID_NO`,blp.`INIT_PRODUCT_NAME`,blp.PRODUCT_NAME,blp.`APPLY_LMT`,blb.APP_INPUT_FLAG,blb.APPLY_TYPE,blb.STATUS,blp.IF_PRI
+	 		,blb.RTF_NODE_STATE,blb.logo_flag   
+	 	<if test="LRXG_complete != null and LRXG_complete != ''">
+	 		,le.`APPLY_START_TIME` as START_TIME,le.`APPLY_END_TIME` as END_TIME
+	 	</if>
+	 	<if test="LRFH_complete != null and LRFH_complete != ''">
+	 		,le.`AUDIT_START_TIME` as START_TIME,le.`AUDIT_END_TIME` as END_TIME
+	 	</if>
+	 	FROM bms_loan_base  blb 
+		LEFT JOIN BMS_APP_PERSON bap ON  blb.person_id=bap.id
+		LEFT JOIN  BMS_LOAN_PRODUCT blp ON blp.loan_base_id=blb.ID
+		LEFT JOIN bms_loan_ext le ON blb.`ID` = le.`LOAN_BASE_ID`
+		where 1=1
+		<include refid="listPageEntrySearchSQL"></include>
+	</select>
+
+	<select id="listPageEntrySearchCountByPageParam" parameterType="java.util.Map" resultType="long" >
+		select count(1)  from bms_loan_base  blb 
+		LEFT JOIN BMS_APP_PERSON bap ON  blb.person_id=bap.id
+		LEFT JOIN  BMS_LOAN_PRODUCT blp ON blp.loan_base_id=blb.ID
+		LEFT JOIN bms_loan_ext le ON blb.`ID` = le.`LOAN_BASE_ID`
+		where 1=1
+		<include refid="listPageEntrySearchSQL"></include>
+	</select>
+    
+    
+    
+    
+   <select id="listPageContractSignSearch" parameterType="java.util.Map" resultMap="contractSignSearchMap">
+	  SELECT blb.loan_no,bap.NAME,bp.name as PRODUCT_NAME,bc.name as CHANNEL_NAME,blp.APPLY_TERM,bla.ACC_LMT ,blb.OWNING_BRANCH 
+	  	 <if test="agencyOrComplete != null and agencyOrComplete == '2'">
+        		, bll.OPERATION_END_TIME  as  END_TIME     
+      	 </if>
+	  	FROM bms_loan_base blb 
+		LEFT JOIN BMS_APP_PERSON bap ON blb.PERSON_ID=bap.id
+		LEFT JOIN BMS_LOAN_PRODUCT blp ON blp.LOAN_BASE_ID=blb.id
+		LEFT JOIN BMS_CHANNEL bc ON bc.code=blp.CONTRACT_SOURCE   
+		LEFT JOIN BMS_PRODUCT bp ON bp.code=blp.PRODUCT_CD
+		LEFT JOIN BMS_LOAN_AUDIT bla ON bla.LOAN_BASE_ID=blb.id	 
+ 		<if test="agencyOrComplete != null and agencyOrComplete == '2'">
+        	LEFT JOIN BMS_LOAN_LOG bll ON bll.LOAN_BASE_ID=blb.id	 
+      	 </if>
+		<where>
+			<if test="agencyOrComplete != null and agencyOrComplete == '2'">
+        	 	 bll.OPERATION_MODULE  = #{operationModule},
+        	 	 bll.OPERATION_TYPE    = #{operationType},
+        	 
+        	 	 
+      		 </if>
+			 <if test="loanNo != null and loanNo != ''">
+        		 blb.LOAN_NO = #{loanNo},
+      		 </if>
+      		  <if test="name != null and name != ''">
+        		 bap.name = #{name},
+      		 </if>
+			  <if test="productCd != null and productCd != ''">
+        		 blp.PRODUCT_CD = #{productCd},
+      		 </if>
+  			 <if test="channelCode != null and channelCode != ''">
+        		 blb.CONTRACT_SOURCE = #{channelCode},
+      		 </if>
+      		  <if test="contractBranchId != null and contractBranchId != ''">
+        		 blb.OWNING_BRANCH_ID = #{contractBranchId},
+      		 </if>
+      		  <if test="signCode != null and signCode != ''">
+        		 blb.SIGN_CODE = #{signCode},
+      		 </if>
+      		  <if test="status != null and status != ''">
+        		 blb.STATUS = #{status},
+      		 </if>
+      		  <if test="rtfStatus != null and rtfStatus != ''">
+        		 blb.RTF_STATUS = #{rtfStatus},
+      		 </if>
+      		 
+            <if test="endTime != null and endTime != ''">
+        		 endTime = #{endTime},
+      		 </if>
+ 
+ 
+			
+		</where>
+	
+	</select>
+	 
+	<select id="listPageContractSignSearchCountByPageParam" parameterType="java.util.Map" resultType="long">
+	  SELECT  count(1)
+	  	FROM bms_loan_base blb 
+		LEFT JOIN BMS_APP_PERSON bap ON blb.PERSON_ID=bap.id
+		LEFT JOIN BMS_LOAN_PRODUCT blp ON blp.LOAN_BASE_ID=blb.id
+		LEFT JOIN BMS_CHANNEL bc ON bc.code=blp.CONTRACT_SOURCE   
+		LEFT JOIN BMS_PRODUCT bp ON bp.code=blp.PRODUCT_CD
+		LEFT JOIN BMS_LOAN_AUDIT bla ON bla.LOAN_BASE_ID=blb.id	 
+ 		<if test="agencyOrComplete != null and agencyOrComplete == '2'">
+        	LEFT JOIN BMS_LOAN_LOG bll ON bll.LOAN_BASE_ID=blb.id	 
+      	 </if>
+		<where>
+			<if test="agencyOrComplete != null and agencyOrComplete == '2'">
+        	 	 bll.OPERATION_MODULE  = #{operationModule},
+        	 	 bll.OPERATION_TYPE    = #{operationType},
+      		 </if>
+			 <if test="loanNo != null and loanNo != ''">
+        		 blb.LOAN_NO = #{loanNo},
+      		 </if>
+      		  <if test="name != null and name != ''">
+        		 bap.name = #{name},
+      		 </if>
+			  <if test="productCd != null and productCd != ''">
+        		 blp.PRODUCT_CD = #{productCd},
+      		 </if>
+  			 <if test="channelCode != null and channelCode != ''">
+        		 blb.CONTRACT_SOURCE = #{channelCode},
+      		 </if>
+      		  <if test="contractBranchId != null and contractBranchId != ''">
+        		 blb.OWNING_BRANCH_ID = #{contractBranchId},
+      		 </if>
+      		  <if test="signCode != null and signCode != ''">
+        		 blb.SIGN_CODE = #{signCode},
+      		 </if>
+      		  <if test="status != null and status != ''">
+        		 blb.STATUS = #{status},
+      		 </if>
+      		  <if test="rtfStatus != null and rtfStatus != ''">
+        		 blb.RTF_STATUS = #{rtfStatus},
+      		 </if>
+      		 
+            <if test="endTime != null and endTime != ''">
+        		 endTime = #{endTime},
+      		 </if>
+		</where>
+	</select>
+	
+    <select id="getInformationVO" parameterType="java.util.Map" resultMap="InformationMap">
+    	SELECT DISTINCT lb.LOAN_NO ,lb.ID_NO,lb.NAME ,lp.PRODUCT_CD,lp.PRODUCT_NAME ,lp.APPLY_TERM ,
+		lp.APPLY_LMT,le.CREDIT_APPLICATION,lb.CONTRACT_BRANCH,lb.BRANCH_MANAGER_NAME,lp.IF_PRI,
+		api.CORP_NAME,api.CORP_PROVINCE_ID,api.CORP_CITY_ID,api.CORP_ZONE_ID,api.CORP_ADDRESS,
+		api.HOME_STATE_ID,api.HOME_CITY_ID,api.HOME_ZONE_ID,api.HOME_ADDRESS,lb.VERSION,
+		api.MONTH_MAX_REPAY,api.CUS_WORK_TYPE,api.CORP_PAY_WAY,api.MONTH_SALARY,api.OTHER_INCOME,api.TOTAL_MONTH_SALARY,
+		lb.IF_NEW_LOAN_NO,lb.RTF_STATE,lb.RTF_NODE_STATE,la.CHECK_NODE_STATE,api.CELLPHONE,api.CELLPHONE_SEC,
+		lb.REMARK,api.NFCS_ID,api.REPORT_ID,lb.CREATED_TIME,api.HZZX_ID,api.THE_THIRDPARTY_NOTE,api.THE_THIRDPARTY_NOTE_DETAILS,
+		lb.APPLY_TYPE,le.AUDIT_END_TIME,lb.OWNING_BRANCH_ID,api.CORP_PHONE,api.CORP_PHONE_SEC,lb.IF_PREFERENTIAL_USER,
+		lp.INIT_PRODUCT_CD,lp.INIT_PRODUCT_NAME,la.AMOUT_INCOME,la.IF_CREDIT_RECORD,
+		le.ANTI_FRAUD_SCORE,le.ANTI_FRAUD_WARNING,le.ANTI_RISK_RATE,api.MARITAL_STATUS,api.IF_REPORT_ID,
+		la.APPROVAL_PERSON_CODE,le.FIRST_LEVLE_REASONS_CODE,le.TWO_LEVLE_REASONS_CODE,le.PRIMARY_REASON,le.SECODE_REASON,
+		lb.OWNING_BRANCH,la.CREATED_TIME as FIRST_SUBMIT_AUDIT,lb.ZS_IF_NEW_LOAN_NO,la.IS_ANTIFRAUD
+		FROM bms_loan_base lb
+		LEFT JOIN BMS_LOAN_PRODUCT lp ON lp.LOAN_BASE_ID = lb.ID
+		LEFT JOIN BMS_LOAN_EXT le ON le.LOAN_BASE_ID = lb.ID
+		LEFT JOIN BMS_APP_PERSON_INFO api ON api.LOAN_BASE_ID = lb.ID
+		LEFT JOIN BMS_LOAN_AUDIT la ON  la.LOAN_BASE_ID = lb.ID
+		WHERE 1=1
+    	<if test="loanNo != null and loanNo != ''">
+        	and lb.LOAN_NO = #{loanNo}
+      	</if>
+    </select>
+    
+    <!-- 查看当前是版本是否适合修改 -->
+	<update id="updateVersion" parameterType="java.util.Map">
+	    update bms_loan_base set
+		VERSION = VERSION,
+		modified_time=SYSDATE() 
+		where 1=1
+		AND LOAN_NO = #{loanNo} 
+		AND VERSION = #{version}
+	</update>
+		
+		
+	    <!-- 查看当前是版本是否适合修改 -->
+	<update id="updateLoanBaseVersionById" parameterType="java.util.Map">
+		update bms_loan_base set
+		VERSION = VERSION + 1,
+		modified_time=SYSDATE() 
+		where 1=1
+		AND ID = #{id} 
+		AND VERSION = #{version}
+	</update>	
+	
+	<update id="updateIfNewLoanNo" parameterType="java.util.Map">
+		update bms_loan_base set
+		IF_NEW_LOAN_NO = 1,
+		modified_time=SYSDATE() 
+		where LOAN_NO = #{loanNo}
+	</update>
+	
+	<select id="findLoanNoByNotBelongTo" parameterType="java.util.Map" resultMap="loanBaseMap">
+    	select ID,STATUS from bms_loan_base where  ID_NO=#{idNo} and LOAN_NO !=#{loanNo} order by CREATED_TIME desc
+    </select>
+    
+    
+    <select id="findRadioByApplyType" parameterType="java.util.Map" resultType="java.util.Map">
+    	select ID as id,TOTAL_DEBT_RADIO as totalDebtRadio,INTERNAL_DEBT_RADIO as internalDebtRadio from  bms_debt_radio where CUSTOMER_TYPE_CODE=#{applyType}
+    </select>
+    							
+    <select id="queryLoanExist" parameterType="java.util.Map" resultMap="loanBaseMap">
+    	select * from bms_loan_base where LOAN_NO = #{loanNo}
+    	and TO_DAYS(CREATED_TIME) = TO_DAYS(NOW())
+    </select>
+    <!--  private String reviewCode;//复核人员Code
+	private String reviewName;//复核人员名称 -->
+   <select id="getOrgPrevReviewCode" parameterType="java.util.Map" resultType="java.lang.String">
+		SELECT 
+		  b.review_code 
+		FROM
+		  bms_loan_base b 
+		WHERE b.id = 
+		  (SELECT 
+		    MAX(b1.ID) 
+		  FROM
+		    bms_loan_base b1 
+		  WHERE b1.OWNING_BRANCH_ID = #{owningBranchId} 
+		 AND b1.loan_no != #{loanNo} 
+		   <![CDATA[ AND b1.VERSION <= 999)]]> 
+    </select>
+    
+      <select id="findDataByIdNoRefuse" parameterType="java.util.Map" resultType="java.util.Map">
+    	select a.loan_no,b.OPERATION_TIME from bms_loan_base a,bms_loan_log b where a.loan_no=b.loan_no and a.id_no= #{idNo} and b.STATUS='REFUSE' order by b.OPERATION_TIME desc
+    </select>
+    
+    <select id="findDataByIdNoCancel" parameterType="java.util.Map" resultType="java.util.Map">
+    	select a.loan_no,b.OPERATION_TIME from bms_loan_base a,bms_loan_log b where a.loan_no=b.loan_no and a.id_no= #{idNo} and b.STATUS='CANCEL' order by b.OPERATION_TIME desc
+    </select>
+    
+    
+    <select id="queryContractInfo" parameterType="java.util.Map" resultType="java.util.Map">
+    	SELECT lb.APP_INPUT_FLAG as appInputFlag,lb.ENTER_BRANCH_ID as enterBranchId,ENTER_BRANCH as enterBranch,lb.APPLY_TYPE as applyType,
+    	lb.ID_NO as idNo,lp.PRODUCT_CD as productCd,lp.PRODUCT_NAME as productName,la.CREATED_TIME as createdTime,la.ACC_LMT as accLmt,
+    	lb.BRANCH_MANAGER_CODE as branchManagerCode,lb.BRANCH_MANAGER_NAME as branchManagerName,lb.IF_PREFERENTIAL_USER as ifPerferentialUser,
+    	lb.CONTRACT_BRANCH_ID as contractBranchId,lb.CONTRACT_BRANCH as contractBranch
+		FROM bms_loan_base lb
+		LEFT JOIN BMS_LOAN_PRODUCT lp ON lb.LOAN_NO = lp.LOAN_NO
+		LEFT JOIN BMS_LOAN_AUDIT la ON lb.LOAN_NO = la.LOAN_NO
+		WHERE 1=1
+    	<if test="loanNo != null and loanNo != ''">
+        	and lb.LOAN_NO = #{loanNo}
+      	</if>
+    </select>
+</mapper> 

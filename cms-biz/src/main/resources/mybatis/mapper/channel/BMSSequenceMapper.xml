@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ymkj.cms.biz.dao.channel.impl.BMSSequenceDaoImpl">
+	<resultMap id="BaseResultMap" type="com.ymkj.cms.biz.entity.channel.BMSSequence">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="seq_start_num" property="seqStartNum" jdbcType="INTEGER" />
+    <result column="seq_name" property="seqName" jdbcType="VARCHAR" />
+    <result column="seq_incret" property="seqIncret" jdbcType="INTEGER" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="seq_max_num" property="seqMaxNum" jdbcType="INTEGER" />
+    <result column="seq_reset_interval" property="seqResetInterval" jdbcType="INTEGER" />
+    <result column="seq_curl_num" property="seqCurlNum" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="querySequenceById" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select * from bms_sequence where id=#{id}
+	</select>
+	
+	<update id="updateSequence" parameterType="java.util.Map">
+		update bms_sequence set seq_curl_num=#{seqCurlNum},update_time=NOW() where id=#{id}
+	</update>
+</mapper>

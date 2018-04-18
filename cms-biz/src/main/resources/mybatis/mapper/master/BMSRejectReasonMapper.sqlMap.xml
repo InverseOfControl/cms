@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSRejectReasonDaoImpl">
+   <resultMap id="rejectReasonMap" type="com.ymkj.cms.biz.entity.master.BMSRejectReason">
+		<id property="id" column="ID" />
+		<result property="code" column="CODE" />
+		<result property="resonExplain" column="REASON_TEXPLAIN" />
+		<result property="reason" column="REASON" />
+		<result property="type" column="TYPE" />
+		<result property="parentId" column="PARENT_ID" />
+	    <result property="levelOrder" column="LEVEL_ORDER" />
+		<result property="operationType" column="OPERATION_TYPE" />
+		<result property="remark" column="REMARK" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="VERSION" />
+		<result property="verson" column="IS_DELETE" />
+		<result property="isBlackList" column="IS_BLACKLIST"/>   
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="code != null and code != ''">
+        	and code = #{code}
+        </if>
+        <if test="parentId != null and parentId != ''">
+        	and PARENT_ID         = #{parentId}
+        </if>
+         <if test="type != null and type != ''">
+        	and TYPE         = #{type}
+        </if>
+        TYPE             
+	</sql>	
+  
+   
+   
+      
+    <!-- query -->
+	 
+    
+    <select id="listBy" parameterType="java.util.Map" resultMap="rejectReasonMap">
+		select * from  BMS_TM_REJECT_REASON
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	
+    
+</mapper> 

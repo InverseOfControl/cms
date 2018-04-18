@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSReasonReLinksDaoImpl">
+
+	<resultMap id="BMSReasonManagementMap" type="com.ymkj.cms.biz.entity.master.BMSReason">
+		<id property="id" column="id" />
+		<result property="reason" column="REASON" />
+		<result property="code" column="CODE" />
+		<result property="reasonTexplain" column="REASON_TEXPLAIN" />
+		<result property="type" column="TYPE" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="levelOrder" column="LEVEL_ORDER" />
+		<result property="operationModule" column="OPERATION_MODULE" />
+		<result property="operationType" column="OPERATION_TYPE" />
+		<result property="isBlacklist" column="IS_BLACKLIST" />
+		<result property="canRequestDays" column="CAN_REQUEST_DAYS" />
+		<result property="remark" column="REMARK" />
+		<result property="creator" column="CREATOR" />
+		<result property="creatorDate" column="CREATED_TIME" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="modified" column="MODIFIER" />
+		<result property="modifiedDate" column="MODIFIED_TIME" />
+		<result property="modifiedId" column="MODIFIER_ID" />
+		<result property="version" column="VERSION" />
+		<result property="isDeleted" column="IS_DELETE" />
+		<result property="moduleName" column="MODULE_NAME"/>
+		<result property="conditionType" column="CONDITION_TYPE"/>
+		<result property="relationCode" column="RELATION_CODE"/>
+		<result property="isDisabled" column="IS_DISABLED"/>
+		<result property="texPlain" column="texPlain"/>
+	</resultMap>
+
+	<sql id="table">bms_reason</sql>
+
+	<sql id="condition_sql">
+	  where 1=1 and IS_DELETE=0 AND REASON_TEXPLAIN !='3'
+		<if test="reason != null and reason != '' and reason!='all'">
+			and (A.REASON like CONCAT('%',trim(#{reason}),'%') or A.CODE like CONCAT('%',trim(#{reason}),'%'))
+		</if>
+		<if test="operationType != null and operationType != '' and operationType!='all'">
+			and A.OPERATION_TYPE = #{operationType}
+		</if>
+		<if test="operationModule!=null and operationModule!=''">
+		  and A.MODULE_NAME LIKE CONCAT('%',trim(#{operationModule}),'%')
+		</if>	 
+	</sql>
+	
+	<sql id="set_sql">
+		set
+			<if test="reason != null and reason != ''">
+				REASON = #{reason},
+			</if>
+			<if test="reasonTexplain !=null and reasonTexplain!=''">
+			   REASON_TEXPLAIN = #{reasonTexplain},
+			</if>
+			<if test="code != null and code != ''">
+				CODE = #{code},
+			</if>
+			<if test="type != null">
+				TYPE = #{type},
+			</if>
+			<if test="parentId != null">
+				PARENT_ID = #{parentId},
+			</if>
+			<if test="levelOrder != null">
+				LEVEL_ORDER = #{levelOrder},
+			</if>
+			<if test="operationModule != null and operationModule != ''">
+				OPERATION_MODULE = #{operationModule},
+			</if>
+			<if test="isBlacklist != null">
+				IS_BLACKLIST = #{isBlacklist},
+			</if>
+			<if test="operationType != null and operationType != ''">
+				OPERATION_TYPE = #{operationType},
+			</if>
+			<if test="modifiedId != null">
+				MODIFIER_ID = #{modifiedId},
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIER = #{modified},
+			</if>
+			
+			<if test="version != null">
+				VERSION = #{version}+1,
+			</if>
+			<if test="isDeleted != null">
+				IS_DELETE = #{isDeleted},
+			</if>
+			<if test="isDisabled!=null">
+			 IS_DISABLED=#{isDisabled},
+			</if>
+			REMARK = #{remark},
+			CAN_REQUEST_DAYS = #{canRequestDays},
+			CONDITION_TYPE=#{conditionType},
+			MODIFIED_TIME = sysDate()
+	</sql>
+	<!-- query -->
+	<select id="getById" parameterType="long" resultMap="BMSReasonManagementMap">
+		select * from
+		<include refid="table" />
+		where id = #{id} and IS_DELETE=0
+	</select>
+    
+    <!-- 查询关联环节集合 -->
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSReasonManagementMap">
+	   SELECT A.* FROM(SELECT r.*, GROUP_CONCAT(OPERATION_MODULE) AS MODULE_NAME,GROUP_CONCAT(reason_texplain) texPlain FROM bms_reason r GROUP BY CODE,is_delete HAVING IS_DELETE=0) A
+	   <include refid="condition_sql" />
+	   <![CDATA[ order by A.id desc]]> 
+	</select>
+	
+	<!-- 查询关联环节数量 -->
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+        SELECT COUNT(1) FROM(SELECT r.*, GROUP_CONCAT(OPERATION_MODULE) AS MODULE_NAME,GROUP_CONCAT(reason_texplain) texPlain   FROM bms_reason r GROUP BY CODE,is_delete HAVING IS_DELETE=0) A
+		<include refid="condition_sql" />
+	 	<![CDATA[ order by A.id desc]]> 
+	</select>
+	
+     <!-- 根据原因CODE查询原因值 -->
+     <select id="findBMSReasonByValue" parameterType="java.util.Map" resultMap="BMSReasonManagementMap">
+      SELECT * FROM bms_reason GROUP BY CODE HAVING TYPE='1'
+          <if test="code !=null and code !=''">
+            AND  CODE=#{code}
+          </if>
+          <if test="operationModule !=null and operationModule !=''">
+            AND OPERATION_MODULE=#{operationModule}
+          </if>
+          <if test="operationType!=null and operationType!=''">
+            AND OPERATION_TYPE=#{operationType}
+          </if>
+          and IS_DELETE=0 AND REASON_TEXPLAIN !='3'
+     </select>
+     
+     <!--根据CODE分组查询数据 -->
+     <select id="findBMSReLinksById" resultMap="BMSReasonManagementMap" parameterType="java.util.Map">
+        SELECT A.* FROM(SELECT r.*, GROUP_CONCAT(OPERATION_MODULE) AS MODULE_NAME,GROUP_CONCAT(reason_texplain) AS texPlain  FROM bms_reason r GROUP BY CODE,is_delete having is_delete=0) A
+       where A.code=#{code} and IS_DELETE=0 AND REASON_TEXPLAIN !='3'
+     </select>
+     
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSReason"
+		keyProperty="id" useGeneratedKeys="true">
+
+		insert into bms_reason
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != 0">
+				id,
+			</if>
+			<if test="reason != null and reason != ''">
+				REASON,
+			</if>
+			<if test="code != null and code != ''">
+				CODE,
+			</if>
+			<if test="reasonTexplain != null and reasonTexplain != ''">
+				REASON_TEXPLAIN,
+			</if>
+			<if test="type != null">
+				TYPE,
+			</if>
+			<if test="parentId != null">
+				PARENT_ID,
+			</if>
+			<if test="levelOrder != null">
+				LEVEL_ORDER,
+			</if>
+			<if test="operationModule != null and operationModule != ''">
+				OPERATION_MODULE,
+			</if>
+			<if test="isBlacklist != null">
+				IS_BLACKLIST,
+			</if>
+			<if test="operationType != null and operationType != ''">
+				OPERATION_TYPE,
+			</if>
+			<if test="canRequestDays != null">
+				CAN_REQUEST_DAYS,
+			</if>
+			<if test="remark != null and remark != ''">
+				REMARK,
+			</if>
+			<if test="isDeleted != null">
+				IS_DELETE,
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID,
+			</if>
+			<if test="creator != null and creator!=''">
+				CREATOR,
+			</if>
+			<if test="creatorDate != null">
+				CREATED_TIME,
+			</if>
+			<if test="conditionType!=null and conditionType!=''">
+			    CONDITION_TYPE,
+			</if>
+			<if test="relationCode!=null and relationCode!=''">
+			  RELATION_CODE,
+			</if>
+			<if test="isDisabled!=null">
+			 IS_DISABLED,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != 0">
+				#{id},
+			</if>
+			<if test="reason != null and reason != ''">
+				#{reason},
+			</if>
+			<if test="code != null and code != ''">
+				#{code},
+			</if>
+			<if test="reasonTexplain != null and reasonTexplain != ''">
+				#{reasonTexplain},
+			</if>
+			<if test="type != null">
+				#{type},
+			</if>
+			<if test="parentId != null">
+				#{parentId},
+			</if>
+			<if test="levelOrder != null">
+				#{levelOrder},
+			</if>
+			<if test="operationModule != null and operationModule != ''">
+				#{operationModule},
+			</if>
+			<if test="isBlacklist != null">
+				#{isBlacklist},
+			</if>
+			<if test="operationType != null and operationType != ''">
+				#{operationType},
+			</if>
+			<if test="canRequestDays != null">
+				#{canRequestDays},
+			</if>
+			<if test="remark != null and remark != ''">
+				#{remark},
+			</if>
+			<if test="isDeleted != null">
+				#{isDeleted},
+			</if>
+			<if test="creatorId != null">
+				#{creatorId},
+			</if>
+			<if test="creator != null and creator!=''">
+				#{creator},
+			</if>
+			<if test="creatorDate != null">
+				#{creatorDate},
+			</if>
+			<if test="conditionType!=null and conditionType!=''">
+			    #{conditionType},
+			</if>
+			<if test="relationCode!=null and relationCode!=''">
+			 #{relationCode},
+			</if>
+			<if test="isDisabled!=null">
+			 #{isDisabled}
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSReason">
+		update
+		<include refid="table" />
+		<include refid="set_sql" />
+		<where>
+			id = #{id} and VERSION=#{version}
+		</where>
+	</update>
+	
+	<!-- 根据operationModule,operationType,reason更新状态 -->
+	<update id="updateBMSReasonByVal" parameterType="com.ymkj.cms.biz.entity.master.BMSReason">
+	    update
+		<include refid="table" />
+		<include refid="set_sql" />
+		<where>
+		1=1
+		<if test="operationType!=null and operationType!=''">
+		and operation_type=#{operationType}
+		</if>
+		<if test="operationModule!=null and operationModule!=''">
+		and OPERATION_MODULE=#{operationModule}
+		</if>
+		and	code = #{code} and type=#{type} 
+		</where>
+	</update>
+	
+	<!-- 根据关联CODE,查询所有的关联环节 -->
+	<select id="findByRelationCode" resultMap="BMSReasonManagementMap" parameterType="java.util.Map">
+	  select * from bms_reason where 1=1
+	  <if test="relationCode!=null and relationCode!=''">
+	  and  Relation_CODE=#{relationCode}
+	  </if>
+	  <if test="operationModule!=null and operationModule!=''">
+	  and OPERATION_MODULE=#{operationModule}
+	  </if>
+	  <if test="parentId!=null and parentId!=''">
+	  and PARENT_ID=#{parentId}
+	  </if>
+	  <if test="code!=null and code!=''">
+	  and  code=#{code}
+	  </if>
+	  <if test="reasonTexplain!=null and reasonTexplain!=''">
+	   and REASON_TEXPLAIN=#{reasonTexplain}
+	  </if>
+	  and IS_DELETE=0 AND REASON_TEXPLAIN !='3'
+	</select>
+	
+	<!-- 根据原因CODE和操作环节删除数据 -->
+	<delete id="deleteReasonCode" parameterType="java.util.Map">
+	   delete from bms_reason where code=#{code}  and OPERATION_MODULE=#{operationModule}
+	</delete>
+	
+	<!-- 更新该原因在业务环节是否显示 -->
+	<update id="updateBMSReasonIfShow" parameterType="com.ymkj.cms.biz.entity.master.BMSReason">
+	   update bms_reason
+	   set operation_type=#{operationType},
+	       TYPE = #{type},
+	       OPERATION_MODULE=#{operationModule},
+	       code=#{code},
+	       REASON_TEXPLAIN = #{reasonTexplain}
+		<where>
+		  1=1
+		<if test="operationType!=null and operationType!=''">
+		and operation_type=#{operationType}
+		</if>
+		<if test="operationModule!=null and operationModule!=''">
+		and OPERATION_MODULE=#{operationModule}
+		</if>
+		and	code = #{code} and type=#{type} 
+		</where>
+	</update>
+	
+</mapper> 

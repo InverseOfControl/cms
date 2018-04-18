@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSProductAuditLimitDaoImpl">
+
+	<sql id="table">bms_product_audit_limit</sql>
+
+	<sql id="condition_sql">
+		where IS_DELETED = 0 
+		<if test="auditLimitId != null and auditLimitId != 0 and auditLimitId!=''">
+        	and AUDIT_LIMIT_ID = #{auditLimitId}
+		</if>
+		<if test="productId != null and productId != 0 and productId!=''">
+        	and  PRODUCT_ID = #{productId}
+		</if>
+        <if test="productCode != null and productCode != ''">
+        	and PRODUCT_CODE = #{productCode}
+        </if>
+        <if test="auditLimit != null and auditLimit!=''">
+        	and  AUDIT_LIMIT = #{auditLimit}
+        </if>
+        <if test="floorLimit != null and floorLimit!=''">
+        	and  FLOOR_LIMIT = #{floorLimit}
+        </if>
+        <if test="upperLimit != null and upperLimit!=''">
+        	and  UPPER_LIMIT = #{upperLimit}
+        </if>
+        <if test="isDisabled != null and isDisabled !='' ">
+        	and IS_DISABLED = #{isDisabled}
+        </if>
+        <!-- <if test="isDeleted != null">
+        	and  IS_DELETED = #{isDeleted}
+        </if> -->
+        <if test="version != null and version!=''">
+        	and VERSION = #{version}
+        </if>
+	</sql>
+	
+    <sql id="set_sql">
+    <trim prefix="set" suffixOverrides=",">  
+      
+		<if test="productId != null and productId != 0">
+        	PRODUCT_ID = #{productId},
+        </if>
+        <if test="productCode != null and productCode != ''">
+        	PRODUCT_CODE = #{productCode},
+        </if>
+         <if test="auditLimit != null">
+        	 AUDIT_LIMIT = #{auditLimit},
+        </if>
+        <if test="floorLimit != null">
+        	 FLOOR_LIMIT = #{floorLimit},
+        </if>
+        <if test="upperLimit != null">
+        	 UPPER_LIMIT = #{upperLimit},
+        </if>
+        <if test="isDisabled != null">
+        	IS_DISABLED = #{isDisabled},
+        </if>
+        <if test="isDeleted != null">
+        	 IS_DELETED = #{isDeleted},
+        </if>
+        <if test="version != null">
+        	VERSION = #{version},
+        </if>
+         <if test="creator != null and creator != ''">
+	        	CREATOR=#{creator},
+	        </if>
+	         <if test="creatorId != null">
+	        	CREATOR_ID=#{creatorId},
+	        </if>
+	         <if test="creatorDate != null">
+	        	CREATOR_DATE=#{creatorDate},
+	        </if>
+	         <if test="modified != null and modified != ''">
+	        	MODIFIED=#{modified},
+	        </if>
+	         <if test="modifiedId != null">
+	        	MODIFIED_ID=#{modifiedId},
+	        </if>
+	         <if test="modifiedDate != null">
+	        	MODIFIED_DATE=#{modifiedDate},
+	        </if>
+	        <if test="configureConflict != null and configureConflict !=''">
+	        	CONFIGURE_CONFLICT=#{configureConflict},
+	        </if>
+       </trim> 
+    </sql>
+	
+    <resultMap id="BMSProductLimitMap" type="com.ymkj.cms.biz.entity.master.BMSProductAuditLimit">
+		<id property="auditLimitId" column="AUDIT_LIMIT_ID" />
+		<result property="productId" column="PRODUCT_ID" />
+		<result property="productCode" column="PRODUCT_CODE" />
+		<result property="auditLimit" column="AUDIT_LIMIT" />
+		<result property="floorLimit" column="FLOOR_LIMIT" />
+		<result property="upperLimit" column="UPPER_LIMIT" />
+		<result property="isDisabled" column="IS_DISABLED" />
+		<result property="isDeleted" column="IS_DELETED" />
+		<result property="version" column="VERSION" />
+		<result property="channelId" column="CHANNEL_ID" />
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="creatorDate" column="CREATOR_DATE" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modified" column="MODIFIED" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedDate" column="MODIFIED_DATE" />
+	    <!-- 修改用户Id -->
+	     <result property="modifiedId" column="MODIFIED_ID" />
+		<result property="configureConflict" column="CONFIGURE_CONFLICT" />
+	</resultMap>
+      
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="BMSProductLimitMap">
+		SELECT 
+		  bla.* 
+		FROM
+		  bms_product_audit_limit bla 
+		  INNER JOIN bms_product bp 
+		    ON bla.PRODUCT_ID = bp.PRODUCT_ID 
+		WHERE bla.IS_DISABLED = 0 
+		  AND bp.IS_DELETED = 0 
+	  	  AND bla.AUDIT_LIMIT_ID = #{auditLimitId}
+        	
+	</select>
+	
+	<select id="findByVO" parameterType="java.util.Map" resultMap="BMSProductLimitMap">
+	 select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+	
+	<select id="findByAuditLimitId" parameterType="long" resultMap="BMSProductLimitMap">
+	 select * from bms_product_audit_limit where AUDIT_LIMIT_ID=#{auditLimitId}
+	</select>
+    
+    <select id="listBy" parameterType="java.util.Map" resultMap="BMSProductLimitMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSProductLimitMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by AUDIT_LIMIT_ID desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+	
+	<select id="findLimitByChaIdUserCode"  parameterType="java.util.Map" resultMap="BMSProductLimitMap">
+		SELECT DISTINCT L.* FROM BMS_ORG_LIMIT_CHANNEL  LC
+		INNER JOIN  BMS_PRODUCT_AUDIT_LIMIT L
+		 ON LC.AUDIT_LIMIT_ID = L.AUDIT_LIMIT_ID 
+		 WHERE LC.CHANNEL_ID=#{channelId} 
+		 AND LC.ORG_ID=#{orgId}
+		AND  LC.IS_DELETED=0
+		AND L.IS_DELETED=0
+	</select>
+    
+    <select id="findLimitByChaIdOrgId"  parameterType="java.util.Map" resultMap="BMSProductLimitMap">
+		SELECT  L.* FROM BMS_ORG_LIMIT_CHANNEL  LC
+		INNER JOIN  BMS_PRODUCT_AUDIT_LIMIT L
+		 ON LC.AUDIT_LIMIT_ID = L.AUDIT_LIMIT_ID 
+		 WHERE LC.CHANNEL_ID=#{channelId}  
+		 AND LC.ORG_ID=#{orgId}
+		 <if test="productCode != null and productCode != ''">
+		 AND L.PRODUCT_CODE=#{productCode}
+		 </if>
+		 <!-- hcr添加配置冲突代码开始 -->
+		 AND LC.CONFIGURE_CONFLICT='N'
+		 <!-- hcr添加配置冲突代码结束 -->
+		AND  LC.IS_DELETED=0 AND L.IS_DELETED=0
+	</select>
+
+    
+    <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSProductAuditLimit" keyProperty="auditLimitId" useGeneratedKeys="true">
+    	
+         insert into bms_product_audit_limit
+         <trim prefix="(" suffix=")" suffixOverrides="," >
+         	<if test="productId != null and productId != 0">
+        		PRODUCT_ID,
+	        </if>
+	        <if test="productCode != null and productCode != ''">
+	        	PRODUCT_CODE,
+	        </if>
+	         <if test="auditLimit != null">
+	        	 AUDIT_LIMIT,
+	        </if>
+	        <if test="floorLimit != null">
+	        	 FLOOR_LIMIT,
+	        </if>
+	        <if test="upperLimit != null">
+	        	 UPPER_LIMIT,
+	        </if>
+	        <if test="isDisabled != null">
+	        	IS_DISABLED,
+	        </if>
+	        <!-- <if test="isDeleted != null"> -->
+	        	 IS_DELETED,
+	       <!--  </if>
+	        <if test="version != null"> -->
+	        	VERSION,
+	       <!--  </if>
+	         <if test="creator != null and creator != ''"> -->
+	        	CREATOR,
+	       <!--  </if>
+	         <if test="creatorId != null"> -->
+	        	CREATOR_ID,
+	        <!-- </if>
+	         <if test="creatorDate != null"> -->
+	        	CREATOR_DATE,
+	       <!--  </if> -->
+	         <if test="modified != null and modified != ''">
+	        	MODIFIED,
+	        </if>
+	         <if test="modifiedId != null">
+	        	MODIFIED_ID,
+	        </if>
+	         <if test="modifiedDate != null">
+	        	MODIFIED_DATE,
+	        </if>
+         </trim>
+         <trim prefix="values (" suffix=")" suffixOverrides="," >
+         	<if test="productId != null and productId != 0">
+        		#{productId},
+	        </if>
+         	<if test="productCode != null and productCode != ''">
+        		#{productCode},
+	        </if>
+	         <if test="auditLimit != null">
+	        	  #{auditLimit},
+	        </if>
+	        <if test="floorLimit != null">
+	        	 #{floorLimit},
+	        </if>
+	        <if test="upperLimit != null">
+	        	 #{upperLimit},
+	        </if>
+	        <if test="isDisabled != null">
+	        	 #{isDisabled},
+	        </if>
+	      <!--   <if test="isDeleted != null"> -->
+	        	0,
+	        <!-- </if>
+	        <if test="version != null"> -->
+	        	1,
+	       <!--  </if>
+	         <if test="creator != null and creator != ''"> -->
+	        	'admin',
+	        <!-- </if>
+	         <if test="creatorId != null"> -->
+	        	1,
+	      <!--   </if>
+	         <if test="creatorDate != null"> -->
+	        	sysdate(),
+	       <!--  </if> -->
+	         <if test="modified != null and modified != ''">
+	        	#{modified},
+	        </if>
+	         <if test="modifiedId != null">
+	        	#{modifiedId},
+	        </if>
+	         <if test="modifiedDate != null">
+	        	#{modifiedDate},
+	        </if>
+         </trim>
+    </insert >
+    
+    <!-- del -->
+    <delete id="deleteById" parameterType="long">
+    	delete from
+		<include refid="table" />
+		where AUDIT_LIMIT_ID = #{auditLimitId}
+    </delete>
+    
+    <delete id="deletelAll">
+    	delete from
+    	<include refid="table" />
+    </delete>    
+    
+    
+    <!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSProductAuditLimit">
+		update
+		<include refid="table" />
+<!-- 			VERSION = #{version}+1 , -->
+			<include refid="set_sql" />
+		<where>
+			AUDIT_LIMIT_ID = #{auditLimitId}
+		</where>
+	</update>
+	<!-- 根据产品ID更新产品期限表数据 -->
+	<update id="updateByProductId" parameterType="com.ymkj.cms.biz.api.vo.request.master.ReqBMSProductAuditLimitVO">	
+	update bms_product_audit_limit 
+	set  
+	<if test="isDisabled != null">
+	        IS_DISABLED= #{isDisabled},	
+    </if>
+    
+	<if test="floorLimit != null">
+	      FLOOR_LIMIT = #{floorLimit},	
+    </if>
+    <if test="upperLimit != null">
+	      UPPER_LIMIT  = #{upperLimit},
+    </if>
+  	
+  	<if test="configureConflict != null and configureConflict != ''">
+	        CONFIGURE_CONFLICT= #{configureConflict}	
+    </if>
+   where  AUDIT_LIMIT_ID = #{auditLimitId}
+			
+	</update>
+	
+	
+	
+	 <select id="findOutletByAuditLimitId"  parameterType="com.ymkj.cms.biz.api.vo.request.master.ReqBMSProductAuditLimitVO" resultType="com.ymkj.cms.biz.entity.master.BMSOrgLimitChannel">
+		select ID as id,AUDIT_LIMIT_ID as auditLimitId,UPPER_LIMIT as upperLimit,FLOOR_LIMIT as floorLimit,ORG_ID as orgId from bms_org_limit_channel where AUDIT_LIMIT_ID=#{auditLimitId}
+		
+	</select>
+	
+	
+	<update id="updateOrgLimitByAuditId" parameterType="com.ymkj.cms.biz.api.vo.request.master.ReqBMSProductAuditLimitVO">	
+	update bms_org_limit_channel 
+	set CONFIGURE_CONFLICT='Y'
+   where  AUDIT_LIMIT_ID = #{auditLimitId}
+	</update>
+	
+	
+	<update id="updateOrgLimitById" parameterType="com.ymkj.cms.biz.api.vo.request.master.ReqBMSOrgLimitChannelVO">	
+	update bms_org_limit_channel 
+	set
+	<if test="isDisabled != null">
+	IS_DISABLED=#{isDisabled}
+	</if>
+	<if test="floorLimit != null">
+	FLOOR_LIMIT=#{floorLimit},
+	</if>
+	<if test="upperLimit != null">
+	UPPER_LIMIT=#{upperLimit},
+	</if>
+	<if test="configure != null and configure !=''">
+	 CONFIGURE_CONFLICT=#{configure}
+	</if>
+   where  ID = #{id}
+	</update>
+	
+	 <select id="queryLimitByProIds"  parameterType="java.util.Map" resultType="com.ymkj.cms.biz.api.vo.request.master.ReqBMSProductAuditLimitVO">
+		SELECT DISTINCT blc.AUDIT_LIMIT AS auditLimit FROM bms_product_audit_limit blc WHERE blc.IS_DISABLED = 0 AND blc.IS_DELETED = 0
+		<if test="productIds !=null and productIds !=''">
+			and blc.PRODUCT_ID in (${productIds})
+		</if>
+		<![CDATA[ ORDER BY AUDIT_LIMIT ASC]]>
+	</select>
+</mapper> 

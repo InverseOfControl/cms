@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPCarInfoDaoImpl">
+   <resultMap id="appCarInfoMap" type="com.ymkj.cms.biz.entity.apply.APPCarInfoEntity">
+		<id property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="org" column="ORG" />
+		<result property="loanNo" column="LOAN_NO"/>
+		<result property="checkId" column="CHECK_ID" />
+	    <result property="personId" column="PERSON_ID" />
+		<result property="carType" column="CAR_TYPE" />
+		<result property="carLoan" column="CAR_LOAN" />
+		<result property="carBuyDate" column="CAR_BUY_DATE" />
+		<result property="nakedCarPrice" column="NAKED_CAR_PRICE" />
+		<result property="carBuyPrice" column="CAR_BUY_PRICE" />
+		<result property="carLoanTerm" column="CAR_LOAN_TERM" />
+		<result property="monthPaymentAmt" column="MONTH_PAYMENT_AMT" />
+		<result property="localPlate" column="LOCAL_PLATE" />
+		<result property="plateNum" column="PLATE_NUM" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		<result property="snapVersion" column="SNAP_VERSION" />
+		
+		<result property="carCheckIsVerify" column="CAR_CHECKIS_VERIFY" />
+		<result property="carLoanIssueDate" column="CAR_LOAN_ISSUE_DATE" />
+		
+	</resultMap>
+	
+ 
+  <select id="listByLoanBaseId" parameterType="java.util.Map" resultMap="appCarInfoMap">
+		select 
+			CAR_LOAN,
+			CHECK_ID,
+			MONTH_PAYMENT_AMT,
+			CAR_TYPE,
+			OPERATION_STATUS,
+			CAR_LOAN_TERM,
+			CAR_SEAT,
+			ORG,
+			MODIFIED_TIME,
+			LOCAL_PLATE,
+			APP_NO,
+			CREATOR_ID,
+			TRANSFER_DATE,
+			NAKED_CAR_PRICE,
+			CREATED_TIME,
+			CAR_BUY_PRICE,
+			VERSION,
+			MODIFIER
+		from  BMS_TM_APP_CAR_INFO
+		<where>
+			LOAN_BASE_ID = #{loanBaseId}
+		</where>
+	</select>
+	
+	<select id="queryPersonVaule" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.APPPersonVauleAddresEntity">
+		select distinct
+		p.ISSUER_STATE_ID as issuerStateId,
+		p.ISSUER_CITY_ID as issuerCityId,
+		p.ISSUER_ZONE_ID as issuerZoneId,
+		p.HOME_STATE_ID as homeStateId,
+		p.HOME_CITY_ID as homeCityId,
+		p.HOME_ZONE_ID as homeZoneId,
+		p.CORP_PROVINCE_ID as corpProvinceId,
+		p.CORP_CITY_ID as corpCityId,
+		p.CORP_ZONE_ID as corpZoneId,
+		c.PLATE_NUM as plateNum
+		from bms_app_person_info p
+		left join bms_tm_app_car_info c on (c.LOAN_NO = p.LOAN_NO)
+		where p.LOAN_NO = #{loanNo}
+	</select>
+	
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+        <if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+    
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.APPCarInfoEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_TM_APP_CAR_INFO(LOAN_BASE_ID,APP_NO,LOAN_NO,ORG,PERSON_ID,CHECK_ID
+         				, CAR_TYPE,CAR_LOAN,CAR_BUY_DATE, NAKED_CAR_PRICE,CAR_BUY_PRICE,CAR_LOAN_TERM
+         				,MONTH_PAYMENT_AMT,LOCAL_PLATE,PLATE_NUM 
+         				,CREATOR_ID,CREATOR,CREATED_TIME,VERSION,SNAP_VERSION,CAR_LOAN_ISSUE_DATE)
+         	 VALUES(#{loanBaseId},  #{appNo},#{loanNo},#{org}, #{personId},  #{checkId},#{carType}, #{carLoan},
+         	 #{carBuyDate}, #{nakedCarPrice},  #{carBuyPrice}, #{carLoanTerm},  #{monthPaymentAmt}, #{localPlate}, 
+         	 	 #{plateNum},
+         	  #{creatorId}, #{creator}, #{createdTime},#{verson},#{snapVersion},#{carLoanIssueDate})
+    </insert >
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="appCarInfoMap">
+		select * from BMS_TM_APP_CAR_INFO
+		where id = #{id}
+	</select>
+          
+   <select id="listBy" parameterType="java.util.Map" resultMap="appCarInfoMap">
+		select * from  BMS_TM_APP_CAR_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	
+    <update id="update" parameterType="com.ymkj.cms.biz.entity.apply.APPCarInfoEntity">
+		update 	BMS_TM_APP_CAR_INFO
+ 			set
+ 	    <if test="carType != null and carType != ''">
+        	CAR_TYPE = #{carType},
+        </if>
+        <if test="carLoan != null and carLoan != ''">
+        	CAR_LOAN = #{carLoan},
+        </if>
+         <if test="carBuyDate != null">
+        	CAR_BUY_DATE = #{carBuyDate},
+        </if>
+         <if test="nakedCarPrice != null and nakedCarPrice != ''">
+        	NAKED_CAR_PRICE = #{nakedCarPrice},
+        </if>
+         <if test="carBuyPrice != null and carBuyPrice != ''">
+        	CAR_BUY_PRICE = #{carBuyPrice},
+        </if>
+         <if test="carLoanTerm != null and carLoanTerm != ''">
+        	CAR_LOAN_TERM = #{carLoanTerm},
+        </if>
+        <if test="monthPaymentAmt != null and monthPaymentAmt != ''">
+        	MONTH_PAYMENT_AMT = #{monthPaymentAmt},
+        </if>
+         <if test="localPlate != null and localPlate != ''">
+        	LOCAL_PLATE = #{localPlate},
+        </if>
+        <if test="plateNum != null and plateNum != ''">
+        	PLATE_NUM = #{plateNum},
+        </if>
+        
+        	CAR_LOAN_ISSUE_DATE = #{carLoanIssueDate},
+        
+ 		  	MODIFIER_ID = #{modifierId},
+ 		  	MODIFIER = #{modifier},
+ 		  	MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	<update id="updateAll" parameterType="com.ymkj.cms.biz.entity.apply.APPCarInfoEntity">
+		update 	BMS_TM_APP_CAR_INFO
+ 			set
+        	CAR_TYPE = #{carType},
+        	CAR_LOAN = #{carLoan},
+        	CAR_BUY_DATE = #{carBuyDate},
+        	NAKED_CAR_PRICE = #{nakedCarPrice},
+        	CAR_BUY_PRICE = #{carBuyPrice},
+        	CAR_LOAN_TERM = #{carLoanTerm},
+        	MONTH_PAYMENT_AMT = #{monthPaymentAmt},
+        	LOCAL_PLATE = #{localPlate},
+        	PLATE_NUM = #{plateNum},
+        	CAR_LOAN_ISSUE_DATE = #{carLoanIssueDate},
+ 		  	MODIFIER_ID = #{modifierId},
+ 		  	MODIFIER = #{modifier},
+ 		  	MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+</mapper> 

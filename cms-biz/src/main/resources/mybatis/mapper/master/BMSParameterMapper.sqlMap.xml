@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSParameterDaoImpl">
+   <resultMap id="parameterMap" type="com.ymkj.cms.biz.entity.master.BMSParameter">
+		<id property="id" column="ID" />
+		<result property="code" column="CODE" />
+		<result property="name" column="NAME" />
+		<result property="parameterValue" column="PARAMETER_VALUE" />
+		<result property="inputType" column="INPUT_TYPE" />
+		<result property="remark" column="REMARK" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="VERSION" />
+		<result property="verson" column="IS_DELETE" />   
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="code != null and code != ''">
+        	and code = #{code}
+        </if>
+        
+	</sql>	
+      
+    <!-- query -->
+    <select id="listBy" parameterType="java.util.Map" resultMap="parameterMap">
+		select * from  BMS_TM_PARAMETER
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	
+    
+</mapper> 

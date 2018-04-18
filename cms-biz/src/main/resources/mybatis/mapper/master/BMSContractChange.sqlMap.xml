@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSContractChangeDaoImpl">
+
+	<resultMap id="BMSContractChangeMap" type="com.ymkj.cms.biz.entity.master.BMSContractChange">
+		<result property="id" column="ID" />
+		<result property="loanNo" column="LOAN_NO" />
+		<result property="rtfState" column="RTF_STATE" />
+		<result property="rtfNodeState" column="RTF_NODE_STATE" />
+		<result property="personName" column="PERSONNAME" />
+		<result property="channelName" column="CHANNELNAME" />
+		<result property="channelCode" column="CHANNEL_CODE" />
+		<result property="productName" column="PRODUCTNAME" />
+		<result property="productCode" column="PRODUCT_CD" />
+		<result property="owningBranch" column="OWNING_BRANCH" />
+		<result property="owningBranchId" column="OWNING_BRANCH_ID" />
+		<result property="contractBranch" column="CONTRACT_BRANCH" />
+		<result property="contractBranchId" column="CONTRACT_BRANCH_ID" />
+		<result property="signName" column="SIGN_NAME" />
+		<result property="signCode" column="SIGN_CODE" />
+		<result property="ifPri" column="IF_PRI" />
+		<result property="appInputFlag" column="APP_INPUT_FLAG" />
+		<result property="ifSuspectCheat" column="IF_SUSPECT_CHEAT" />
+		<result property="lockTarget" column="LOCK_TARGET" />
+		<result property="ifPreferentialUser" column="IF_PREFERENTIAL_USER" />
+	</resultMap>
+	
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSContractChangeMap">
+		SELECT 
+		  blb.ID,
+		  blb.LOAN_NO,
+		  blb.NAME PERSONNAME,
+		  bc.NAME CHANNELNAME,
+		  bp.NAME PRODUCTNAME,
+		  blb.OWNING_BRANCH,
+		  blb.CONTRACT_BRANCH,
+		  blb.SIGN_NAME,
+		  blb.SIGN_CODE,
+		  blb.CONTRACT_BRANCH_ID,
+		  blp.PRODUCT_CD,
+		  blb.OWNING_BRANCH_ID,
+		  blp.IF_PRI,
+		  blb.APP_INPUT_FLAG,
+		  blp.IF_SUSPECT_CHEAT,
+		  blb.IF_PREFERENTIAL_USER 
+		FROM	 
+		  bms_loan_base blb 	 
+		  LEFT JOIN bms_loan_audit bla 	 
+		    ON blb.LOAN_NO = bla.LOAN_NO
+		  LEFT JOIN bms_loan_product blp 	 
+		    ON blb.LOAN_NO = blp.LOAN_NO 	 
+		  LEFT JOIN bms_product bp 	 
+		    ON blp.PRODUCT_CD = bp.CODE 
+	 	  LEFT JOIN bms_channel bc 	 
+		    ON blp.CONTRACT_SOURCE = bc.CODE 
+		<where>
+			blb.IS_DELETE = 0 
+			AND (blp.IS_DELETE = 0  OR blp.IS_DELETE IS NULL)
+			AND (bp.IS_DELETED = 0  OR bp.IS_DELETED IS NULL)
+			AND (bc.IS_DELETED = 0  OR bc.IS_DELETED IS NULL) 
+			<if test="loanNo!=null and loanNo!=''">
+				AND blb.LOAN_NO=#{loanNo} 
+			</if>
+			<if test="personName!=null and personName!=''">
+				AND blb.NAME=#{personName} 
+			</if>
+			<if test="channelId!=null and channelId!=''">
+				AND bc.ID=#{channelId} 
+			</if>
+			<if test="channelCode!=null and channelCode!=''">
+				AND bc.CODE=#{channelCode} 
+			</if>
+			<if test="productId!=null and productId!=''">
+				AND bp.PRODUCT_ID=#{productId} 
+			</if>
+			<if test="productCode!=null and productCode!=''">
+				AND bp.CODE=#{productCode} 
+			</if>
+			<if test="contractBranchId!=null and contractBranchId!=''">
+				AND blb.CONTRACT_BRANCH_ID=#{contractBranchId} 
+			</if>
+			<if test="signCode!=null and signCode!=''">
+				AND blb.SIGN_CODE=#{signCode} 
+			</if>
+			<!-- 权限设置 普通营业部用，签约营业部筛选-->
+			<if test="saleDeptType!=null and saleDeptType==0">
+				<if test="contractBranchIdList!=null and contractBranchIdList.size>0">
+					AND blb.CONTRACT_BRANCH_ID IN
+					<foreach collection="contractBranchIdList" item="contractBranchIdItem" open="(" close=")" separator=",">
+						#{contractBranchIdItem}
+					</foreach>
+				</if>
+			</if>
+			<!-- 权限设置 直通车营业部用，入单营业部筛选-->
+			<if test="saleDeptType!=null and saleDeptType==1">
+				<if test="orgTZCList!=null and orgTZCList.size>0">
+					AND blb.OWNING_BRANCH_ID IN
+					<foreach collection="orgTZCList" item="orgTZCItem" open="(" close=")" separator=",">
+						#{orgTZCItem}
+					</foreach>
+				</if>
+			</if>
+			<!-- 需要要显示的借款环节集合 -->
+			<if test="rtfStateList!=null and rtfStateList.size>0">
+				AND blb.RTF_STATE IN
+				<foreach collection="rtfStateList" item="rtfStateItem" open="(" close=")" separator=",">
+					#{rtfStateItem}
+				</foreach>
+			</if>
+			<!-- 需要要显示的借款环节节点状态集合 -->
+			<if test="rtfNodeStateList!=null and rtfNodeStateList.size>0">
+				AND blb.RTF_NODE_STATE IN
+				<foreach collection="rtfNodeStateList" item="rtfNodeStateItem" open="(" close=")" separator=",">
+					#{rtfNodeStateItem}
+				</foreach>
+			</if>
+			<!-- 需要要显示的联合状态   status+rtfState+rtfNodeState集合 -->
+			<if test="concatRtfStateList!=null and concatRtfStateList.size>0">
+				AND CONCAT_WS('_',blb.STATUS,blb.RTF_STATE,blb.RTF_NODE_STATE) IN
+				<foreach collection="concatRtfStateList" item="concatRtfStateItem" open="(" close=")" separator=",">
+					#{concatRtfStateItem}
+				</foreach>
+			</if>
+			<!-- 需要要剔除的借款状态集合   联合状态   rtfNodeState+check集合 -->
+			<if test="concatRtfNodeStateNoCheckList!=null and concatRtfNodeStateNoCheckList.size>0">
+				AND CONCAT_WS('_',blb.RTF_NODE_STATE,bla.CHECK_NODE_STATE) NOT IN
+				<foreach collection="concatRtfNodeStateNoCheckList" item="concatRtfNodeStateNoCheckItem" open="(" close=")" separator=",">
+					#{concatRtfNodeStateNoCheckItem}
+				</foreach>
+			</if>
+			<!-- 加急件置顶显示，如有多笔按照时间正序排列 -->
+			 ORDER BY 
+			  CASE
+			    WHEN blp.IF_PRI = '1'  THEN 1 	
+			    ELSE 2 
+			  END,
+			  blb.CREATED_TIME 
+			
+		</where>
+	</select>
+	
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) 
+		FROM
+		  bms_loan_base blb 
+		  LEFT JOIN bms_loan_audit bla 	 
+		    ON blb.LOAN_NO = bla.LOAN_NO
+		  LEFT JOIN bms_loan_product blp 
+		    ON blb.LOAN_NO = blp.LOAN_NO 
+		  LEFT JOIN bms_product bp 
+		    ON blp.PRODUCT_CD = bp.CODE 
+		  LEFT JOIN bms_channel bc 
+		    ON blp.CONTRACT_SOURCE = bc.CODE 
+		<where>
+			blb.IS_DELETE = 0 
+			AND (blp.IS_DELETE = 0  OR blp.IS_DELETE IS NULL)
+			AND (bp.IS_DELETED = 0  OR bp.IS_DELETED IS NULL)
+			AND (bc.IS_DELETED = 0  OR bc.IS_DELETED IS NULL) 
+			<if test="loanNo!=null and loanNo!=''">
+				AND blb.LOAN_NO=#{loanNo} 
+			</if>
+			<if test="personName!=null and personName!=''">
+				AND blb.NAME=#{personName} 
+			</if>
+			<if test="channelId!=null and channelId!=''">
+				AND bc.ID=#{channelId} 
+			</if>
+			<if test="channelCode!=null and channelCode!=''">
+				AND bc.CODE=#{channelCode} 
+			</if>
+			<if test="productId!=null and productId!=''">
+				AND bp.PRODUCT_ID=#{productId} 
+			</if>
+			<if test="productCode!=null and productCode!=''">
+				AND bp.CODE=#{productCode} 
+			</if>
+			<if test="contractBranchId!=null and contractBranchId!=''">
+				AND blb.CONTRACT_BRANCH_ID=#{contractBranchId} 
+			</if>
+			<if test="signCode!=null and signCode!=''">
+				AND blb.SIGN_CODE=#{signCode} 
+			</if>
+			<!-- 权限设置 普通营业部用，签约营业部筛选-->
+			<if test="saleDeptType!=null and saleDeptType==0">
+				<if test="contractBranchIdList!=null and contractBranchIdList.size>0">
+					AND blb.CONTRACT_BRANCH_ID IN
+					<foreach collection="contractBranchIdList" item="contractBranchIdItem" open="(" close=")" separator=",">
+						#{contractBranchIdItem}
+					</foreach>
+				</if>
+			</if>
+			<!-- 权限设置 直通车营业部用，入单营业部筛选-->
+			<if test="saleDeptType!=null and saleDeptType==1">
+				<if test="orgTZCList!=null and orgTZCList.size>0">
+					AND blb.OWNING_BRANCH_ID IN
+					<foreach collection="orgTZCList" item="orgTZCItem" open="(" close=")" separator=",">
+						#{orgTZCItem}
+					</foreach>
+				</if>
+			</if>
+			<!-- 需要要显示的借款环节集合 -->
+			<if test="rtfStateList!=null and rtfStateList.size>0">
+				AND blb.RTF_STATE IN
+				<foreach collection="rtfStateList" item="rtfStateItem" open="(" close=")" separator=",">
+					#{rtfStateItem}
+				</foreach>
+			</if>
+			<!-- 需要要显示的借款环节节点状态集合 -->
+			<if test="rtfNodeStateList!=null and rtfNodeStateList.size>0">
+				AND blb.RTF_NODE_STATE IN
+				<foreach collection="rtfNodeStateList" item="rtfNodeStateItem" open="(" close=")" separator=",">
+					#{rtfNodeStateItem}
+				</foreach>
+			</if>
+			<!-- 需要要显示的联合状态   status+rtfState+rtfNodeState集合 -->
+			<if test="concatRtfStateList!=null and concatRtfStateList.size>0">
+				AND CONCAT_WS('_',blb.STATUS,blb.RTF_STATE,blb.RTF_NODE_STATE) IN
+				<foreach collection="concatRtfStateList" item="concatRtfStateItem" open="(" close=")" separator=",">
+					#{concatRtfStateItem}
+				</foreach>
+			</if>
+			<!-- 需要要剔除的借款状态集合   联合状态   rtfNodeState+check集合 -->
+			<if test="concatRtfNodeStateNoCheckList!=null and concatRtfNodeStateNoCheckList.size>0">
+				AND CONCAT_WS('_',blb.RTF_NODE_STATE,bla.CHECK_NODE_STATE) NOT IN
+				<foreach collection="concatRtfNodeStateNoCheckList" item="concatRtfNodeStateNoCheckItem" open="(" close=")" separator=",">
+					#{concatRtfNodeStateNoCheckItem}
+				</foreach>
+			</if>
+			<!-- 加急件置顶显示，如有多笔按照时间正序排列 -->
+			 ORDER BY 
+			  CASE
+			    WHEN blp.IF_PRI = '1'  THEN 1 	
+			    ELSE 2 
+			  END,
+			  blb.CREATED_TIME 
+		</where>
+	</select>
+	
+	<select id="getProductIsDisabled" parameterType="java.util.Map" resultMap="BMSContractChangeMap">
+	<!-- 产品，期限，网点，查询有效配置，不考虑渠道 -->
+		SELECT 
+		  blb.id,
+		  bolc.IS_DISABLED,
+		  blb.RTF_STATE,
+		  bc.CODE channel_code,
+		  blb.RTF_NODE_STATE,
+		  blb.loan_no,
+		  blb.LOCK_TARGET 
+		FROM
+		  bms_loan_base blb 
+		  INNER JOIN bms_loan_product blp  ON blb.ID = blp.LOAN_BASE_ID 
+		  INNER JOIN bms_product bp  ON blp.PRODUCT_CD = bp.CODE 
+		  INNER JOIN bms_product_audit_limit bpal  ON bpal.PRODUCT_CODE = blp.PRODUCT_CD AND bpal.AUDIT_LIMIT = blp.APPLY_TERM
+		  INNER JOIN bms_org_limit_channel bolc ON bolc.AUDIT_LIMIT_ID = bpal.AUDIT_LIMIT_ID AND bolc.ORG_ID = blb.OWNING_BRANCH_ID
+		  LEFT JOIN bms_channel bc  ON blp.CONTRACT_SOURCE = bc.CODE 
+		WHERE bolc.IS_DELETED = 0 
+		  AND blb.IS_DELETE = 0 
+		  AND bpal.IS_DELETED = 0 
+		  AND blp.IS_DELETE = 0 
+		  AND bolc.IS_DISABLED = 0 
+		  AND (bc.IS_DELETED = 0 OR bc.IS_DELETED IS NULL)
+		  <if test="loanNo!=null and loanNo!=''">
+		  AND blb.loan_no = #{loanNo}
+		  </if>
+		  <if test="orgId!=null and orgId!=''">
+		  AND bolc.ORG_ID = #{orgId}
+		  </if>
+		LIMIT  1
+	</select>
+	
+	<select id="getLoanBaseVersion" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select VERSION from bms_loan_base where IS_DELETE = 0 AND ID = #{id} 
+	</select>
+	
+	<update id="updateLoanBase" parameterType="Map">
+		update bms_loan_base
+		<set>
+			<if test="contractBranchId!=null and contractBranchId!=''">
+				CONTRACT_BRANCH_ID=#{contractBranchId},
+			</if>
+			<if test="contractBranch!=null and contractBranch!=''">
+				CONTRACT_BRANCH=#{contractBranch},
+			</if>
+			<if test="signCode!=null and signCode!=''">
+				SIGN_CODE=#{signCode},
+			</if>
+			<if test="signName!=null and signName!=''">
+				SIGN_NAME=#{signName},
+			</if>
+			<if test="version!=null and version!=''">
+				VERSION=#{version}+1,
+			</if>
+			modified_time=SYSDATE() 
+		</set>
+		<where>
+			ID=#{id} and VERSION=#{version}
+		</where>
+	</update>
+	<select id="selectContractChangeFrequencyBase" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT 
+		  MIN(bccf.Frequency_base) 
+		FROM
+		  bms_Contract_Change_Frequency bccf 
+		where bccf.IS_DELETED = 0 and bccf.org_id = #{orgId}
+	</select>
+	
+	<insert id="insertContractChangeFrequency" parameterType="java.util.Map" >
+		INSERT INTO bms_Contract_Change_Frequency (
+		  org_id,
+		  user_code,
+		  Frequency_base,
+		  CREATOR_DATE,
+		  CREATOR
+		) 
+		SELECT 
+		  #{orgId},
+		  #{usercode},
+		  #{frequencyBase},
+		  SYSDATE(),
+		  "系统插入" 
+		FROM
+		  DUAL 
+		WHERE NOT EXISTS 
+		  (SELECT 
+		    * 
+		  FROM
+		    bms_Contract_Change_Frequency 
+		  WHERE org_id=#{orgId} and user_code = #{usercode} AND IS_DELETED = 0)
+	
+	</insert>
+	<select id="getUserCodeFrequencyLow" resultType="java.lang.String">
+		SELECT 
+		  user_code 
+		FROM
+		  bms_Contract_Change_Frequency 
+		WHERE Frequency_base = 
+		  (SELECT 
+		    MIN(Frequency_base) 
+		  FROM
+		    bms_Contract_Change_Frequency
+		    where IS_DELETED = 0 and org_id=#{orgId}
+		    <if test="signCodeRejectList!=null and signCodeRejectList.size>0">
+				AND user_code not IN
+				<foreach collection="signCodeRejectList" item="signCodeRejectItem" open="(" close=")" separator=",">
+					#{signCodeRejectItem}
+				</foreach>
+			</if>
+		    ) 
+		    and IS_DELETED = 0 and org_id=#{orgId}
+		    <if test="signCodeRejectList!=null and signCodeRejectList.size>0">
+				AND user_code not IN
+				<foreach collection="signCodeRejectList" item="signCodeRejectItem" open="(" close=")" separator=",">
+					#{signCodeRejectItem}
+				</foreach>
+			</if>
+		ORDER BY id 
+		LIMIT 1 
+	</select>
+	<update id="deleteContractChangeFrequency" parameterType="java.util.Map" >
+		UPDATE 
+		  bms_Contract_Change_Frequency 
+		SET
+		  IS_DELETED = 1 ,
+  		  modified_date = SYSDATE()
+		WHERE IS_DELETED = 0 
+		AND org_id = #{orgId}
+		<if test="customerServiceList!=null and customerServiceList.size>0">
+			AND user_code NOT IN
+			<foreach collection="customerServiceList" item="customerItem" open="(" close=")" separator=",">
+				#{customerItem}
+			</foreach>
+		</if>
+	</update>
+	<update id="increaseContractChangeFrequency" parameterType="java.util.Map" >
+		UPDATE 
+		  bms_Contract_Change_Frequency 
+		SET
+		  Frequency_base = Frequency_base + 1,
+		  Frequency_real = Frequency_real + 1,
+  		  modified_date = SYSDATE()
+		WHERE IS_DELETED = 0 
+			AND org_id = #{orgId}
+			AND user_code = #{userCode}
+	</update>
+</mapper>

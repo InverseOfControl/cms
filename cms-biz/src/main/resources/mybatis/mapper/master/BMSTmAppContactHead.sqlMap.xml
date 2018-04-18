@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSTmAppContactHeadDaoImpl">
+<!-- 联系人主表 -->
+   <resultMap id="BMSTmAppContactHeadMap" type="com.ymkj.cms.biz.entity.master.BMSTmAppContactHead">
+       <!-- ID -->
+       <result column ="id"  property ="id"/>
+        <!-- 借款编号 -->
+		<result column ="LOAN_NO"  property ="loanNo"/>
+		<!-- 申请件编号 -->
+		<result column ="APP_NO"  property ="appNo"/>
+		<!-- LOAN_BASE_ID -->
+		<result column ="LOAN_BASE_ID"  property ="loanBaseId"/>
+		<!-- 客户主表主键 -->
+		<result column ="PERSON_ID"  property ="personId"/>
+		<!-- 创建用户 -->
+		<result column ="CREATOR"  property ="creator"/>
+		<!-- 创建时间 -->
+		<result column ="CREATED_TIME"  property ="createdTime"/>
+		<!-- 创建用户ID -->
+		<result column ="CREATOR_ID"  property ="creatorId"/>
+		<!-- 流程状态 -->
+		<result column ="FLOW_STATE"  property ="flowState"/>
+		<!-- 版本号 -->
+		<result column ="VERSION"  property ="version"/>
+		<!-- 快照版本 -->
+		<result column ="SNAP_VERSION"  property ="snapVersion"/>
+		<!-- 是否逻辑删除 -->
+		<result column ="IS_DELETE"  property ="isDelete"/>
+	    
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        <if test="appNo != null and appNo != ''">
+        	and APP_NO = #{appNo}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	 </sql>
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSTmAppContactHeadMap">
+		     select 
+		     `id`,
+             `LOAN_NO`,
+             `APP_NO`,
+             `LOAN_BASE_ID`,
+             `PERSON_ID`,
+             `CREATOR`,
+             `CREATED_TIME`,
+             `CREATOR_ID`,
+             `FLOW_STATE`,
+             `VERSION`,
+             `SNAP_VERSION`,
+             `IS_DELETE`
+		      from BMS_TM_APP_CONTACT_HEAD
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by CREATED_TIME desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_TM_APP_CONTACT_HEAD
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+     
+</mapper> 

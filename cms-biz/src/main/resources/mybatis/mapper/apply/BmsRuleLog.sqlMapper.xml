@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.BaseRuleLogDaoImpl">
+<resultMap id ="baseResultMap"  type="com.ymkj.cms.biz.entity.apply.BmsRuleLogEntity">
+		<result property ="id"  column ="ID"/>
+		<result property ="loanNo"  column ="LOAN_NO"/>
+		<result property ="idNo"  column ="ID_NO"/>
+		<result property ="name"  column ="NAME"/>
+		<result property ="rtfState"  column ="RTF_STATE"/>
+		<result property ="sdsCode"  column ="SDS_CODE"/>
+		<result property ="sdsName"  column ="SDS_NAME"/>
+		
+		<result property ="sdsRes"  column ="SDS_RES"/>
+		<result property ="whetherHit"  column ="WHETHER_HIT"/>
+		<result property ="callType"  column ="CALL_TYPE"/>
+		<result property ="businessType"  column ="BUSINESS_TYPE"/>
+		
+		<result property ="operator"  column ="OPERATOR"/>
+		<result property ="operatorCode"  column ="OPERATOR_CODE"/>
+		<result property ="operationTime"  column ="OPERATION_TIME"/>
+		<result property ="remark"  column ="REMARK"/>
+		<result property ="version"  column ="VERSION"/>
+		<result property ="isDelete"  column ="IS_DELETE"/>
+		
+		<result property ="incomingData"  column ="INCOMING_DATA"/>
+		
+</resultMap>
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 	ID,	LOAN_NO,	ID_NO,	NAME,	RTF_STATE,	SDS_CODE,	SDS_NAME,	OPERATOR,	OPERATOR_CODE,	OPERATION_TIME,	REMARK,	VERSION,	IS_DELETE
+	</sql>
+
+
+	<!-- 批量新增的方法 -->
+	<insert id="batchInsert" useGeneratedKeys="true" parameterType="java.util.List">  
+	    <selectKey resultType="long" keyProperty="id" order="AFTER">  
+	        SELECT  
+	        LAST_INSERT_ID()  
+	    </selectKey>  
+		    INSERT INTO bms_rule_log
+		    (LOAN_NO,ID_NO,NAME,RTF_STATE,SDS_CODE,SDS_NAME,OPERATOR,OPERATOR_CODE,OPERATION_TIME,REMARK,
+		    SDS_RES,WHETHER_HIT,CALL_TYPE,BUSINESS_TYPE,INCOMING_DATA)   
+		    values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (#{item.loanNo},#{item.idNo},#{item.name},#{item.rtfState},#{item.sdsCode},#{item.sdsName},
+	        #{item.operator},#{item.operatorCode},#{item.operationTime},#{item.remark},
+	        #{item.sdsRes},#{item.whetherHit},#{item.callType},#{item.businessType},#{item.incomingData})  
+	    </foreach>  
+	</insert>
+
+</mapper>

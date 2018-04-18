@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.LoanReviewDaoImpl">
+	
+	<!-- 查询字段映射 -->
+	<resultMap id="loanReviewMap"
+		type="com.ymkj.cms.biz.entity.apply.LoanReviewEntity">
+		<result property="owning_branch_id" column="owning_branch_id" />
+		<result property="loan_base_id" column="loan_base_id" />
+		<result property="loan_no" column="loan_no" />
+		<result property="name" column="name" />
+		<result property="id_no" column="id_no" />
+		<result property="person_id" column="person_id" />
+		<result property="apply_term" column="apply_term" />
+		<result property="product_cd" column="product_cd" />
+		<result property="product_name" column="product_name" />
+		<result property="refuse_date" column="refuse_date" />
+		<result property="primary_reason" column="primary_reason" />
+		<result property="branch_manager_code" column="branch_manager_code" />
+		<result property="branch_manager_name" column="branch_manager_name" />
+		<result property="creator" column="creator" />
+		<result property="created_time" column="created_time" />
+		<result property="creator_id" column="creator_id" />
+		<result property="modifier" column="modifier" />
+		<result property="modified_time" column="modified_time" />
+		<result property="modifier_id" column="modifier_id" />
+		<result property="status" column="status" />
+		<result property="blacklist_id" column="BLACKLIST_ID"/>
+		<result property="secode_reason" column="secode_reason"/>
+		<result property="first_levle_reasons_code" column="first_levle_reasons_code"/>
+		<result property="two_levle_reasons_code" column="two_levle_reasons_code"/>
+		<result property="enter_branch" column="enter_branch"/>
+		<result property="submit_xs_date" column="submit_xs_date"/>
+		<result property="new_reject_first_reason" column="new_reject_first_reason"/>
+		<result property="new_reject_two_reason" column="new_reject_two_reason"/>
+		<result property="new_reject_first_reason_code" column="new_reject_first_reason_code"/>
+		<result property="new_reject_two_reason_code" column="new_reject_two_reason_code"/>
+	    <result property="reject_person_name" column="reject_person_name"/>
+		<result property="reject_person_code" column="reject_person_code"/>
+	</resultMap>
+
+	<!-- 获取需要同步的数据 -->
+	<select id="getReviewList" parameterType="java.util.Map" resultMap="loanReviewMap">
+		select lb.owning_branch_id,lb.id loan_base_id,lb.loan_no,ap.name,ap.id_no,ap.id person_id,lp.apply_term,lp.product_cd,lp.product_name,
+		la.refuse_date,le.primary_reason,lb.branch_manager_code,lb.branch_manager_name,
+		la.creator,la.created_time,la.creator_id,la.modifier,la.modified_time,la.modifier_id,le.blacklist_id,le.secode_reason,le.first_levle_reasons_code,
+		le.two_levle_reasons_code,lb.enter_branch,la.created_time as submit_xs_date,
+		<!-- 最后拒绝人 -->
+		(SELECT ll.OPERATOR FROM bms_Loan_log ll WHERE ll.loan_No = lb.loan_no  AND (ll.OPERATION_TYPE in('115','131') or ll.rtf_node_state='SQJWH-REJECT') ORDER BY ll.OPERATION_TIME DESC LIMIT 1) reject_person_name,
+		<!-- 最后拒绝人CODE -->
+		(SELECT ll.OPERATOR_CODE FROM bms_Loan_log ll WHERE ll.loan_No = lb.loan_no  AND (ll.OPERATION_TYPE in('115','131') or ll.rtf_node_state='SQJWH-REJECT') ORDER BY ll.OPERATION_TIME DESC LIMIT 1) reject_person_code
+		from bms_loan_base lb
+		left join bms_loan_audit la on lb.id = la.loan_base_id
+		left join bms_loan_product lp on lb.id = lp.loan_base_id
+		left join bms_product p on lp.product_cd = p.code
+		left join bms_app_person ap on lb.person_id = ap.id
+		left join bms_loan_ext le on lb.id = le.loan_base_id
+		where la.refuse_date &gt; date_add(#{endTime},interval -10 day)
+     	and ((lb.rtf_node_state = 'XSCS-REJECT' AND lb.rtf_state='XSCS' ) OR (lb.rtf_node_state = 'XSZS-REJECT' AND lb.rtf_state='XSZS')OR (lb.rtf_node_state = 'CSFP-REJECT' AND lb.rtf_state='CSFP')OR (lb.rtf_node_state = 'SQJWH-REJECT')) 
+		and not exists (select id from bms_loan_review lr where lb.loan_no = lr.loan_no)
+	</select>
+	
+	<!-- 同步数据 -->
+	<insert id="batchInsert" useGeneratedKeys="true" parameterType="java.util.List">  
+	    <selectKey resultType="long" keyProperty="id" order="AFTER">  
+	        select last_insert_id()  
+	    </selectKey>  
+	    insert into bms_loan_review(loan_base_id,loan_no,name,id_no,person_id,apply_term,product_cd,product_name,refuse_date,
+	    primary_reason,branch_manager_code,branch_manager_name,creator,created_time,creator_id,modifier,modified_time, modifier_id,owning_branch_id,three_workday_date,blacklist_id,
+	    secode_reason,primary_reason_code,two_reason_code,enter_branch,submit_xs_date,reject_person_code,reject_person_name) values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	    (#{item.loan_base_id},#{item.loan_no},#{item.name},#{item.id_no},#{item.person_id},#{item.apply_term},#{item.product_cd},#{item.product_name},#{item.refuse_date},
+	    #{item.primary_reason},#{item.branch_manager_code},#{item.branch_manager_name},#{item.creator},
+	    #{item.created_time},#{item.creator_id},#{item.modifier},#{item.modified_time},#{item.modifier_id},#{item.owning_branch_id},#{item.three_workday_date},#{item.blacklist_id},
+	     #{item.secode_reason},#{item.first_levle_reasons_code},#{item.two_levle_reasons_code},#{item.enter_branch},#{item.submit_xs_date},#{item.reject_person_code},#{item.reject_person_name})  
+	    </foreach>  
+	</insert>
+	
+	<sql id="condition_sql">
+		where 1=1 
+		<if test="orgId !=null and orgId!=''"> and lr.owning_branch_id = #{orgId} </if>
+		<if test="orgIdList != null and orgIdList.size > 0">
+        and	lr.owning_branch_id in 
+        <foreach collection="orgIdList" item="orgIdItem" index="index" open="(" separator="," close=")">
+        	#{orgIdItem}
+		</foreach>
+		</if>
+		<if test="loanNo != null and loanNo != ''"> and lr.loan_no = #{loanNo} </if>
+		<if test="name != null and name !=''"> and lr.name = #{name} </if>
+		<if test="idNo != null and idNo !=''"> and lr.id_no = #{idNo} </if>
+		<!-- 代办任务 -->
+		<if test="agencyOrComplete == 0">
+			<!-- 未提交队列 -->
+			<if test="submittedOrUnsubmitted == 0"> and (lr.status = 0 or lr.status = 1)   AND (lr.REVIEW_RESULT IS NULL  OR lr.REVIEW_RESULT NOT IN (0,1) ) </if>
+			<!-- 已提交队列 -->
+			<if test="submittedOrUnsubmitted == 1"> and (lr.status = 2 or lr.status = 3)   AND (lr.REVIEW_RESULT IS NULL  OR lr.REVIEW_RESULT NOT IN (0,1) ) </if>
+			and lr.three_workday_date &gt;= #{currentDate}
+			order by lr.status desc
+		</if>
+		<!-- 已完成任务 -->
+		<if test="agencyOrComplete == 1">
+			and (lr.review_result = 0 or lr.review_result = 1)
+			and date_add(lr.created_time, INTERVAL 1 MONTH) &gt;= #{currentDate}
+			order by lr.review_result desc
+		</if>
+	</sql>
+	
+	<sql id="xsCondition_sql">
+		where 1=1 
+		<if test="orgId !=null and orgId!=''"> and lr.owning_branch_id = #{orgId} </if>
+		<if test="loanNo != null and loanNo != ''"> and lr.loan_no = #{loanNo} </if>
+		<if test="name != null and name !=''"> and lr.name = #{name} </if>
+		<if test="idNo != null and idNo !=''"> and lr.id_no = #{idNo} </if>
+		<!-- 代办任务 -->
+		<if test="agencyOrComplete == 0">
+	     	and lr.status = 2  AND (lr.REVIEW_RESULT IS NULL  OR lr.REVIEW_RESULT NOT IN (0,1) ) 
+			<!-- and lr.three_workday_date &gt;= #{currentDate} -->
+			order by lr.modified_time ASC
+		</if>
+		<!-- 已完成任务 -->
+		<if test="agencyOrComplete == 1">
+			and (lr.review_result = 0 or lr.review_result = 1 or lr.status=3)
+			and date_add(lr.created_time, INTERVAL 3 MONTH) &gt;= #{currentDate}
+			order by lr.modified_time desc
+		</if>
+	</sql>
+	
+	<!-- 复议数据查询 -->
+	<select id="listPage" parameterType="java.util.Map" resultMap="loanReviewMap">
+		select * from bms_loan_review lr
+		<include refid="condition_sql" />
+	</select>
+	
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from bms_loan_review lr
+		<include refid="condition_sql" />
+	</select>
+	
+	<!-- 查询页签的消息提示数 -->
+	<select id="queryMessageCount" parameterType="java.util.Map" resultType="int">
+		<choose>
+			<when test="flag == 1">
+				select count(1) from (
+				select id from bms_loan_review lr  where (lr.status = 0 or lr.status = 1 or lr.status = 3) and owning_branch_id = #{orgId} and lr.three_workday_date &gt;= #{currentDate}
+		  		union all 
+		  		select id from bms_loan_review lr where (lr.review_result = 0  or lr.review_result = 1) and is_read = 1 and owning_branch_id = #{orgId}) t 
+			</when>
+			<when test="flag == 2">
+				select count(1) from bms_loan_review lr where (lr.review_result = 0  or lr.review_result = 1) and is_read = 1 and owning_branch_id = #{orgId}
+			</when>
+			<otherwise>
+				select 0
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 修改操作状态 -->
+	<update id="updateStatus" parameterType="com.ymkj.cms.biz.entity.apply.LoanReviewEntity">
+		update bms_loan_review set status=#{status},modified_time=#{modified_time} where loan_no = #{loan_no}
+	</update>
+	
+	<!-- 插入复议原因和备注 -->
+	<update id="insertReviewReason" parameterType="com.ymkj.cms.biz.entity.apply.LoanReviewEntity">
+		update bms_loan_review set review_reason=#{review_reason},review_remark=#{review_remark} where loan_no=#{loan_no}
+	</update>
+
+	<!-- 修改已读未读状态 -->
+	<update id="updateIsReadStatus" parameterType="java.lang.String">
+		update bms_loan_review set is_read=0 where loan_no=#{loanNo}
+	</update>
+	<!--修改复议状态-->
+	<update id="updateOrSaveReviewStatus" parameterType="java.util.Map">
+	  update bms_loan_review set 
+	  <if test="remark!=null and remark!=''">
+	   REVIEW_REMARK=#{remark},
+	  </if>
+	  <if test="reviewResult!=null">
+	   REVIEW_RESULT=#{reviewResult},
+	  </if>
+	  <if test="primaryReason!=null and primaryReason!=''">
+	  PRIMARY_REASON=#{primaryReason},
+	  </if>
+	  <if test="primaryReasonCode!=null and primaryReasonCode!=''">
+	  PRIMARY_REASON_CODE=#{primaryReasonCode},
+	  </if>
+	  <if test="twoReason!=null and twoReason!=''">
+	    secode_reason=#{twoReason},
+	  </if>
+	  <if test="twoReasonCode!=null and twoReasonCode!=''">
+	   TWO_REASON_CODE=#{twoReasonCode},
+	  </if>
+	  <if test="newRejectFirstReason!=null and newRejectFirstReason!='' ">
+	   NEW_REJECT_FIRST_REASON=#{newRejectFirstReason},
+	  </if>
+	   <if test="newRejectFirstReasonCode!=null and newRejectFirstReasonCode!='' ">
+	   NEW_REJECT_FIRST_REASON_CODE=#{newRejectFirstReasonCode},
+	  </if>
+	   <if test="newRejectTwoReason!=null and newRejectTwoReason!='' ">
+	   NEW_REJECT_TWO_REASON=#{newRejectTwoReason},
+	  </if>
+	   <if test="newRejectTwoReasonCode!=null and newRejectTwoReasonCode!='' ">
+	   NEW_REJECT_TWO_REASON_CODE=#{newRejectTwoReasonCode},
+	  </if>
+	  <if test="status!=null ">
+	  STATUS=#{status},
+	  </if>
+	  <if test="blackList!=null and blackList!='' ">
+	  BLACKLIST_ID=#{blackList},
+	  </if>
+	  <if test="modifier!=null and modifier!=''">
+	  MODIFIER=#{modifier},
+	  </if>
+	  <if test="modifierDate!=null">
+	  MODIFIED_TIME=#{modifierDate},
+	  </if>
+	  <if test="modifierId!=null and modifierId!=''">
+	  MODIFIER_ID=#{modifierId}
+	  </if>
+	  <where>
+	   LOAN_NO=#{loanNo}
+	  </where>
+	</update>
+	<update id="updateBlackListIdByLoanNo" parameterType="Map">
+	update bms_loan_review
+	set BLACKLIST_ID=null
+	<where>
+		LOAN_NO=#{loanNo}
+	</where>
+  </update>
+  <select id="selectByLoanNo"  resultMap="loanReviewMap" parameterType="java.lang.String">
+   select loan_no,blacklist_id,primary_reason_code as first_levle_reasons_code from bms_loan_review where loan_no=#{loanNo}
+  </select>
+  
+     <select id="xsListPage" parameterType="java.util.Map" resultMap="loanReviewMap">
+		select * from bms_loan_review lr
+		<include refid="xsCondition_sql" />
+	</select>
+	
+	<select id="xsCountByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from bms_loan_review lr
+		<include refid="xsCondition_sql" />
+	</select>
+
+	<update id="updateReasonByNo" parameterType="java.util.Map">
+		update bms_loan_review set
+		PRIMARY_REASON=#{firstLevelReasons},PRIMARY_REASON_CODE=#{firstLevelReasonCode},
+		SECODE_REASON=#{twoLevelReasons},TWO_REASON_CODE=#{twoLevelReasonCode},BLACKLIST_ID=#{blackList}
+		where LOAN_NO=#{loanNo}
+	</update>
+	
+</mapper> 

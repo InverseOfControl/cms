@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSContractChannelDaoImpl">
+	<sql id="table">bms_contract_channel</sql>
+	<sql id="condition_sql">
+		where IS_DELETED = 0 
+		<if test="channelId != null and channelId!=''">
+        	and CHANNEL_ID = #{channelId}
+		</if>
+		<if test="templateId != null and templateId != 0 and templateId!=''">
+        	and  TEMPLATE_ID = #{templateId}
+		</if>
+       
+	</sql>
+	<resultMap id="BMSContractMap" type="com.ymkj.cms.biz.entity.master.BMSContractChannel">
+		<id property="id" column="ID" />
+		<result property="channelId" column="CHANNEL_ID" />
+		<result property="templateId" column="TEMPLATE_ID" />
+		<result property="version" column="VERSION" />
+		<result property="isDeleted" column="IS_DELETED" />
+		<result property="isDisabled" column="is_disabled" />
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="creatorDate" column="CREATOR_DATE" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modified" column="MODIFIED" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedDate" column="MODIFIED_DATE" />
+	    <!-- 修改用户Id -->
+	     <result property="modifiedId" column="MODIFIED_ID" />
+	</resultMap>
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSContractChannel"  keyProperty="id" useGeneratedKeys="true">
+		insert into bms_contract_channel
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="channelId != null and channelId !=''">
+				CHANNEL_ID,
+			</if>
+			<if test="templateId != null and templateId != ''">
+				TEMPLATE_ID,
+			</if>
+			IS_DISABLED,
+			<if test="creator != null and creator != ''">
+			CREATOR,
+			 </if> <if test="creatorId != null">
+			CREATOR_ID,
+			</if> 
+			<if test="creatorDate != null">
+			CREATOR_DATE,
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED,
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID,
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE,
+			</if>
+			IS_DELETED,
+			VERSION
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			
+			<if test="channelId != null and channelId !=''">
+				#{channelId},
+			</if>
+			<if test="templateId != null and templateId != ''">
+				#{templateId},
+			</if>
+			0,
+			 <if test="creator != null and creator != ''">
+			  #{creator}, 
+			  </if>
+			 <if test="creatorId != null"> #{creatorId}, </if> 
+			<if test="creatorDate != null"> #{creatorDate}, </if>
+			<if test="modified != null and modified != ''">
+				#{modified},
+			</if>
+			<if test="modifiedId != null">
+				#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				#{modifiedDate},
+			</if>
+			0,
+			1
+		</trim>
+	</insert>
+	<!-- 更新 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSContractChannel">
+		update
+		<include refid="table" />
+		<include refid="set_sql" />
+		<where>
+			ID = #{id}
+		</where>
+	</update>
+	<sql id="set_sql">
+		<trim prefix="set" suffixOverrides=",">
+			<if test="channelId != null and channelId !=''">
+				CHANNEL_ID=#{channelId},
+			</if>
+			<if test="templateId != null and templateId != ''">
+				TEMPLATE_ID=#{templateId},
+			</if>
+			<if test="isDisabled != null and isDisabled != ''">
+				IS_DISABLED=#{isDisabled},
+			</if>
+			<if test="isDeleted != null and isDeleted != ''">
+				IS_DELETED=#{isDeleted},
+			</if>
+			<if test="creator != null and creator != ''">
+				CREATOR=#{creator},
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID=#{creatorId},
+			</if>
+			<if test="creatorDate != null">
+				CREATOR_DATE=#{creatorDate},
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED=#{modified},
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID=#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE=#{modifiedDate},
+			</if>
+		</trim>
+	</sql>
+ <select id="listPage" parameterType="java.util.Map" resultMap="BMSContractMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by ID desc]]>
+	</select>
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by ID desc]]>
+	</select>
+</mapper>

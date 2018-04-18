@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.app.impl.AppDataInfoDaoImpl">
+
+<resultMap id="appHisInputMap" type="com.ymkj.cms.biz.entity.app.AppDataInfoEntity">
+		<result property="appNo" column="APP_NO" />
+		<result property="applicantName" column="NAME" />
+		<result property="status" column="STATUS" />
+		<result property="applyTime" column="APP_APPLY_DATE" />
+		<result property="applyAccount" column="APPLY_LMT" />
+		<result property="productName" column="PRODUCT_NAME" />
+		<result property="idCardNoLastFourDigits" column="IDNO_LASTFOURDIGITS" />
+		<result property="applyTerm" column="APPLY_TERM" />
+		<result property="creditAppliacation" column="CREDIT_APPLICATION" />
+		<result property="remark" column="REMARK" />
+		<result property="cusCode" column="SERVICE_CODE" />
+		<result property="cusName" column="SERVICE_NAME" />
+		<result property="backReason" column="PRIMARY_REASON" />
+		<result property="backRemark" column="BACK_REMARK" />
+		<result property="rtfNodeState" column="RTF_NODE_STATE" />
+		<result property="rtfState" column="RTF_STATE" />
+	</resultMap>
+
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="appHisInputMap">
+		SELECT 
+		b.LOAN_NO APP_NO,
+		b.NAME,
+		b.STATUS,
+		DATE_FORMAT(b.APP_APPLY_DATE,'%Y-%m-%d %H:%i:%s') APP_APPLY_DATE,
+		p.APPLY_LMT,
+		p.PRODUCT_NAME,
+		SUBSTRING(b.ID_NO,-4) IDNO_LASTFOURDIGITS,
+		p.APPLY_TERM,
+        c.NAME_CN CREDIT_APPLICATION,
+		b.REMARK,
+		b.SERVICE_CODE,
+		b.SERVICE_NAME,
+		CASE
+        WHEN (b.STATUS ='REFUSE' or b.RTF_NODE_STATE IN ('CSFP-RETURN','XSCS-RETURN','XSZS-RETURN')) 
+        THEN CONCAT(e.PRIMARY_REASON ,'-',e.`SECODE_REASON`)
+        ELSE '' END PRIMARY_REASON,
+		b.RTF_NODE_STATE,
+		b.RTF_STATE,
+		MAX(l.operation_time),
+		l.`REMARK` BACK_REMARK
+		FROM
+	 	bms_loan_base b 
+	 	LEFT JOIN bms_loan_product p 
+	    ON b.ID = p.LOAN_BASE_ID 
+		LEFT JOIN bms_loan_audit a 
+		ON b.ID = a.LOAN_BASE_ID 
+		LEFT JOIN bms_loan_ext e
+		ON b.ID = e.LOAN_BASE_ID 
+		LEFT JOIN bms_loan_log l
+ 		ON b.LOAN_NO = l.LOAN_NO
+ 		AND l. RTF_NODE_STATE = b.RTF_NODE_STATE
+ 		AND b.RTF_NODE_STATE  IN ('CSFP-RETURN','XSCS-RETURN','XSZS-RETURN')
+		LEFT JOIN bms_enum_code c
+		ON c.code = e.CREDIT_APPLICATION
+		AND c.CODE_TYPE='CreditApplication'
+		WHERE  b.APP_INPUT_FLAG = 'app_input'
+		AND b.PERSON_ID != 0 
+		<if test ="branchManagerCode !=null and branchManagerCode !='' ">
+		AND b.BRANCH_MANAGER_CODE =#{branchManagerCode}
+		</if>
+		<if test ="serviceCode !=null and serviceCode !='' ">
+		 AND b.SERVICE_CODE =#{serviceCode}
+		 AND b.IS_APP_CLAIM ='1'
+		</if>
+		<if test="status != null and status != '' ">
+		and b.STATUS=#{status}
+		and b.RTF_NODE_STATE NOT IN ('CSFP-RETURN','XSCS-RETURN','XSZS-RETURN') 
+		</if>
+		<if test="rtfStates != null">
+		and b.RTF_STATE IN
+		<foreach collection="rtfStates" item="rtfState" index="index" open="(" close=")" separator=",">
+            #{rtfState}
+        </foreach>
+        </if>
+        <if test="rtfNodeStates != null">
+		and b.RTF_NODE_STATE IN
+		<foreach collection="rtfNodeStates" item="rtfNodeState" index="index" open="(" close=")" separator=",">
+            #{rtfNodeState}
+        </foreach>
+        </if>
+         GROUP BY b.loan_no
+		 ORDER BY e.`CREATED_TIME` DESC
+	</select>
+
+<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		SELECT 
+		COUNT(1)
+		FROM
+	 	bms_loan_base b 
+	 	LEFT JOIN bms_loan_product p 
+	    ON b.ID = p.LOAN_BASE_ID 
+		LEFT JOIN bms_loan_audit a 
+		ON b.ID = a.LOAN_BASE_ID 
+		LEFT JOIN bms_loan_ext e
+		ON b.ID = e.LOAN_BASE_ID 
+		WHERE b.APP_INPUT_FLAG = 'app_input'
+		AND b.PERSON_ID != 0 
+		<if test ="branchManagerCode !=null and branchManagerCode !='' ">
+		AND b.BRANCH_MANAGER_CODE =#{branchManagerCode}
+		</if>
+		<if test ="serviceCode !=null and serviceCode !='' ">
+		 AND b.SERVICE_CODE =#{serviceCode}
+		 AND b.IS_APP_CLAIM ='1'
+		</if>
+		<if test="status != null and status != '' ">
+		and b.STATUS=#{status}
+		and b.RTF_NODE_STATE NOT IN ('CSFP-RETURN','XSCS-RETURN','XSZS-RETURN') 
+		</if>
+		<if test="rtfStates != null">
+		and b.RTF_STATE IN
+		<foreach collection="rtfStates" item="rtfState" index="index" open="(" close=")" separator=",">
+            #{rtfState}
+        </foreach>
+        </if>
+        <if test="rtfNodeStates != null">
+		and b.RTF_NODE_STATE IN
+		<foreach collection="rtfNodeStates" item="rtfNodeState" index="index" open="(" close=")" separator=",">
+            #{rtfNodeState}
+        </foreach>
+        </if>
+	</select>
+
+
+	<select id="getStatusCountByUserCode" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT  t.STATUS ,COUNT(1) APPCOUNT FROM(SELECT  b.STATUS 
+		FROM  
+		bms_loan_base b
+		WHERE 
+		b.APP_INPUT_FLAG = 'app_input'
+		<if test ="branchManagerCode !=null and branchManagerCode !='' ">
+		AND b.BRANCH_MANAGER_CODE =#{branchManagerCode}
+		</if>
+		<if test ="serviceCode !=null and serviceCode !='' ">
+		 AND b.SERVICE_CODE =#{serviceCode}
+		 AND b.IS_APP_CLAIM ='1'
+		</if>
+		 AND b.STATUS ='APPLY'
+		UNION ALL 
+		SELECT  b1.STATUS 
+		FROM  
+		bms_loan_base b1
+		WHERE 
+		b1.APP_INPUT_FLAG = 'app_input'
+		<if test ="branchManagerCode !=null and branchManagerCode !='' ">
+		AND b1.BRANCH_MANAGER_CODE =#{branchManagerCode}
+		</if>
+		<if test ="serviceCode !=null and serviceCode !='' ">
+		 AND b1.SERVICE_CODE =#{serviceCode}
+		 AND b1.IS_APP_CLAIM ='1'
+		</if>
+		AND b1.STATUS ='REFUSE'
+		AND b1.RTF_NODE_STATE IN ('XSCS-REJECT','XSZS-REJECT'))t GROUP BY t.STATUS
+	</select>
+	
+	<select id="isAppClaim" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT  b.IS_APP_CLAIM
+			FROM  
+			bms_loan_base b
+			WHERE 
+			b.loan_no =#{loanNo}
+	</select>
+
+</mapper> 

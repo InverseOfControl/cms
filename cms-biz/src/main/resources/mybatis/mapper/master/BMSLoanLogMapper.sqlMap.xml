@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 借款日志表 -->
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSLoanLogDaoImpl">
+
+<resultMap id ="BMSLoanLogMap"  type="com.ymkj.cms.biz.entity.master.BMSLoanLog">
+        <!-- ID -->
+		<result column ="ID"  property ="id"/>
+		<!-- LOAN_BASE_ID -->
+		<result column ="LOAN_BASE_ID"  property ="loanBaseId"/>
+		<!-- 借款编号 -->
+		<result column ="LOAN_NO"  property ="loanNo"/>
+		<!-- 申请件编号 -->
+		<result column ="APP_NO"  property ="appNo"/>
+		<!-- 申请件状态 -->
+		<result column ="STATUS"  property ="status"/>
+		<!-- 流程状态 -->
+		<result column ="RTF_STATE"  property ="rtfState"/>
+		<!-- 节点状态 -->
+		<result column ="RTF_NODE_STATE"  property ="rtfNodeState"/>
+		<!-- 借款审核环节节点状态 -->
+		<result column ="CHECK_NODE_STATE"  property ="checkNodeState"/>
+		<!-- 初审人员Code -->
+		<result column ="CHECK_PERSON_CODE"  property ="checkPersonCode"/>
+		<!-- 初审人员 -->
+		<result column ="CHECK_PERSON"  property ="checkPerson"/>
+		<!-- 终审人员Code -->
+		<result column ="FINAL_PERSON_CODE"  property ="finalPersonCode"/>
+		<!-- 终审人员 -->
+		<result column ="FINAL_PERSON"  property ="finalPerson"/>
+		<!-- 协审人员Code -->
+		<result column ="APPPOVAL_PERSON_CODE"  property ="apppovalPersonCode"/>
+		<!-- 协审人员 -->
+		<result column ="APPPOVAL_PERSON"  property ="apppovalPerson"/>
+		<!-- 复核人员Code -->
+		<result column ="COMPLEX_PERSON_CODE"  property ="complexPersonCode"/>
+		<!-- 复核人员 -->
+		<result column ="COMPLEX_PERSON"  property ="complexPerson"/>
+		<!-- 一级原因Code -->
+		<result column ="FIRST_LEVLE_REASONS_CODE"  property ="firstLevleReasonsCode"/>
+		<!-- 一级原因 -->
+		<result column ="FIRST_LEVLE_REASONS"  property ="firstLevleReasons"/>
+		<!-- 二级原因Code -->
+		<result column ="TWO_LEVLE_REASONS_CODE"  property ="twoLevleReasonsCode"/>
+		<!-- 二级原因 -->
+		<result column ="TWO_LEVLE_REASONS"  property ="twoLevleReasons"/>
+		<!-- 操作模块Code -->
+		<result column ="OPERATION_MODULE"  property ="operationModule"/>
+		<!-- 操作类型Code -->
+		<result column ="OPERATION_TYPE"  property ="operationType"/>
+		<!-- 操作人 -->
+		<result column ="OPERATOR"  property ="operator"/>
+		<!-- 操作人工号 -->
+		<result column ="OPERATOR_CODE"  property ="operatorCode"/>
+		<!-- 操作时间 -->
+		<result column ="OPERATION_TIME"  property ="operationTime"/>
+		<!-- 备注 -->
+		<result column ="REMARK"  property ="remark"/>
+		<!-- 版本号 -->
+		<result column ="VERSION"  property ="version"/>
+		<!-- 是否逻辑删除 -->
+		<result column ="IS_DELETE"  property ="isDelete"/>
+</resultMap>
+
+    <sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="rtfState != null and rtfState != ''">
+        	and RTF_STATE = #{rtfState}
+        </if>
+        <if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+         <if test="status != null and status != ''">
+        	and STATUS = #{status}
+        </if>
+	</sql>	
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSLoanLogMap">
+		     select 
+		     `ID`,
+             `LOAN_BASE_ID`,
+             `LOAN_NO`,
+             `APP_NO`,
+             `STATUS`,
+             `RTF_STATE`,
+             `RTF_NODE_STATE`,
+             `CHECK_NODE_STATE`,
+             `CHECK_PERSON_CODE`,
+             `CHECK_PERSON`,
+             `FINAL_PERSON_CODE`,
+             `FINAL_PERSON`,
+             `APPPOVAL_PERSON_CODE`,
+             `APPPOVAL_PERSON`,
+             `COMPLEX_PERSON_CODE`,
+             `COMPLEX_PERSON`,
+             `FIRST_LEVLE_REASONS_CODE`,
+             `FIRST_LEVLE_REASONS`,
+             `TWO_LEVLE_REASONS_CODE`,
+             `TWO_LEVLE_REASONS`,
+             `OPERATION_MODULE`,
+             `OPERATION_TYPE`,
+             `OPERATOR`,
+             `OPERATOR_CODE`,
+             `OPERATION_TIME`,
+             `REMARK`,
+             `VERSION`,
+             `IS_DELETE`
+		      from BMS_LOAN_LOG
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by ID desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_LOAN_LOG
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	
+    <select id="findLastLog" parameterType="java.util.Map" resultMap="BMSLoanLogMap">
+    	SELECT 
+		  ID,
+		  LOAN_BASE_ID,
+		  LOAN_NO,
+		  APP_NO,
+		  STATUS,
+		  RTF_STATE,
+		  RTF_NODE_STATE,
+		  CHECK_NODE_STATE,
+		  CHECK_PERSON_CODE,
+		  CHECK_PERSON,
+		  FINAL_PERSON_CODE,
+		  FINAL_PERSON,
+		  APPPOVAL_PERSON_CODE,
+		  APPPOVAL_PERSON,
+		  COMPLEX_PERSON_CODE,
+		  COMPLEX_PERSON,
+		  FIRST_LEVLE_REASONS_CODE,
+		  FIRST_LEVLE_REASONS,
+		  TWO_LEVLE_REASONS_CODE,
+		  TWO_LEVLE_REASONS,
+		  OPERATION_MODULE,
+		  OPERATION_TYPE,
+		  OPERATOR,
+		  OPERATOR_CODE,
+		  OPERATION_TIME,
+		  REMARK,
+		  VERSION,
+		  IS_DELETE 
+		FROM
+		  BMS_LOAN_LOG 
+		WHERE IS_DELETE = 0
+	   <if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="rtfState != null and rtfState != ''">
+        	and RTF_STATE = #{rtfState}
+        </if>
+        <if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+         <if test="status != null and status != ''">
+        	and STATUS = #{status}
+        </if>
+        <!-- 需要要显示的联合状态   status+rtfState+rtfNodeState集合 -->
+		<if test="concatRtfStateList!=null and concatRtfStateList.size>0">
+			AND CONCAT_WS('_',STATUS,RTF_STATE,RTF_NODE_STATE) IN
+			<foreach collection="concatRtfStateList" item="concatRtfStateItem" open="(" close=")" separator=",">
+				#{concatRtfStateItem}
+			</foreach>
+		</if>
+		<!-- 需要要显示的借款环节节点状态集合 -->
+		<if test="rtfNodeStateList!=null and rtfNodeStateList.size>0">
+			AND RTF_NODE_STATE IN
+			<foreach collection="rtfNodeStateList" item="rtfNodeStateItem" open="(" close=")" separator=",">
+				#{rtfNodeStateItem}
+			</foreach>
+		</if>
+		ORDER BY ID DESC LIMIT 1
+	</select>
+	
+	<!-- 查询需要复核单子的一二级原因和备注 -->
+	<select id="findLogReasonByCode" parameterType="com.ymkj.cms.biz.entity.master.BMSLoanLog" resultMap="BMSLoanLogMap">
+	   select * from bms_loan_log where 
+	   rtf_node_state in('XSCS-REJECT','XSCS-RETURN','XSCS-PASS') AND check_node_state='CHECK' and loan_no=#{loanNo} order by id desc limit 1
+	  
+	</select>
+	
+</mapper>

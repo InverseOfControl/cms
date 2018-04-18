@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.sign.impl.LoanContractDaoImpl">
+
+<sql id="table">BMS_LOAN_CONTRACT</sql>
+<resultMap id="loanContractMap" type="com.ymkj.cms.biz.entity.sign.BMSLoanContract">
+	<result property="contractNum" column="contract_num" />
+	<result property="productCd" column="PRODUCT_CD"/>
+	<result property="borrowerName" column="borrower_name" />
+	<result property="borrowerName2" column="borrower_name2" />
+	<result property="sex" column="sex" />
+	<result property="idnum" column="idnum" />
+	<result property="idnum2" column="idnum2" />
+	<result property="address" column="address" />
+	<result property="postcode" column="postcode" />
+	<result property="email" column="email" />
+	<result property="signDate" column="sign_date" />
+	<result property="startRDate" column="startrdate" />
+	<result property="endRDate" column="endrdate" />
+	<result property="time" column="TIME" />
+	<result property="signingSite" column="signing_site" />
+	<result property="pactMoney" column="pact_money" />
+	<result property="returnETerm" column="returneterm" />
+	<result property="promiseReturnDate" column="promise_return_date" />
+	<result property="referRate" column="refer_rate" />
+	<result property="evalRate" column="eval_rate" />
+	<result property="manageRate" column="manage_rate" />
+	<result property="risk" column="risk" />
+	<result property="managerRateForPartyC" column="manager_rate_for_partyc" />
+	<result property="rateSum" column="rate_sum" />
+	<result property="giveBackRateFor3Term" column="give_back_rate_for3term" />
+	<result property="giveBackRateFor4Term" column="give_back_rate_for4term" />
+	<result property="giveBackRateAfter4Term" column="give_back_rate_after4term" />
+	<result property="serviceTel" column="service_tel" />
+	<result property="overduePenalty1Day" column="overdue_penalty1day" />
+	<result property="overduePenalty15Day" column="overdue_penalty15day" />
+	<result property="purpose" column="purpose" />
+	<result property="contractVersion" column="contract_version" />
+	<result property="bank" column="bank" />
+	<result property="bankFullName" column="bank_full_name" />
+	<result property="account" column="account" />
+	<result property="giveBackBank" column="give_back_bank" />
+	<result property="gbFullName" column="gb_full_name" />
+	<result property="gbAccount" column="gb_account" />
+	<result property="returnETermForT1" column="returneterm_fort1" />
+	<result property="timeForT1" column="time_fort1" />
+	<result property="startRDateForT1" column="startrdate_fort1" />
+	<result property="endRDateForT1" column="endrdate_fort1" />
+	<result property="returnETermForT2" column="returneterm_fort2" />
+	<result property="timeForT2" column="time_fort2" />
+	<result property="startRDateForT2" column="startrdate_fort2" />
+	<result property="endRDateForT2" column="endrdate_fort2" />
+	<result property="orgName" column="org_name" />
+	<result property="zhongTaiSequence" column="zhong_tai_sequence" />
+	<result property="xtjhSequence" column="xtjh_sequence" />
+	<result property="loanId" column="LOAN_ID" />
+	<result property="loanBaseId" column="LOAN_BASE_ID" />
+	<result property="giveBackRateFor1Term" column="GIVE_BACK_RATE_FOR1TERM" />
+</resultMap>	
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.sign.BMSLoanContract"  keyProperty="id" useGeneratedKeys="true">
+		insert into
+		 <include refid="table" />
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		<if test="address != null and address != ''">
+				ADDRESS,
+			 </if>
+			 <if test="bank != null and bank != ''">
+				BANK,
+			 </if>
+			<if test="bankFullName != null and bankFullName != ''">
+				BANK_FULL_NAME,
+			 </if>
+			 <if test="borrowerName != null and borrowerName != ''">
+				BORROWER_NAME,
+			</if>
+			<if test="contractNum != null and contractNum != ''">
+				CONTRACT_NUM,
+			</if>
+			<if test="endRDate != null and endRDate != ''">
+				ENDRDATE,
+			</if>
+			<if test="evalRate != null and evalRate != ''">
+				EVAL_RATE,
+			</if>
+			<if test="gbAccount != null and gbAccount != ''">
+				GB_ACCOUNT,
+			</if>
+			<if test="gbFullName != null and gbFullName != ''">
+				GB_FULL_NAME,
+			</if>
+			<if test="giveBackBank != null and giveBackBank != ''">
+				GIVE_BACK_BANK,
+			</if>
+			<if test="giveBackRateAfter4Term != null and giveBackRateAfter4Term != ''">
+				GIVE_BACK_RATE_AFTER4TERM,
+			</if>
+			<if test="giveBackRateFor1Term != null and giveBackRateFor1Term != ''">
+				GIVE_BACK_RATE_FOR1TERM,
+			</if>
+			<if test="giveBackRateFor3Term != null and giveBackRateFor3Term != ''">
+				GIVE_BACK_RATE_FOR3TERM,
+			</if>
+			<if test="giveBackRateFor4Term != null and giveBackRateFor4Term != ''">
+				GIVE_BACK_RATE_FOR4TERM,
+			</if>
+			<if test="idnum != null and idnum != ''">
+				IDNUM,
+			</if>
+			<if test="loanId != null and loanId != ''">
+				LOAN_ID,
+			</if>
+			<if test="manageRate != null and manageRate != ''">
+				MANAGE_RATE,
+			</if>
+			<if test="managerRateForPartyC != null and managerRateForPartyC != ''">
+				MANAGER_RATE_FOR_PARTYC,
+			</if>
+			<if test="overduePenalty15Day != null and overduePenalty15Day != ''">
+				OVERDUE_PENALTY15DAY,
+			</if>
+			<if test="overduePenalty1Day != null and overduePenalty1Day != ''">
+				OVERDUE_PENALTY1DAY,
+			</if>
+			<if test="pactMoney != null and pactMoney != ''">
+				PACT_MONEY,
+			</if>
+			<if test="postcode != null and postcode != ''">
+				POSTCODE,
+			</if>
+			<if test="promiseReturnDate != null and promiseReturnDate != ''">
+				PROMISE_RETURN_DATE,
+			</if>
+			<if test="purpose != null and purpose != ''">
+				PURPOSE,
+			</if>
+			<if test="rateSum != null and rateSum != ''">
+				RATE_SUM,
+			</if>
+			<if test="referRate != null and referRate != ''">
+				REFER_RATE,
+			</if>
+			<if test="returnETerm != null and returnETerm != ''">
+				RETURNETERM,
+			</if>
+			<if test="risk != null and risk != ''">
+				RISK,
+			</if>
+			<if test="serviceTel != null and serviceTel != ''">
+				SERVICE_TEL,
+			</if>
+			<if test="sex != null and sex != ''">
+				SEX,
+			</if>
+			<if test="signDate != null and signDate != ''">
+				SIGN_DATE,
+			</if>
+			<if test="signingSite != null and signingSite != ''">
+				SIGNING_SITE,
+			</if>
+			<if test="startRDate != null and startRDate != ''">
+				STARTRDATE,
+			</if>
+			<if test="time != null and time != ''">
+				TIME,
+			</if>
+			<if test="creator != null and creator != ''">
+			CREATOR,
+			 </if> <if test="creatorId != null">
+			CREATOR_ID,
+			</if> 
+			<if test="creatorDate != null">
+			CREATOR_DATE,
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED,
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID,
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE,
+			</if>
+			<if test="loanBaseId != null">
+				LOAN_BASE_ID,
+			</if>
+			IS_DELETED,
+			VERSION
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="address != null and address != ''">
+			#{address},
+			 </if>
+			 <if test="bank != null and bank != ''">
+			#{bank},
+			 </if>
+			<if test="bankFullName != null and bankFullName != ''">
+			#{bankFullName},
+			 </if>
+			 <if test="borrowerName != null and borrowerName != ''">
+			#{borrowerName},
+			</if>
+			<if test="contractNum != null and contractNum != ''">
+			#{contractNum},
+			</if>
+			<if test="endRDate != null and endRDate != ''">
+			#{endRDate},
+			</if>
+			<if test="evalRate != null and evalRate != ''">
+			#{evalRate},
+			</if>
+			<if test="gbAccount != null and gbAccount != ''">
+			#{gbAccount},
+			</if>
+			<if test="gbFullName != null and gbFullName != ''">
+			#{gbFullName},
+			</if>
+			<if test="giveBackBank != null and giveBackBank != ''">
+			#{giveBackBank},
+			</if>
+			<if test="giveBackRateAfter4Term != null and giveBackRateAfter4Term != ''">
+			#{giveBackRateAfter4Term},
+			</if>
+			<if test="giveBackRateFor1Term != null and giveBackRateFor1Term != ''">
+			#{giveBackRateFor1Term},
+			</if>
+			<if test="giveBackRateFor3Term != null and giveBackRateFor3Term != ''">
+			#{giveBackRateFor3Term},
+			</if>
+			<if test="giveBackRateFor4Term != null and giveBackRateFor4Term != ''">
+			#{giveBackRateFor4Term},
+			</if>
+			<if test="idnum != null and idnum != ''">
+			#{idnum},
+			</if>
+			<if test="loanId != null and loanId != ''">
+			#{loanId},
+			</if>
+			<if test="manageRate != null and manageRate != ''">
+			#{manageRate},
+			</if>
+			<if test="managerRateForPartyC != null and managerRateForPartyC != ''">
+			#{managerRateForPartyC},
+			</if>
+			<if test="overduePenalty15Day != null and overduePenalty15Day != ''">
+			#{overduePenalty15Day},
+			</if>
+			<if test="overduePenalty1Day != null and overduePenalty1Day != ''">
+			#{overduePenalty1Day},
+			</if>
+			<if test="pactMoney != null and pactMoney != ''">
+			#{pactMoney},
+			</if>
+			<if test="postcode != null and postcode != ''">
+			#{postcode},
+			</if>
+			<if test="promiseReturnDate != null and promiseReturnDate != ''">
+			#{promiseReturnDate},
+			</if>
+			<if test="purpose != null and purpose != ''">
+			#{purpose},
+			</if>
+			<if test="rateSum != null and rateSum != ''">
+			#{rateSum},
+			</if>
+			<if test="referRate != null and referRate != ''">
+			#{referRate},
+			</if>
+			<if test="returnETerm != null and returnETerm != ''">
+			#{returnETerm},
+			</if>
+			<if test="risk != null and risk != ''">
+			#{risk},
+			</if>
+			<if test="serviceTel != null and serviceTel != ''">
+			#{serviceTel},
+			</if>
+			<if test="sex != null and sex != ''">
+			#{sex},
+			</if>
+			<if test="signDate != null and signDate != ''">
+			#{signDate},
+			</if>
+			<if test="signingSite != null and signingSite != ''">
+			#{signingSite},
+			</if>
+			<if test="startRDate != null and startRDate != ''">
+			#{startRDate},
+			</if>
+			<if test="time != null and time != ''">
+			#{time},
+			</if>
+			 <if test="creator != null and creator != ''">
+			  #{creator}, 
+			  </if>
+			 <if test="creatorId != null"> 
+			 #{creatorId}, 
+			 </if> 
+			<if test="creatorDate != null">
+			 #{creatorDate}, 
+			 </if>
+			<if test="modified != null and modified != ''">
+				#{modified},
+			</if>
+			<if test="modifiedId != null">
+				#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				#{modifiedDate},
+			</if>
+			<if test="loanBaseId != null">
+				#{loanBaseId},
+			</if>
+				0,
+				1
+		</trim>
+	
+	</insert>
+
+
+
+	<select id="selectConutByLoanBaseId" resultType="int"
+		parameterType="long">
+		select
+		count(1)
+		from <include refid="table" />
+		where LOAN_BASE_ID = #{loanId} and IS_DELETED=0
+	</select>
+	
+	<update id="deleteByLoanBaseId" parameterType="long">
+		update  <include refid="table" />
+		 set IS_DELETED = 1
+		where LOAN_BASE_ID = #{loanBaseId} and IS_DELETED=0;
+	</update>
+	
+	<select id="listBy" parameterType="java.util.Map" resultMap="loanContractMap">
+		select
+		  CONTRACT_NUM,
+		  BORROWER_NAME,
+		  BORROWER_NAME2,
+		  SEX,
+		  IDNUM,
+		  IDNUM2,
+		  ADDRESS,
+		  POSTCODE,
+		  EMAIL,
+		  SIGN_DATE,
+		  STARTRDATE,
+		  ENDRDATE,
+		  TIME,
+		  SIGNING_SITE,
+		  PACT_MONEY,
+		  RETURNETERM,
+		  PROMISE_RETURN_DATE,
+		  REFER_RATE,
+		  EVAL_RATE,
+		  MANAGE_RATE,
+		  RISK,
+		  MANAGER_RATE_FOR_PARTYC,
+		  RATE_SUM,
+		  GIVE_BACK_RATE_FOR3TERM,
+		  GIVE_BACK_RATE_FOR4TERM,
+		  GIVE_BACK_RATE_AFTER4TERM,
+		  SERVICE_TEL,
+		  OVERDUE_PENALTY1DAY,
+		  OVERDUE_PENALTY15DAY,
+		  PURPOSE,
+		  CONTRACT_VERSION,
+		  BANK,
+		  BANK_FULL_NAME,
+		  ACCOUNT,
+		  GIVE_BACK_BANK,
+		  GB_FULL_NAME,
+		  GB_ACCOUNT,
+		  RETURNETERM_FORT1,
+		  TIME_FORT1,
+		  STARTRDATE_FORT1,
+		  ENDRDATE_FORT1,
+		  RETURNETERM_FORT2,
+		  TIME_FORT2,
+		  STARTRDATE_FORT2,
+		  ENDRDATE_FORT2,
+		  ORG_NAME,
+		  ZHONG_TAI_SEQUENCE,
+		  XTJH_SEQUENCE,
+		  LOAN_ID,
+		  LOAN_BASE_ID,
+		  GIVE_BACK_RATE_FOR1TERM 
+		from <include refid="table" />
+		where  IS_DELETED=0
+		<if test="loanBaseId != null and loanBaseId != ''">
+			and LOAN_BASE_ID = #{loanBaseId} 
+		</if>
+	</select> 
+	 <select id="findByLoanNo" parameterType="String" resultMap="loanContractMap">
+	   SELECT blc.contract_num,
+	          blp.PRODUCT_CD 
+	   FROM ( SELECT * FROM bms_loan_contract WHERE is_deleted='0') blc 
+	   INNER JOIN bms_loan_product blp ON blp.LOAN_BASE_ID=blc.LOAN_BASE_ID
+	   INNER JOIN bms_loan_base blb ON blb.id=blc.LOAN_BASE_ID
+	   WHERE blb.LOAN_NO=#{loanNo}
+    </select>
+</mapper> 

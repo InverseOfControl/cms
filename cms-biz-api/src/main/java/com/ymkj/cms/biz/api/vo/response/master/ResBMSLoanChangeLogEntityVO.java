@@ -1,0 +1,93 @@
+package com.ymkj.cms.biz.api.vo.response.master;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class ResBMSLoanChangeLogEntityVO  implements Serializable{
+
+	private Integer id;
+	private String loanNo;
+	private Integer loanBaseId;
+	//操作模块
+	private String operationModule;
+	//操作人
+	private String operator;
+	//操作人工号
+	private String operatorCode;
+	//操作时间
+	private Date operationStart; 
+	//变更内容
+	private String content; 
+	//创建时间
+	private Date createdTime; 
+	//默认值是1
+	private Integer version; 
+	//默认是0,删除是1
+	private Integer isDelete;
+	
+	
+	public String getLoanNo() {
+		return loanNo;
+	}
+	public void setLoanNo(String loanNo) {
+		this.loanNo = loanNo;
+	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public Integer getLoanBaseId() {
+		return loanBaseId;
+	}
+	public void setLoanBaseId(Integer loanBaseId) {
+		this.loanBaseId = loanBaseId;
+	}
+	public String getOperationModule() {
+		return operationModule;
+	}
+	public void setOperationModule(String operationModule) {
+		this.operationModule = operationModule;
+	}
+	
+	public String getOperatorCode() {
+		return operatorCode;
+	}
+	public void setOperatorCode(String operatorCode) {
+		this.operatorCode = operatorCode;
+	}
+	public Date getOperationStart() {
+		return operationStart;
+	}
+	public void setOperationStart(Date operationStart) {
+		this.operationStart = operationStart;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public Date getCreatedTime() {
+		return createdTime;
+	}
+	public void setCreatedTime(Date createdTime) {
+		this.createdTime = createdTime;
+	}
+	public Integer getVersion() {
+		return version;
+	}
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+	public Integer getIsDelete() {
+		return isDelete;
+	}
+	public void setIsDelete(Integer isDelete) {
+		this.isDelete = isDelete;
+	} 
+	
+	
+
+}

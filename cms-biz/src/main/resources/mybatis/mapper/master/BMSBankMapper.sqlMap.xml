@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSBankDaoImpl">
+	<sql id="table">bms_bank</sql>
+
+	<resultMap id="BMSBankMap" type="com.ymkj.cms.biz.entity.master.BMSBank">
+		<id property="Id" column="ID" />
+		<result property="name" column="NAME" />
+		<result property="code" column="CODE" />
+		<result property="version" column="VERSION" /> 
+		<result property="isDeleted" column="IS_DELETED" />
+		<result property="isDisabled" column="IS_DISABLED" />
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="creatorDate" column="CREATOR_DATE" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modified" column="MODIFIED" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedDate" column="MODIFIED_DATE" />
+	    <!-- 修改用户Id -->
+	     <result property="modifiedId" column="MODIFIED_ID" />
+	</resultMap>
+
+
+	<sql id="condition_sql">
+		where IS_DELETED = 0
+		<if test="id != null and id != 0">
+			and ID = #{id}
+		</if>
+		<if test="name != null and name != ''">
+		<![CDATA[ 
+        	and  NAME like '%${name}%']]>
+        	
+		</if>
+		<if test="code != null and code != ''">
+        <![CDATA[ 
+        	and  CODE like '%${code}%']]>
+		</if>
+		<!-- <if test="isDeleted != null">and isDeleted !=''
+			and IS_DELETED = #{isDeleted}
+		</if> -->
+		<if test="version != null and version !=''">
+			and VERSION = #{version}
+		</if>
+	</sql>
+
+
+
+	<select id="listBy" parameterType="java.util.Map" resultMap="BMSBankMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSBankMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by ID desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+
+	<select id="getById" parameterType="long" resultMap="BMSBankMap">
+		select * from
+		<include refid="table" />
+		where ID = #{id}
+	</select>
+
+	<select id="findOne" parameterType="java.util.Map" resultMap="BMSBankMap">
+		select * from
+		<include refid="table" />
+		<if test="name != null">
+		<![CDATA[ 
+        where NAME = #{name}]]>
+		</if>
+		<if test="id != null">
+		<![CDATA[ 
+        where id = #{id}]]>
+		</if>
+	</select>
+	<!-- 根据渠道ID获取银行信息 -->
+	<select id="getBankByChannelId" parameterType="java.util.Map" resultMap="BMSBankMap">
+		SELECT DISTINCT B.* FROM BMS_BANK B 
+	INNER JOIN BMS_CHANNEL_BANK  CB ON B.ID = CB.BANK_ID 
+	WHERE CB.channel_id=#{channelId} AND B.IS_DELETED=0 AND CB.IS_DELETED=0 AND B.IS_DISABLED =0 AND CB.IS_DISABLED =0
+	
+	</select>
+	
+	<!-- 根据银行ID查询该银行是否签约 -->
+	<select id="findChannelBankById" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.apply.BMSChannelBank">
+		SELECT ID FROM BMS_CHANNEL_BANK where BANK_ID=#{id}
+	</select>
+	
+	<select id="checkBankIsExits" parameterType="Map" resultType="int">
+		select count(1) from 
+		<include refid="table" />
+		<where>
+			<if test="flag == null or flag == ''">
+				`code`=#{code} or
+			</if>
+			 `name`=#{name} and IS_DELETED=0
+			 <if test="flag != null and flag != ''">
+				and id != #{id}
+			</if>
+		</where>
+	</select>
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSBank">
+		insert into bms_bank
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="name != null and name != ''">
+				NAME,
+			</if>
+			<if test="code != null and code !=''">
+				CODE,
+			</if>
+			<!-- <if test="creator != null and creator != ''"> -->
+			CREATOR,
+			<!-- </if> <if test="creatorId != null"> -->
+			CREATOR_ID,
+			<!-- </if> <if test="creatorDate != null"> -->
+			CREATOR_DATE,
+			<!-- </if> -->
+			<if test="modified != null and modified != ''">
+				MODIFIED,
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID,
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE,
+			</if>
+			IS_DELETED,
+			VERSION,
+			IS_DISABLED
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="name != null and name != ''">
+				#{name},
+			</if>
+			<if test="code != null and code != ''">
+				#{code},
+			</if>
+			<!-- <if test="creator != null and creator != ''"> #{creator}, </if> -->
+			'admin',
+			<!-- <if test="creatorId != null"> #{creatorId}, </if> -->
+			1,
+			<!-- <if test="creatorDate != null"> #{creatorDate}, </if> -->
+			sysdate(),
+			<if test="modified != null and modified != ''">
+				#{modified},
+			</if>
+			<if test="modifiedId != null">
+				#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				#{modifiedDate},
+			</if>
+			0,
+			1,
+			<if test="isDisabled != null">
+				#{isDisabled},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- del -->
+	<delete id="deleteById" parameterType="long">
+		update bms_bank
+		set IS_DELETED =1
+		where ID = #{id}
+	</delete>
+
+
+	<!-- 更新 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSBank">
+		update
+		<include refid="table" />
+		<include refid="set_sql" />
+		<where>
+			ID = #{id}
+		</where>
+	</update>
+
+
+
+	<sql id="set_sql">
+		<trim prefix="set" suffixOverrides=",">
+			<if test="name != null and name != ''">
+				NAME = #{name},
+			</if>
+			<if test="code != null and code != ''">
+				CODE = #{code},
+			</if>
+			<if test="creator != null and creator != ''">
+				CREATOR=#{creator},
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID=#{creatorId},
+			</if>
+			<if test="creatorDate != null">
+				CREATOR_DATE=#{creatorDate},
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED=#{modified},
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID=#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE=#{modifiedDate},
+			</if>
+			<if test="isDeleted !=null and isDeleted !=''">
+			IS_DELETED=#{isDeleted}
+			</if>
+			<if test="isDisabled !=null">
+			IS_DISABLED=#{isDisabled}
+			</if>
+		</trim>
+	</sql>
+	<update id="accordingBankIdUpdateChannelBank" parameterType="java.util.Map">
+		update BMS_CHANNEL_BANK set IS_DISABLED = #{isDisabled}
+		<where>
+			BANK_ID = #{id}
+		</where>
+	</update>
+	
+	<!-- 根据渠道ID获取银行信息 -->
+	<select id="getBanksByChannelIds" parameterType="java.util.Map" resultMap="BMSBankMap">
+		SELECT DISTINCT B.* FROM BMS_BANK B 
+	INNER JOIN BMS_CHANNEL_BANK  CB ON B.ID = CB.BANK_ID 
+	WHERE B.IS_DELETED=0 AND CB.IS_DELETED=0 AND B.IS_DISABLED =0 AND CB.IS_DISABLED =0
+	<if test="channelIds !=null and channelIds !=''">
+		<![CDATA[ and CB.channel_id in (${channelIds})]]>
+	</if>
+	</select>
+</mapper>

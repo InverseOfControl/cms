@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.app.impl.AppGetImageFileUploadStatusDaoImpl">
+
+
+
+	<select id="listPage" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.app.BMSGetImageFileUploadEntity">
+		SELECT
+		appNo,
+		applicantName,
+		status,
+		applyTimeOld,
+		applyAccount,
+		productName,
+		idCardNoLastFourDigits,
+		applyTerm,
+		creditAppliacation,
+		remark,
+		cusCode,
+		cusName,
+		backReason,
+		bm_code,
+		bm_name,
+		uploadState,
+		applicantCode,
+		certifyBusinessDepart
+		FROM
+			(
+				SELECT
+					a.loan_no AS appNo,
+					d. NAME AS applicantName,
+					(select name from bms_enum_code where code_type='Status' and code=a.STATUS) AS status,
+					b.APPLY_END_TIME AS applyTimeOld,
+					c.APPLY_LMT AS applyAccount,
+					c.PRODUCT_NAME AS productName,
+					SUBSTRING(d.ID_NO ,- 4) AS idCardNoLastFourDigits,
+					c.APPLY_TERM AS applyTerm,
+					b.CREDIT_APPLICATION AS creditAppliacation,
+					a.REMARK AS remark,
+					a.SERVICE_CODE AS cusCode,
+					a.SERVICE_NAME AS cusName,
+					b.PRIMARY_REASON AS backReason,
+					a.BRANCH_MANAGER_CODE AS bm_code,
+					a.BRANCH_MANAGER_NAME AS bm_name,
+					(
+						CASE
+						WHEN (
+							SELECT
+								count(1)
+							FROM
+								store.vm_file_upload_record
+							WHERE
+								a.loan_no = APPLICATION_CASE_NO
+						) > 0 THEN
+							1
+						ELSE
+							2
+						END
+					) AS uploadState,
+					d.PERSON_NO as applicantCode,
+					a.ENTER_BRANCH as certifyBusinessDepart
+				FROM
+				bms_loan_base a
+				INNER JOIN bms_loan_ext b ON a.LOAN_NO = b.LOAN_NO
+				INNER JOIN bms_loan_product c ON a.LOAN_NO = c.LOAN_NO
+				INNER JOIN bms_app_person d ON a.person_id = d.id
+				where 1=1
+			<if test="userCode != null and userCode != ''">
+				AND a.SERVICE_CODE = #{userCode}
+			</if>
+			<if test="applicantName != null and applicantName != '' and appNo != null and appNo != ''">
+				<![CDATA[ AND (d.NAME like '%${applicantName}%' or a.loan_no = #{appNo})]]>
+			</if>
+				AND a.status in('APPLY')
+	        	<!-- AND a.rtf_node_state !='HTQY-REJECT'  -->
+			)  sumquery
+
+			<if test="uploadState!=null and uploadState == 1">
+				where sumquery.uploadState=1
+			</if>
+			<if test="uploadState!=null and uploadState == 2">
+				where sumquery.uploadState=2
+			</if>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		SELECT
+		count(1)
+		FROM
+			(
+				SELECT
+					a.loan_no AS appNo,
+					d. NAME AS applicantName,
+					(select name from bms_enum_code where code_type='Status' and code=a.STATUS) AS status,
+					b.APPLY_END_TIME AS applyTimeOld,
+					c.APPLY_LMT AS applyAccount,
+					c.PRODUCT_NAME AS productName,
+					SUBSTRING(d.ID_NO ,- 4) AS idCardNoLastFourDigits,
+					c.APPLY_TERM AS applyTerm,
+					b.CREDIT_APPLICATION AS creditAppliacation,
+					a.REMARK AS remark,
+					a.SERVICE_CODE AS cusCode,
+					a.SERVICE_NAME AS cusName,
+					b.PRIMARY_REASON AS backReason,
+					a.BRANCH_MANAGER_CODE AS bm_code,
+					a.BRANCH_MANAGER_NAME AS bm_name,
+					(
+						CASE
+						WHEN (
+							SELECT
+								count(1)
+							FROM
+								store.vm_file_upload_record
+							WHERE
+								a.loan_no = APPLICATION_CASE_NO
+						) > 0 THEN
+							1
+						ELSE
+							2
+						END
+					) AS uploadState,
+					d.PERSON_NO as applicantCode,
+					a.ENTER_BRANCH as certifyBusinessDepart
+				FROM
+				bms_loan_base a
+				INNER JOIN bms_loan_ext b ON a.LOAN_NO = b.LOAN_NO
+				INNER JOIN bms_loan_product c ON a.LOAN_NO = c.LOAN_NO
+				INNER JOIN bms_app_person d ON a.person_id = d.id
+				where 1=1
+			<if test="userCode != null and userCode != ''">
+				AND a.SERVICE_CODE = #{userCode}
+			</if>
+			<if test="applicantName != null and applicantName != '' and appNo != null and appNo != ''">
+				<![CDATA[ AND (d.NAME like '%${applicantName}%' or a.loan_no = #{appNo})]]>
+			</if>
+				AND a.status in('APPLY')
+	        	<!-- AND a.rtf_node_state !='HTQY-REJECT'  -->
+			)  sumquery
+
+			<if test="uploadState!=null and uploadState == 1">
+				where sumquery.uploadState=1
+			</if>
+			<if test="uploadState!=null and uploadState == 2">
+				where sumquery.uploadState=2
+			</if>
+	</select>
+
+	
+</mapper> 

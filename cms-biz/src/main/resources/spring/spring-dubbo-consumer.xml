@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://code.alibabatech.com/schema/dubbo  
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	
+	<!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样
+	<dubbo:application name="pms-biz" />
+	 -->
+	<!-- 使用zookeeper注册中心暴露服务地址 -->
+	<dubbo:registry protocol="zookeeper" address="${dubbo.consumer.address}" />
+	
+	<!-- 关闭服务 -->
+	<dubbo:consumer check="${dubbo.consumer.check}" />
+	<!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
+	<!--     <dubbo:annotation package="com.ymkj.demo.web.boss.facade" /> -->
+    <dubbo:reference id="iEmployeeExecuter" interface="com.ymkj.pms.biz.api.service.IEmployeeExecuter"  check="false"  retries="0" timeout="50000"/>
+	<dubbo:reference id="iMessageExecuter" interface="com.ymkj.pms.biz.api.service.IMessageExecuter"  check="false"  retries="0" timeout="50000"/>
+	<dubbo:reference id="OrganizationExecuter" interface="com.ymkj.pms.biz.api.service.IOrganizationExecuter"  check="false"  retries="0" timeout="50000"/>
+	<dubbo:reference id="iInternalMatchingExecuter" interface="com.ymkj.bds.biz.api.service.IInternalMatchingExecuter"  check="false"  retries="0" timeout="50000"/>
+	
+	<dubbo:reference id="blackListExecuter" interface="com.ymkj.bds.biz.api.service.IBlackListExecuter"  check="false"  retries="0" timeout="50000"/>
+	<dubbo:reference id="greyListExecuter" interface="com.ymkj.bds.biz.api.service.IGreyListExecuter"  check="false"  retries="0" timeout="50000"/>
+	<dubbo:reference id="iCalendarExecuter" interface="com.ymkj.pms.biz.api.service.ICalendarExecuter" check="false" retries="0" timeout="50000" />
+	
+	<dubbo:reference id="iOrganizationExecuter" interface="com.ymkj.pms.biz.api.service.IOrganizationExecuter" check="false" retries="0" timeout="50000" />
+	<!-- 规则引擎 -->
+	<dubbo:reference id="iRuleEngineExecuter" interface="com.ymkj.rule.biz.api.service.IRuleEngineExecuter" check="false" retries="0" timeout="50000" />
+	
+</beans>  

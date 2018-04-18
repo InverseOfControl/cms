@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.sign.impl.BMSLoanChannelLockTargetDaoImpl">
+	<resultMap id="loanChannelLockTargetMap" type="com.ymkj.cms.biz.entity.sign.BMSLoanChannelLockTargetEntity">
+		<result property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="loanNo" column="LOAN_NO" />
+		<result property="channelCode" column="CHANNEL_CODE" />
+		<result property="lockTarget" column="LOCK_TARGET" />
+	</resultMap>
+	<sql id="table">bms_loan_channel_lock_target</sql>
+	
+	<sql id="condition_sql">
+		<if test="loanNo != null and loanNo != ''">
+			and LOAN_NO = #{loanNo} 
+		</if>
+		<if test="channelCode != null and channelCode != ''">
+			and channel_code = #{channelCode} 
+		</if>
+		<if test="loanBaseId != null ">
+			and loan_base_id = #{loanBaseId} 
+		</if>
+	</sql>
+	<sql id="set_sql">
+		<if test="lockTarget != null and lockTarget != ''">
+			lock_target = #{lockTarget},
+		</if>
+		<if test="modified != null and modified != ''">
+			MODIFIED = #{modified},
+		</if>
+		MODIFIED_DATE = NOW()
+	</sql>
+
+	<select id="listBy" parameterType="java.util.Map" resultMap="loanChannelLockTargetMap">
+		select
+		  *
+		from
+		<include refid="table" />
+		<where>
+		<include refid="condition_sql" />
+		</where>
+	</select> 	
+	
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.sign.BMSLoanChannelLockTargetEntity">
+		update 
+		<include refid="table" />
+		<set>
+			<include refid="set_sql" />
+		</set>
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</update>
+	
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.sign.BMSLoanChannelLockTargetEntity" >
+		INSERT INTO <include refid="table" /> 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			loan_base_id, loan_no, channel_code, lock_target, CREATOR, CREATOR_ID, CREATOR_TIME, MODIFIED, MODIFIED_ID, MODIFIED_DATE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{loanBaseId}, #{loanNo}, #{channelCode}, #{lockTarget}, #{creator}, #{creatorId}, now(), #{modified}, #{modifiedId}, now()
+		</trim>
+	</insert>
+	
+</mapper> 

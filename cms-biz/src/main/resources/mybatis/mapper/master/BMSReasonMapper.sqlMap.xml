@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.BMSReasonDaoImpl">
+
+	<sql id="table">bms_reason</sql>
+
+    <resultMap id="BMSReasonMap" type="com.ymkj.cms.biz.entity.master.BMSReason">
+		<id property="Id" column="ID" />
+		<result property="reason" column="REASON" />
+		<result property="code" column="CODE" />
+		<result property="reasonTexplain" column="REASON_TEXPLAIN" />
+		<result property="type" column="TYPE" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="levelOrder" column="LEVEL_ORDER" />
+		<result property="operationType" column="OPERATION_TYPE" />
+		<result property="remark" column="REMARK" />
+		<result property="operationModule" column="OPERATION_MODULE" />
+		<result property="creator" column="creator" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="creatorId" column="creator_id" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="version" column="version" />
+		<result property="isDelete" column="IS_DELETE" />
+	</resultMap>
+      
+</mapper> 

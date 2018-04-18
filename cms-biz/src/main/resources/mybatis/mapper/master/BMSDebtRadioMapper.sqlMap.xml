@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSDebtRadioDaoImpl">
+	<select id="listPage" resultType="com.ymkj.cms.biz.entity.master.BMSDebtRadio" parameterType="java.util.Map">
+		select id as id,
+		customer_Type_code as customerTypeCode,
+		customer_type_name as
+		customerTypeName,
+		total_debt_radio as totalDebtRadio,
+		internal_debt_radio as internalDebtRadio
+		from bms_debt_radio
+	</select>
+	<select id="countByPageParam" resultType="long" parameterType="java.util.Map">
+		select count(1) from bms_debt_radio
+	</select>
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSDebtRadio" >
+		update bms_debt_radio
+		<set>
+			<if test="totalDebtRadio!=null">
+				total_debt_radio=#{totalDebtRadio},
+			</if>
+			<if test="internalDebtRadio!=null">
+				internal_debt_radio=#{internalDebtRadio},
+			</if>
+			<if test="modifier!=null and modifier!=''">
+			   MODIFIER=#{modifier},
+			</if>
+			<if test="modifierId!=null and modifierId!=''">
+			  MODIFIER_ID=#{modifierId},
+			</if>
+			<if test="modifierDate!=null">
+			MODIFIER_TIME=#{modifierDate}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<select id="findDebtRadioById" resultType="com.ymkj.cms.biz.entity.master.BMSDebtRadio" parameterType="com.ymkj.cms.biz.entity.master.BMSDebtRadio">
+	select id as id,
+		customer_Type_code as customerTypeCode,
+		customer_type_name as customerTypeName,
+		total_debt_radio as totalDebtRadio,
+		internal_debt_radio as internalDebtRadio
+		from bms_debt_radio
+		where 1=1
+		<if test="id!=null">
+		 and id=#{id}
+		</if>
+		<if test="customerTypeCode!=null and customerTypeCode!=''">
+		 and customer_Type_code=#{customerTypeCode}
+		</if>
+	</select>
+	<select id="testConnection" resultType="java.lang.Integer">
+	select 1 from dual
+    </select>
+
+</mapper>

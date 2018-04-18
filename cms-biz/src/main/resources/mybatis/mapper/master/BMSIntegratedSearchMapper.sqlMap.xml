@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSIntegratedSearchDaoImpl">
+
+	<resultMap id="returnedLoanBoxSearchMap" type="com.ymkj.cms.biz.entity.master.BMSIntegraedSearchEntity">
+		<result property="caseIdentify" column="caseIdentify" />
+		<result property="loanNo" column="loan_no" />
+		<result property="contractNo" column="contract_num" />
+		<result property="name" column="name" />
+		<result property="idNo" column="id_no" />
+		<result property="applyType" column="apply_type" />
+		<result property="corpName" column="corp_name" />
+		<result property="status" column="status" />
+		<result property="accLmt" column="acc_lmt" />
+		<!-- 审核表 的创建时间 (首次提交信审时间)-->
+		<result property="applyDate" column="created_time" />
+		<result property="owningBranchId" column="owning_branch_id" />
+		<result property="loanId" column="loan_id" />
+		<result property="primaryReason" column="primary_reason" />
+		<result property="secondReason" column="secode_reason" />
+		<result property="version" column="version" />
+		<result property="initProductName" column="init_product_name" />
+		<result property="productName" column="product_name" />
+		<result property="checkPersonCode" column="check_person_code"/>
+		<!-- 主表的申请时间(录单创建时间) -->
+		<result property="createdTime" column="apply_date"/>
+		<result property="ifPreferentialUser" column="IF_PREFERENTIAL_USER"/>
+	</resultMap>
+
+	<!-- 案件标识  -->
+	<sql id="caseIdentify_sql">
+		<if test="caseIdentifyList!=null and caseIdentifyList.size()>0">
+		 	and 
+			<foreach item="caseIdentifyItem" index="index" collection="caseIdentifyList" separator=" or " open="(" close=")">
+				<if test='caseIdentifyItem=="0"'>lb.app_input_flag='app_input'</if>
+				<if test='caseIdentifyItem=="1"'>lp.if_pri='1'</if>
+				<if test='caseIdentifyItem=="2"'>lp.if_suspect_cheat='1'</if>
+				<if test='caseIdentifyItem=="3"'>lb.IF_PREFERENTIAL_USER='Y'</if>
+	        </foreach>
+        </if>
+	</sql>
+	
+	<!-- 申请类型 -->
+	<sql id="applyType_sql">
+		<if test='(applyType=="NEW" or applyType=="TOPUP" or applyType=="RELOAN")'> and lb.apply_type=#{applyType}</if>
+		<if test='applyType=="NEWTOPUP"'> and (lb.apply_type='NEW' or lb.apply_type='TOPUP')</if>
+		<if test='applyType=="NEWRELOAN"'> and (lb.apply_type='NEW' or lb.apply_type='RELOAN')</if>
+		<if test='applyType=="RELOANTOPUP"'> and (lb.apply_type='TOPUP' or lb.apply_type='RELOAN')</if>
+		<if test='applyType=="NEWRELOANTOPUP"'> and (lb.apply_type='NEW' or lb.apply_type='TOPUP' or lb.apply_type='RELOAN')</if>
+	</sql>
+	
+	<!-- 有固话和手机号码的所有查询条件 -->
+	<sql id="condition_sql">
+		where 1=1
+		<include refid="caseIdentify_sql" />
+		<include refid="applyType_sql" />
+		<if test="name != null and name != ''"> and lb.name like CONCAT('%',trim(#{name}),'%') </if>
+		<if test="idNo != null and idNo != ''"> and lb.id_no = #{idNo} </if>
+		<if test="contractNo != null and contractNo != ''"> and lp.contract_num = #{contractNo} </if>
+		<if test="loanNo != null and loanNo != ''"> and lb.loan_no = #{loanNo} </if>
+		<if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+			and la.created_time &lt;= #{endTime} and la.created_time &gt;= #{startTime}
+		</if>
+		<if test="(startCreateTime!=null and startCreateTime!='') and (endCreateTime!=null and endCreateTime!='')">
+		   and lb.apply_date &lt;= #{endCreateTime} and lb.apply_date &gt;= #{startCreateTime}
+		</if>
+		 <if test="addressList!=null and addressList.size()>0">
+	      and
+	      <foreach item="addressItem" index="index" collection="addressList" separator=" or " open="(" close=")">
+	        <if test="addressItem==1">tapi.HOME_ADDRESS like concat('%',trim(#{address}),'%')</if>
+	        <if test="addressItem==2">tapi.CORP_ADDRESS like concat('%',trim(#{address}),'%')</if>
+	        <if test="addressItem==3">bti.ESTATE_ADDRESS like concat('%',trim(#{address}),'%')</if>
+	      </foreach>
+	    </if>
+		<!-- 登录人所在营业部 -->
+        <if test="cfs != null and cfs != ''">
+        	<if test="orgId != null and orgId.size() > 0">
+				and lb.owning_branch_id in(<foreach item="org" index="index" collection="orgId" separator=","> #{org} </foreach>) 
+            </if>
+            <!-- 业务主任组下所有客户经理的单子 -->
+            <if test="customerManagerList != null and customerManagerList.size() > 0">
+	        	and lb.branch_manager_code in (<foreach item="customerManager" index="index" collection="customerManagerList" separator=","> #{customerManager} </foreach>)
+	        </if>
+        </if>
+	</sql>
+	<!-- 没有固话和其它信息的查询条件 -->
+	<sql id="notCondition_sql">
+		where 1=1
+		<include refid="caseIdentify_sql" />
+		<include refid="applyType_sql" />
+		<if test="name != null and name != ''"> and lb.name like CONCAT('%',trim(#{name}),'%') </if>
+		<if test="idNo != null and idNo != ''"> and lb.id_no = #{idNo} </if>
+		<if test="contractNo != null and contractNo != ''"> and lp.contract_num = #{contractNo} </if>
+		<if test="loanNo != null and loanNo != ''"> and lb.loan_no = #{loanNo} </if>
+		<if test="(startTime != null and startTime != '') and (endTime != null and endTime != '')">
+			and la.created_time &lt;= #{endTime} and la.created_time &gt;= #{startTime}
+		</if>
+		<if test="(startCreateTime!=null and startCreateTime!='') and (endCreateTime!=null and endCreateTime!='')">
+		   and lb.apply_date &lt;= #{endCreateTime} and lb.apply_date &gt;= #{startCreateTime}
+		</if>
+		 <if test="addressList!=null and addressList.size()>0">
+	      and
+	      <foreach item="addressItem" index="index" collection="addressList" separator=" or " open="(" close=")">
+	        <if test="addressItem==1">t.HOME_ADDRESS like concat('%',trim(#{address}),'%')</if>
+	        <if test="addressItem==2">t.CORP_ADDRESS like concat('%',trim(#{address}),'%')</if>
+	        <if test="addressItem==3">bti.ESTATE_ADDRESS like concat('%',trim(#{address}),'%')</if>
+	      </foreach>
+	    </if>
+		<!-- 登录人所在营业部 -->
+        <if test="cfs != null and cfs != ''">
+        	<if test="orgId != null and orgId.size() > 0">
+				and lb.owning_branch_id in(<foreach item="org" index="index" collection="orgId" separator=","> #{org} </foreach>) 
+            </if>
+            <!-- 业务主任组下所有客户经理的单子 -->
+            <if test="customerManagerList != null and customerManagerList.size() > 0">
+	        	and lb.branch_manager_code in (<foreach item="customerManager" index="index" collection="customerManagerList" separator=","> #{customerManager} </foreach>)
+	        </if>
+        </if>
+	</sql>
+	
+	<!-- 排序分页 -->
+	<sql id="order_sql">
+		order by ${sortValue} limit 0, #{pageSize}
+	</sql>
+	
+	<!-- 综合查询列表主SQL -->
+	<select id="mainSelet" parameterType="java.util.Map" resultMap="returnedLoanBoxSearchMap">
+		<choose>
+			<when test="(phone != null and phone != '') or (corpName != null and corpName != '') or (tel != null and tel != '')  ">
+				<include refid="getColumn" />
+				from (<include refid="getTelPhoneCorp" />) t
+				<include refid="getTable" />
+				<include refid="condition_sql" />
+				<include refid="order_sql" />
+			</when>
+			
+			<otherwise>
+				<include refid="getNoTelPhoneCorp"></include>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 综合查询列表展示字段 -->
+	<sql id="getColumn">
+		select distinct lb.loan_no,concat(if(lb.app_input_flag='app_input','true','false'),'|',if(lp.if_pri='1','true','false'),'|',if(lp.if_suspect_cheat='1','true','false')) caseIdentify,
+		lp.contract_num, lb.name, lb.id_no, lb.apply_type, t.corp_name, lp.init_product_name, lp.product_name,la.check_person_code,
+		( case lb.status 
+		      when 'APPLY'  then '申请' 
+		      when 'PASS'   then '通过' 
+		      when 'CANCEL' then '取消' 
+		      when 'REFUSE' then '拒绝' 
+		      when 'NORMAL' then '正常' 
+		    end
+		) status, 
+  		la.acc_lmt, la.created_time, lb.loan_id, lb.owning_branch_id,le.primary_reason,le.secode_reason,lb.version,lb.apply_date,lb.if_preferential_user
+ 	</sql>
+	
+	<!-- 综合查询相关表 -->
+	<sql id="getTable">
+		inner join bms_loan_base lb on t.loan_base_id = lb.id 
+		left join bms_loan_product lp on t.loan_base_id = lp.loan_base_id
+		left join bms_loan_ext le  on t.loan_base_id = le.loan_base_id 
+		left join bms_loan_audit la on t.loan_base_id = la.loan_base_id 
+		left join bms_app_person_info tapi on lb.id = tapi.loan_base_id
+		left join BMS_TM_APP_ESTATE_INFO bti on lb.loan_no=bti.loan_no
+	</sql>
+		
+	<!-- 有电话、固话、单位查询条件, 先过滤 bms_app_person_info表-->
+	<sql id="getTelPhoneCorp">
+		select * from (select api.loan_base_id as loan_base_id, api.corp_name from bms_app_person_info api 
+
+		where 1 = 1
+		<if test="phone != null and phone != ''"> and (api.cellphone=#{phone} or api.cellphone_sec=#{phone}) </if>
+		<if test="corpName != null and corpName != ''"> and api.corp_name like concat('%',trim(#{corpName}),'%') </if>
+		<if test="tel != null and tel != ''">
+			and (api.home_phone1=#{tel} or api.home_phone2=#{tel} or api.corp_phone = #{tel} or api.corp_phone_sec = #{tel})
+			<if test="teLoanNo != null and teLoanNo != ''">
+				or api.loan_no in( <foreach item="teLoanNo" index="index" collection="teLoanNo" separator=","> #{teLoanNo} </foreach> )
+			</if>
+		</if>
+		limit #{limitStart}, #{pageSize}) t1
+		
+		union
+		select * from (select distinct (taci.loan_base_id) as loan_base_id, (taci.contact_emp_name) as corp_name from bms_tm_app_contact_info taci
+		where 1 = 1
+		<if test="phone != null and phone != ''"> and (taci.contact_cellphone=#{phone} or taci.contact_cellphone_1=#{phone}) </if>
+		<if test="corpName != null and corpName != ''"> and taci.contact_emp_name like concat('%',trim(#{corpName}),'%') </if>
+		<if test="tel != null and tel != ''"> and (taci.contact_corp_phone = #{tel} or taci.contact_corp_phone_1 = #{tel})</if>
+		limit #{limitStart}, #{pageSize}) t2
+	
+	</sql>	
+	
+	<!-- 有电话、固话、单位查询条件,还有其它条件 -->
+	<sql id="getNoTelPhoneCorp">
+		<include refid="getColumn"></include>
+		from bms_loan_base lb
+		left join bms_loan_product lp on lb.id = lp.loan_base_id
+		left join bms_loan_ext le on lb.id = le.loan_base_id 
+		left join bms_loan_audit la on lb.id = la.loan_base_id 
+		left join bms_app_person_info t on lb.id = t.loan_base_id
+		left join BMS_TM_APP_ESTATE_INFO bti on lb.loan_no=bti.loan_no
+		<include refid="notCondition_sql"></include>
+		order by ${sortValue} limit #{limitStart}, #{pageSize}
+	</sql>
+	
+	<!-- 综合查询列表数 -->
+	<select id="mainSeletCount" parameterType="java.util.Map" resultType="java.lang.String">
+		<choose>
+			<when test="(phone != null and phone != '') or (corpName != null and corpName != '') or (tel != null and tel != '')">
+				select count(*) from (<include refid="getTelPhoneCorpCount" />) t
+				<include refid="getTable" />
+				<include refid="condition_sql" />
+			</when>
+			<otherwise>
+				<include refid="getNoTelPhoneCorpCount"></include>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<sql id="getTelPhoneCorpCount">
+		select api.loan_base_id as loan_base_id, api.corp_name from bms_app_person_info api where 1 = 1
+		<if test="phone != null and phone != ''"> and (api.cellphone=#{phone} or api.cellphone_sec=#{phone}) </if>
+		<if test="corpName != null and corpName != ''"> and api.corp_name like CONCAT('%',trim(#{corpName}),'%') </if>
+		<if test="tel != null and tel != ''">
+			and (api.home_phone1=#{tel} or api.home_phone2=#{tel} or api.corp_phone = #{tel} or api.corp_phone_sec = #{tel})
+			<if test="teLoanNo != null and teLoanNo != ''">
+				or api.loan_no in( <foreach item="teLoanNo" index="index" collection="teLoanNo" separator=","> #{teLoanNo} </foreach> )
+			</if>
+		</if>
+		union
+		select distinct (taci.loan_base_id) as loan_base_id, (taci.contact_emp_name) as corp_name from bms_tm_app_contact_info taci
+		where 1 = 1
+		<if test="phone != null and phone != ''"> and (taci.contact_cellphone=#{phone} or taci.contact_cellphone_1=#{phone}) </if>
+		<if test="corpName != null and corpName != ''"> and taci.contact_emp_name like concat('%',trim(#{corpName}),'%') </if>
+		<if test="tel != null and tel != ''"> and (taci.contact_corp_phone = #{tel} or taci.contact_corp_phone_1 = #{tel})</if>
+	</sql>	
+	
+	<sql id="getNoTelPhoneCorpCount">
+		select count(*)
+		from bms_loan_base lb
+		left join bms_loan_product lp on lb.id = lp.loan_base_id
+		left join bms_loan_ext le on lb.id = le.loan_base_id 
+		left join bms_loan_audit la on lb.id = la.loan_base_id 
+		left join bms_app_person_info t on lb.id = t.loan_base_id
+		left join BMS_TM_APP_ESTATE_INFO bti on lb.loan_no=bti.loan_no
+		<include refid="notCondition_sql"></include>
+	</sql>
+	
+	
+	<!-- =================================根据日志角色查询借款日志============================= -->
+	<!-- 查看借款日志 -->
+	<select id="queryLoanLog" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.master.BMSSysLoanLog">
+		<!-- 没有信审详细日志角色 -->
+		<if test="specialRole=='noAmsDetailLog'">
+			<include refid="sql_no_ams_detail_log" />
+		</if>
+		<!-- 有信审详细日志角色 -->
+		<if test="specialRole=='hasAmsDetailLog'">
+			<include refid="sql_column_two_reason_Y"/>
+		</if>
+	</select>
+	
+	<!-- 没有信审详细日志角色 -->
+	<sql id="sql_no_ams_detail_log">
+		select * from (
+			select * from (<include refid="sql_column_two_reason" /> HAVING(rtf_state!='CSFP' and rtf_state!='XSCS' and rtf_state!='XSZS')) t1 union all
+			select * from (<include refid="sql_no_ams_detail_log_return" /> ) t3
+		) t order by operationTime DESC
+	</sql>
+	
+	<!-- 没有信审详细日志角色  退回的案件 -->
+	<sql id="sql_no_ams_detail_log_return">
+		select * from (
+			select * from (<include refid="sql_column_two_reason" /> HAVING((rtf_node_state='XSCS-RETURN' AND check_node_state IN ('CHECK_PASS','NO_CHECK')) OR rtf_node_state='XSZS-RETURN')) t1 
+			union all
+			select * from (<include refid="sql_column_two_reason" /> HAVING(rtf_state='CSFP' or rtf_state='XSCS' OR rtf_state='XSZS') ORDER BY operationTime DESC LIMIT 0,1) t2
+		) t group by id order by operationTime desc
+	</sql>
+	
+	<sql id="sql_column_two_reason">
+		select id,rtf_state as operationModule,operation_type as operationType,operator,operator_code as operatorCode,operation_time as operationTime,remark,status,
+		concat(if(first_levle_reasons is null,'','一级原因：'),ifnull(first_levle_reasons,''),if(two_levle_reasons is null,'','；二级原因：'),ifnull(two_levle_reasons,'')) firstLevleReasons,
+		rtf_node_state rtfNodeState, check_node_state as checkNodeState
+		from bms_loan_log where loan_no=#{loanNo} and  is_delete=0 
+	</sql>
+	
+	<sql id="sql_column_two_reason_Y">
+	 	select rtf_state as operationModule,operation_type as operationType,operator,OPERATOR_CODE as operatorCode, operation_time as operationTime,remark,status,
+	 	concat(if(first_levle_reasons is null,'','一级原因：'),ifnull(first_levle_reasons,''),if(two_levle_reasons is null,'','；二级原因：'),ifnull(two_levle_reasons,'')) firstLevleReasons,
+		rtf_node_state rtfNodeState,check_node_state as checkNodeState
+		from bms_loan_log where loan_no=#{loanNo} and is_delete=0 order by operationTime desc
+	</sql>
+	
+	<!-- =================================根据日志角色查询借款日志============================= -->
+	
+	<!-- 查看借款详情 -->
+	<select id="queryLoanDetail" parameterType="java.lang.String" resultType="java.util.Map">
+		select lb.loan_no loanNo,lb.id_no idNo,lb.name,lp.product_name productName,lp.apply_term applyTerm,lp.apply_lmt applyLmt, 
+		  lp.if_pri ifPri,le.credit_application creditApplication,(select name_cn from bms_enum_code where code_type='CreditApplication' and code=le.credit_application) as creditApplicationName, lb.branch_manager_name branchManagerName,lb.remark,lb.owning_branch_id owningBranchId 
+		from bms_loan_base lb 
+		  left join bms_loan_product lp on lb.id = lp.loan_base_id 
+		  left join bms_loan_ext le on lb.id = le.loan_base_id 
+		where lb.loan_no = #{loanNo}  
+	</select>
+	
+</mapper>

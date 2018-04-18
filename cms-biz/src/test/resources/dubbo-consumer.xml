@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd  
+        http://code.alibabatech.com/schema/dubbo  
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+	<dubbo:application name="demo-web" />
+
+	<!-- 使用zookeeper注册中心暴露服务地址 -->
+	<!-- 注册中心地址 -->
+	<dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}" />
+	
+	<!-- 网关app -->
+	<dubbo:reference id="iAPPExecuter" interface="com.ymkj.cms.biz.api.service.app.IAPPExecuter"  check="false"  retries="0" timeout="90000"/>
+
+	<!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
+    <!-- <dubbo:reference id="demoExecuter" interface="com.ymkj.demo.biz.api.service.IDemoExecuter"/> -->
+   <!--  <dubbo:annotation package="com.ymkj.demo.biz.test" /> -->
+     <dubbo:reference id="iFirstAuditExecuter" interface="com.ymkj.cms.biz.api.service.audit.IFirstAdultExecuter"  check="false"  retries="0" timeout="90000"/>
+   
+     <dubbo:reference id="iDemoExecuter" interface="com.ymkj.cms.biz.api.service.apply.IDemoExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSProductExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSProductExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSProductAuditLimitExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSProductAuditLimitExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSOrgLimitChannelExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSOrgLimitChannelExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSEnumCodeExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSEnumCodeExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSBaseAreaExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSBaseAreaExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSChannelExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSChannelExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iApplyEnterExecuter" interface="com.ymkj.cms.biz.api.service.apply.IApplyEnterExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSBankExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSBankExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSContractTemplateExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSContractTemplateExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iCusServiceOrdersExecuter" interface="com.ymkj.cms.biz.api.service.apply.ICusServiceOrdersExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="ILoanContractSignExecuter" interface="com.ymkj.cms.biz.api.service.sign.ILoanContractSignExecuter"  check="false"  retries="0" timeout="90000"/>
+      <dubbo:reference id="ILoanContractConfirmExecuter" interface="com.ymkj.cms.biz.api.service.sign.ILoanContractConfirmExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="IAiTeLoanContractNoticeExecuter" interface="com.ymkj.cms.biz.api.service.sign.aite.IAiTeLoanContractNoticeExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iAiTeLoanContractExecuter" interface="com.ymkj.cms.biz.api.service.sign.aite.IAiTeLoanContractExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iAiTeLoanContractFileExecuter" interface="com.ymkj.cms.biz.api.service.sign.aite.IAiTeLoanContractFileExecuter"  check="false"  retries="0" timeout="90000"/>
+     
+     <dubbo:reference id="iQualityInspectionExecuter" interface="com.ymkj.cms.biz.api.service.audit.IQualityInspectionExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="IReconsiderationLoanExecuter" interface="com.ymkj.cms.biz.api.service.apply.IReconsiderationLoanExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iReturnedLoanBoxExecuter" interface="com.ymkj.cms.biz.api.service.apply.IReturnedLoanBoxExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <dubbo:reference id="OrganizationExecuter" interface="com.ymkj.pms.biz.api.service.IOrganizationExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iLoanExecuter" interface="com.ymkj.cms.biz.api.service.finance.ILoanExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSTMReasonExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSTMReasonExecuter"  check="false"  retries="0" timeout="90000"></dubbo:reference>
+     <dubbo:reference id="iBMSLoanBaseExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSLoanBaseExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iEntryAuditExecuter" interface="com.ymkj.cms.biz.api.service.apply.IEntryAuditExecuter"  check="false"  retries="0" timeout="90000" />
+     <dubbo:reference id="iOwningBranchReassignmentExecuter" interface="com.ymkj.cms.biz.api.service.apply.IOwningBranchReassignmentExecuter"  check="false"  retries="0" timeout="90000" />
+     <dubbo:reference id="iBMSLoanProductExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSLoanProductExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSLoanAuditExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSLoanAuditExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSLoanExtExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSLoanExtExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iIntegratedSearchExecuter" interface="com.ymkj.cms.biz.api.service.master.IIntegratedSearchExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iTrialBeforeCreditExecuter" interface="com.ymkj.cms.biz.api.service.apply.ITrialBeforeCreditExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iTaskNumberExecuter" interface="com.ymkj.cms.biz.api.service.task.ITaskNumberExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iBMSContractChangeExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSContractChangeExecuter"  check="false"  retries="0" timeout="90000"/>
+     <dubbo:reference id="iSignReassignmentExecuter" interface="com.ymkj.cms.biz.api.service.audit.ISignReassignmentExecuter"  check="false"  retries="0" timeout="90000"/>
+     
+	<dubbo:reference id="iBMSPatchBoltExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSPatchBoltExecuter"  check="false"  retries="0" timeout="90000"/>
+	
+     <dubbo:reference id="blackListExecuter" interface="com.ymkj.bds.biz.api.service.IBlackListExecuter"  check="false"  retries="0" timeout="90000"/>
+     
+     <!-- 客户 主表-->
+	<dubbo:reference id="iBMSAppPersonExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSAppPersonExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 主卡申请人信息表-->
+	<dubbo:reference id="iBMSAppPersonInfoExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSAppPersonInfoExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 借款申请资产信息表-->
+	<dubbo:reference id="iBMSLoanBaseRelaExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSLoanBaseRelaExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 借款复议表-->
+	<dubbo:reference id="iBMSLoanReviewExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSLoanReviewExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 车辆信息表 -->
+	<dubbo:reference id="iBMSTmAppCarInfoExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSTmAppCarInfoExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 联系人表-->
+	<dubbo:reference id="iBMSTmAppContactInfoExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSTmAppContactInfoExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 房产信息表-->
+	<dubbo:reference id="iBMSTmAppEstateInfoExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSTmAppEstateInfoExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 淘宝达人贷表-->
+	<dubbo:reference id="iBMSTmAppMasterLoanInfoExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSTmAppMasterLoanInfoExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 淘宝商户贷信息表-->
+	<dubbo:reference id="iBMSTmAppMerchantLoanInfoExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSTmAppMerchantLoanInfoExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 保单信息表-->
+	<dubbo:reference id="iBMSTmAppPolicyInfoExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSTmAppPolicyInfoExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 公积金信息表-->
+	<dubbo:reference id="iBMSTmAppProvidentInfoExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSTmAppProvidentInfoExecuter"  check="false"  retries="0" timeout="90000"/>
+	 <!-- 随薪贷信息表-->
+	<dubbo:reference id="iBMSTmAppSalaryLoanInfoExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSTmAppSalaryLoanInfoExecuter"  check="false"  retries="0" timeout="90000"/>
+	<!-- 借款日志表-->
+	<dubbo:reference id="iBMSSysLoanLogExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSSysLoanLogExecuter"  check="false"  retries="0" timeout="90000"/>
+	<!-- 系统日志表-->
+	<dubbo:reference id="iBMSSysLogEntityExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSSysLogEntityExecuter"  check="false"  retries="0" timeout="90000"/>
+	
+	<dubbo:reference id="iBMSLimitChannelExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSLimitChannelExecuter"  check="false"  retries="0" timeout="90000"/>
+	<!-- 审批环节人员信息查询 -->
+	<dubbo:reference id="iAduitPersonExecuter" interface="com.ymkj.cms.biz.api.service.audit.IAduitPersonExecuter"  check="false"  retries="0" timeout="90000"/>
+	
+	<!-- 初审接口拆分 -->
+	<dubbo:reference id="iSplitContractFirstAuditExecuter" interface="com.ymkj.cms.biz.api.service.audit.first.ISplitContractFirstAuditExecuter"  check="false"  retries="0" timeout="90000"/>
+    <!-- 终审接口拆分 -->
+	<dubbo:reference id="iFinalAdultExecuter" interface="com.ymkj.cms.biz.api.service.audit.last.IFinalAdultExecuter"  check="false"  retries="0" timeout="90000"/>
+    <!-- job -->
+	<dubbo:reference id="iBMSLoanJobExecuter" interface="com.ymkj.cms.biz.api.service.job.IBMSLoanJobExecuter"  check="false"  retries="0" timeout="90000"/>
+	<!-- 加急查询 -->
+	<dubbo:reference id="iBMSLoanUrgentExecuter" interface="com.ymkj.cms.biz.api.service.apply.IBMSLoanUrgentExecuter"  check="false"  retries="0" timeout="90000"/>
+
+	<!-- 规则引擎查询 -->
+	<dubbo:reference id="iApplyValidateExecuter" interface="com.ymkj.cms.biz.api.service.apply.IApplyValidateExecuter"  check="false"  retries="0" timeout="90000"/>
+	
+	<dubbo:reference id="iFileFormExecuter" interface="com.ymkj.cms.biz.api.service.apply.IFileFormExecuter"  check="false"  retries="0" timeout="90000"/>
+	
+	<dubbo:reference id="iBMSTmParameterExecuter" interface="com.ymkj.cms.biz.api.service.master.IBMSTmParameterExecuter"  check="false"  retries="0" timeout="90000"/>
+
+   <dubbo:reference id="iBaoShangLoanContractSignExecuter" interface="com.ymkj.cms.biz.api.service.sign.IBaoShangLoanContractSignExecuter"  check="false"  retries="0" timeout="90000"/>
+   <dubbo:reference id="iQualityInspectionSheetExecuter" interface="com.ymkj.cms.biz.api.service.audit.qualitytest.IQualityInspectionSheetExecuter"  check="false"  retries="0" timeout="90000"/>
+   <!-- 陆金所 -->
+   <dubbo:reference id="iLufaxExecuter" interface="com.ymkj.cms.biz.api.service.sign.ILufaxExecuter"  check="false"  retries="0" timeout="90000"/>
+
+	<!--合同签约签约补件管理-->
+   <dubbo:reference id="iLoanContractPatchBoltExecuter" interface="com.ymkj.cms.biz.api.service.sign.ILoanContractPatchBoltExecuter"  check="false"  retries="0" timeout="90000"/>
+   
+   <dubbo:reference id="iRuleEngineExecuter" interface="com.ymkj.rule.biz.api.service.IRuleEngineExecuter"  check="false"  retries="0" timeout="90000"/>
+</beans>  

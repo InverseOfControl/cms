@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSLIneNumberSetDaoImpl">
+
+	<resultMap id="LineNumberSetMap" type="com.ymkj.cms.biz.entity.master.BMSOffLineOfferBankDic">
+		<id property="id" column="ID" />
+		<result property="contractNum" column="CONTRACT_NUM" />
+		<result property="channelName" column="CONTRACT_SOURCE" />
+		<result property="borrowerName" column="NAME" />
+		<result property="idNum" column="ID_NO" />
+	     <result property="account" column="APPLY_BANK_CARD_NO" />
+	     <result property="bank" column="APPLY_BANK_NAME" />
+	     <result property="bankFullName" column="APPLY_BANK_BRANCH" />
+	     <result property="lineDontDo" column="BANK_TYPE" />
+	     <result property="lineNumber" column="BANK_NO" />
+	</resultMap>
+	
+	
+	<sql id="condition_sql">
+		where 1=1
+		<if test="borrowerName != null and borrowerName != ''">
+			<![CDATA[ 
+			and c.NAME LIKE '%${borrowerName}%']]>
+		</if>
+		<if test="idNum != null and idNum !=''">
+			<![CDATA[ 
+        	and c.ID_NO LIKE '%${idNum}%']]>
+		</if>
+		<if test="cobtractNum != null and cobtractNum !=''">
+			<![CDATA[ 
+        	and g.CONTRACT_NUM LIKE '%${cobtractNum}%']]>
+		</if>
+		<if test="channelName != null and channelName !=''">
+			and b.CONTRACT_SOURCE = #{channelName}
+		</if>
+		<if test="queryAreaType != null and queryAreaType !=''">
+			and f.REGION_TYPE = #{queryAreaType}
+		</if>
+	</sql>
+	
+	
+	<select id="listPage" parameterType="java.util.Map" resultMap="LineNumberSetMap">
+		select d.ID AS ID,g.CONTRACT_NUM as CONTRACT_NUM,b.CONTRACT_SOURCE as CONTRACT_SOURCE,c.NAME as NAME,c.ID_NO as ID_NO,d.ACCOUNT as APPLY_BANK_CARD_NO,d.BANK_NAME as APPLY_BANK_NAME,
+		d.FULL_NAME as APPLY_BANK_BRANCH,f.BANK_TYPE as BANK_TYPE,f.BANK_NO as BANK_NO from bms_loan_base a INNER JOIN bms_loan_product b on a.id=b.LOAN_BASE_ID inner join BMS_APP_PERSON c on a.person_id=c.ID inner join
+		BMS_LOAN_BANK d on b.LOAN_BANK_ID_STILL=d.id inner join BMS_LOAN_CONTRACT g on a.id=g.LOAN_BASE_ID left join BMS_LOAN_BANK_EXT e on d.id=e.LOAN_BANK_ID left join BMS_OFF_LINE_OFFER_BANK_DIC f on e.OFFER_BANK_ID=f.id
+		<include refid="condition_sql" />
+	</select>
+	
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1) from bms_loan_base a INNER JOIN bms_loan_product b on a.id=b.LOAN_BASE_ID inner join BMS_APP_PERSON c on a.person_id=c.ID inner join
+		BMS_LOAN_BANK d on b.LOAN_BANK_ID_STILL=d.id left join BMS_LOAN_BANK_EXT e on d.id=e.LOAN_BANK_ID left join BMS_OFF_LINE_OFFER_BANK_DIC f on e.OFFER_BANK_ID=f.id
+		<include refid="condition_sql" />
+	</select>
+	
+	<select id="findLoanBank" parameterType="java.util.Map"
+		resultType="com.ymkj.cms.biz.entity.master.BMSLoanBank">
+		select ID as id,ACCOUNT as account,BANK_NAME as bankName,FULL_NAME as fullName,BANK_CODE as bankCode from BMS_LOAN_BANK where 1=1 
+		and id = #{bankId}
+	</select>
+	
+	<select id="findByRegionAndCode" parameterType="java.util.Map"
+		resultType="int">
+		select count(1) from BMS_OFF_LINE_OFFER_BANK_DIC where 1=1 
+		and REGION_TYPE = #{areaType} and CODE = #{code}
+	</select>
+	
+	<select id="findLoanBankExtByBankId" parameterType="java.util.Map"
+		resultType="com.ymkj.cms.biz.entity.master.BMSLoanBankExt">
+		select ID as id,LOAN_BANK_ID as loanBankId,OFFER_BANK_ID as offerBankId,MEMO as memo  from BMS_LOAN_BANK_EXT where 1=1 
+		and LOAN_BANK_ID=#{loanBnakId}
+	</select>
+	
+	<select id="findByRegionAndCodeData" parameterType="java.util.Map"
+		resultType="com.ymkj.cms.biz.entity.master.BMSOffLineOfferBankDicEntity">
+		select ID as id,CODE as code,NAME as name,BANK_TYPE as bankType,BANK_NO as bankNo,REGION_TYPE as regionType from BMS_OFF_LINE_OFFER_BANK_DIC where 1=1 
+		and REGION_TYPE = #{areaType} and CODE = #{code}
+	</select>
+	
+	
+	
+	<insert id="insertLoanBankExt" parameterType="com.ymkj.cms.biz.entity.master.BMSLoanBankExt" keyProperty="id" useGeneratedKeys="true">
+		insert into BMS_LOAN_BANK_EXT
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID,
+			<if test="loanBankId != null">
+				LOAN_BANK_ID,
+			</if>
+			<if test="offerBankId != null">
+				OFFER_BANK_ID,
+			</if>
+			CREATOR,
+			CREATOR_ID,
+			CREATED_TIME,
+			IS_DELETE,
+			VERSION
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},
+			<if test="loanBankId != null">
+				#{loanBankId},
+			</if>
+			<if test="offerBankId != null">
+				#{offerBankId},
+			</if>
+			#{creator},
+			#{creatorId},
+			#{creatorDate},
+			0,
+			1
+		</trim>
+	</insert>
+	
+	<update id="updateLoanBankExt" parameterType="com.ymkj.cms.biz.entity.master.BMSLoanBankExt">
+		update BMS_LOAN_BANK_EXT set OFFER_BANK_ID=#{offerBankId},MODIFIER_ID=#{modifiedId},MODIFIER=#{modified},MODIFIED_TIME=#{modifiedDate} where ID=#{id} 
+	</update>
+	
+	
+	<insert id="insertLineOfferBankDic" parameterType="com.ymkj.cms.biz.entity.master.BMSOffLineOfferBankDicEntity" keyProperty="id" useGeneratedKeys="true">
+		insert into BMS_OFF_LINE_OFFER_BANK_DIC
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID,
+			<if test="code != null and code != ''">
+				CODE,
+			</if>
+			<if test="name != null and name !=''">
+				NAME,
+			</if>
+			<if test="bankType != null and bankType !=''">
+				BANK_TYPE,
+			</if>
+			<if test="bankNo != null and bankNo !=''">
+				BANK_NO,
+			</if>
+			<if test="regionType != null and regionType !=''">
+				REGION_TYPE,
+			</if>
+			CREATOR,
+			CREATOR_ID,
+			CREATOR_DATE,
+			IS_DELETED,
+			VERSION
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},
+			<if test="code != null and code != ''">
+				#{code},
+			</if>
+			<if test="name != null and name !=''">
+				#{name},
+			</if>
+			<if test="bankType != null and bankType !=''">
+				#{bankType},
+			</if>
+			<if test="bankNo != null and bankNo !=''">
+				#{bankNo},
+			</if>
+			<if test="regionType != null and regionType !=''">
+				#{regionType},
+			</if>
+			#{creator},
+			#{creatorId},
+			#{creatorDate},
+			0,
+			1
+		</trim>
+	</insert>
+	
+	
+	<update id="updateLineOfferBankDic" parameterType="com.ymkj.cms.biz.entity.master.BMSOffLineOfferBankDicEntity">
+		update BMS_OFF_LINE_OFFER_BANK_DIC set NAME=#{name},BANK_TYPE=#{bankType},BANK_NO=#{bankNo},MODIFIED_ID=#{modifiedId},MODIFIED=#{modified},MODIFIED_DATE=#{modifiedDate} where ID=#{id} 
+	</update>
+	
+</mapper>

@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSChannelDaoImpl">
+
+	<sql id="table">bms_channel</sql>
+
+	<resultMap id="BMSChannelMap" type="com.ymkj.cms.biz.entity.master.BMSChannel">
+		<id property="id" column="id" />
+		<result property="code" column="code" />
+		<result property="name" column="name" />
+		<result property="calculateUrl" column="calculate_Url" />
+		<result property="startSalesTime" column="start_Sales_Time" />
+		<result property="stopSalesTime" column="stop_Sales_Time" />
+		<result property="version" column="VERSION" />
+		<result property="isDeleted" column="IS_DELETED" />
+		<result property="isDisabled" column="is_disabled" />
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="creatorDate" column="CREATOR_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modified" column="MODIFIED" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedDate" column="MODIFIED_DATE" />
+	    <!-- 修改用户Id -->
+	     <result property="modifiedId" column="MODIFIED_ID" />
+	    <!-- 电子合同是否禁用（0：启用，1禁用）默认值1 -->
+	     <result property="econtractFlag" column="E_CONTRACT_FLAG" />
+	     <!-- 纸质合同是否禁用（0：启用，1禁用）默认值1 -->
+	     <result property="pcontractFlag" column="P_CONTRACT_FLAG" />
+	    <!-- 优惠费率用户，是否可优惠 -->
+	    <result property="isCanPreferential" column="is_can_preferential" />
+	     
+	</resultMap>
+
+	<sql id="condition_sql">
+			where IS_DELETED = 0
+		<if test="id != null and id != 0">
+			and ID = #{id}
+		</if>
+		<if test="name != null and name != ''">
+		<![CDATA[ 
+        	and  NAME like '%${name}%']]>
+        	
+		</if>
+		<if test="code != null and code != ''">
+        <![CDATA[ 
+        	and  CODE like '%${code}%']]>
+		</if>
+		<if test="version != null and version !=''">
+			and VERSION = #{version}
+		</if>
+	</sql>
+
+	<!-- query -->
+	<select id="getById" parameterType="long" resultMap="BMSChannelMap">
+		select * from
+		<include refid="table" />
+		where IS_DELETED = 0 AND id = #{id}
+	</select>
+
+	<select id="listBy" parameterType="java.util.Map" resultMap="BMSChannelMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql"/>
+		and start_Sales_Time &lt;=NOW() and stop_Sales_Time&gt;=NOW()
+	</select>
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSChannelMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by id desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+
+	<select id="findOne" parameterType="java.util.Map" resultMap="BMSChannelMap">
+		select * from
+		<include refid="table" />
+		
+		where is_deleted = 0
+		<if test="id != null and id !=0">
+		<![CDATA[ 
+        	and  id = #{id}]]>
+		</if>
+		<if test="code != null">
+		<![CDATA[ 
+        	and  code = #{code}]]>
+		</if>
+		<if test="name != null">
+		<![CDATA[ 
+        	and  name = #{name}]]>
+		</if>
+	</select>
+	<!-- 根据用户code获取到门店id,根据门店id获取数据 -->
+	<select id="getChannelByOrgId"  parameterType="java.util.Map" resultMap="BMSChannelMap">
+		SELECT DISTINCT C.* FROM BMS_CHANNEL C INNER JOIN BMS_ORG_LIMIT_CHANNEL LC ON C.ID = LC.CHANNEL_ID 
+		WHERE C.IS_DELETED=0 AND LC.IS_DELETED=0 AND LC.ORG_ID=#{orgId}
+	</select>
+	
+	
+
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSChannel">
+		insert into bms_channel
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="code != null and code != ''">
+				code,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="calculateUrl != null">
+				calculate_Url,
+			</if>
+			<if test="startSalesTime != null">
+				start_Sales_Time,
+			</if>
+			<if test="stopSalesTime != null">
+				stop_Sales_Time,
+			</if>
+			<if test="creator != null and creator != ''">
+				CREATOR,
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID,
+			</if>
+			<if test="creatorDate != null">
+				CREATOR_DATE,
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED,
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID,
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE,
+			</if>
+			<if test="isDisabled != null">
+				is_disabled,
+			</if>
+			<if test="econtractFlag != null">
+				e_contract_flag,
+			</if>
+			<if test="pcontractFlag != null">
+				p_contract_flag,
+			</if>
+			<if test="isCanPreferential != null">
+				is_can_preferential,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="code != null ">
+				#{code},
+			</if>
+			<if test="name != null and name != ''">
+				#{name},
+			</if>
+			<if test="calculateUrl != null">
+				#{calculateUrl},
+			</if>
+			<if test="startSalesTime != null">
+				#{startSalesTime},
+			</if>
+			<if test="stopSalesTime != null">
+				#{stopSalesTime},
+			</if>
+			<if test="creator != null and creator != ''">
+				#{creator},
+			</if>
+			<if test="creatorId != null">
+				#{creatorId},
+			</if>
+			<if test="creatorDate != null">
+				#{creatorDate},
+			</if>
+			<if test="modified != null and modified != ''">
+				#{modified},
+			</if>
+			<if test="modifiedId != null">
+				#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				#{modifiedDate},
+			</if>
+			<if test="isDisabled != null">
+				#{isDisabled},
+			</if>
+			<if test="econtractFlag != null">
+				#{econtractFlag},
+			</if>
+			<if test="pcontractFlag != null">
+				#{pcontractFlag},
+			</if>
+			<if test="isCanPreferential != null">
+				#{isCanPreferential},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- del -->
+	<delete id="deleteById" parameterType="long">
+		delete from
+		<include refid="table" />
+		where id = #{id}
+	</delete>
+
+	<delete id="deletelAll">
+		delete from
+		<include refid="table" />
+	</delete>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSChannel">
+		update
+		<include refid="table" />
+		<include refid="set_sql" />
+		<where>
+			id = #{id}
+		</where>
+	</update>
+
+	<sql id="set_sql">
+		<trim prefix="set" suffixOverrides=",">
+			<if test="name != null and name != ''">
+				NAME = #{name},
+			</if>
+			<if test="code != null and code != ''">
+				CODE = #{code},
+			</if>
+			<if test="calculateUrl != null">
+				calculate_Url = #{calculateUrl},
+			</if>
+			<if test="startSalesTime != null">
+				start_Sales_Time = #{startSalesTime},
+			</if>
+			<if test="stopSalesTime != null">
+				stop_Sales_Time = #{stopSalesTime},
+			</if>
+			<if test="creator != null and creator != ''">
+				CREATOR=#{creator},
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID=#{creatorId},
+			</if>
+			<if test="creatorDate != null">
+				CREATOR_DATE=#{creatorDate},
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED=#{modified},
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID=#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE=#{modifiedDate},
+			</if>
+			<if test="isDisabled != null">
+				is_disabled=#{isDisabled},
+			</if>
+			<if test="isDeleted != null">
+				is_deleted = #{isDeleted},
+			</if>
+			<if test="econtractFlag != null">
+				e_contract_flag = #{econtractFlag},
+			</if>
+			<if test="pcontractFlag != null">
+				p_contract_flag = #{pcontractFlag},
+			</if>
+			<if test="isCanPreferential != null">
+				is_can_preferential = #{isCanPreferential},
+			</if>
+		</trim>
+	</sql>
+	
+	
+	<select id="checkIsChennelExits" parameterType="Map" resultType="int">
+		select count(1) from bms_channel where is_deleted=0 and (name=#{name} or code=#{code})
+		<if test="id != 0">
+				<![CDATA[ and id <> #{id} ]]>
+		</if>
+	</select>
+	
+	
+	
+	<!-- 根据借款产品、申请期限、申请额度、营业部获取渠道列表 -->
+	<select id="getChannelByProTermLmt" parameterType="map" resultType="com.ymkj.cms.biz.entity.master.BMSChannel">
+		select DISTINCT c.id ,c.code, c.name from  bms_channel c 
+		  INNER join bms_limit_channel lc on c.id = lc.channel_id 
+		  INNER join bms_product_audit_limit pal  on pal.audit_limit_id = lc.audit_limit_id
+		  INNER join bms_product p  on p.product_id = pal.product_id
+		  INNER JOIN bms_org_limit_channel bolc ON bolc.CHANNEL_ID=lc.CHANNEL_ID AND lc.audit_limit_id = bolc.audit_limit_id
+		where c.IS_DELETED = 0
+		  AND bolc.IS_DELETED = 0 
+		  AND pal.IS_DELETED = 0 
+		  AND p.IS_DELETED = 0 
+		  AND c.IS_DISABLED = 0  
+		  AND lc.IS_DISABLED = 0  
+		  AND bolc.IS_DISABLED = 0  
+		  <!-- 起止时间限制   &lt;等于<    &gt;等于>    -->
+		  AND c.STOP_SALES_TIME &gt;= NOW() 
+		  AND c.START_SALES_TIME &lt;= NOW()
+		<if test="productCode != null and productCode != ''">
+			 and pal.product_code = #{productCode}
+		  </if>
+		  <if test="applyTerm != null and applyTerm != ''">
+		  and pal.audit_limit = #{applyTerm} 
+		  </if>
+		  <if test="applyLmt != null and applyLmt != ''">
+		  and p.upper_limit &gt;= #{applyLmt} 
+		  and p.floor_limit &lt;= #{applyLmt}
+		  </if>
+		  
+		  <if test="isCanPreferential != null">
+		  	 <if test="isCanPreferential == 0">
+		  	 	AND c.is_can_preferential=#{isCanPreferential}
+		  	 </if>
+		 	AND bolc.is_can_preferential = #{isCanPreferential}
+		  </if>
+		  <if test="orgId != null and orgId != 0">
+			and bolc.ORG_ID = #{orgId}
+		  </if>
+		  <if test="orgIdList!=null and orgIdList.size>0">
+				AND bolc.ORG_ID IN
+				<foreach collection="orgIdList" item="orgIdItem" open="(" close=")" separator=",">
+					#{orgIdItem}
+				</foreach>
+			</if>
+	</select>
+	<!-- 根据进件营业部,借款产品、审批额度获取渠道列表 -->
+	<select id="getChannelByOrgProAlt" parameterType="map" resultType="com.ymkj.cms.biz.entity.master.BMSChannel">
+		select DISTINCT c.id ,c.code, c.name from  bms_channel c 		  	    
+		  INNER join bms_limit_channel lc on c.id = lc.channel_id 	  
+		  INNER join bms_product_audit_limit pal  on pal.audit_limit_id = lc.audit_limit_id
+		  INNER join bms_product p  on p.product_id = pal.product_id	
+		  INNER JOIN bms_org_limit_channel bolc ON bolc.CHANNEL_ID=lc.CHANNEL_ID AND lc.audit_limit_id = bolc.audit_limit_id	  
+		  
+		where c.IS_DELETED = 0
+		AND bolc.IS_DELETED=0
+		AND lc.IS_DELETED=0
+		AND pal.IS_DELETED=0
+		AND p.IS_DELETED=0
+		 <!-- 起止时间限制   &lt;等于<    &gt;等于>    -->
+		  AND c.STOP_SALES_TIME &gt;= NOW() 
+		  AND c.START_SALES_TIME &lt;= NOW()
+		<if test="owningBranchId != null and owningBranchId != ''">
+			 and bolc.org_id = #{owningBranchId}
+		  </if>
+		<if test="productCd != null and productCd != ''">
+			 and pal.product_code = #{productCd}
+		  </if>
+		  <if test="accLmt != null and accLmt != ''">
+		  and p.upper_limit &gt;= #{accLmt} 
+		  and p.floor_limit &lt;= #{accLmt}
+		  </if>
+		<if test="isCanPreferential != null">
+			 and bolc.is_can_preferential = #{isCanPreferential}
+		  </if>
+	</select>
+	<select id="findBy" parameterType="java.util.Map" resultMap="BMSChannelMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql"/>
+	</select>
+	<!-- 更新 -->
+	<update id="disabledLimitChannel" parameterType="java.util.Map">
+		update BMS_LIMIT_CHANNEL 
+		<set>
+			MODIFIED_DATE = SYSDATE()
+			<if test="isdisabled != null">
+		  	   ,IS_DISABLED = #{isdisabled} 
+		    </if>
+		</set>
+		<where>
+			IS_DELETED = 0
+			<if test="channelId != null and channelId != ''">
+		  	  and CHANNEL_ID = #{channelId} 
+		    </if>
+		</where>
+	</update>
+	<!-- 更新 -->
+	<update id="disabledOrgLimitChannel" parameterType="java.util.Map">
+		update BMS_ORG_LIMIT_CHANNEL 
+		<set>
+			MODIFIED_DATE = SYSDATE()
+			<if test="isdisabled != null">
+		  	   ,IS_DISABLED = #{isdisabled} 
+		    </if>
+			<if test="isCanPreferential != null">
+		  	   ,is_can_preferential = #{isCanPreferential} 
+		    </if>
+		</set>
+		<where>
+			IS_DELETED = 0
+			<if test="channelId != null and channelId != ''">
+		  	  and CHANNEL_ID = #{channelId} 
+		    </if>
+		</where>
+	</update>
+	<!-- 根据时间段来查找对应的其道 -->
+	<select id="findChannelEqDate" parameterType="java.util.Map" resultMap="BMSChannelMap">
+		select * from BMS_CHANNEL where IS_DELETED = 0 
+		and  start_Sales_Time &lt;= curdate() and stop_Sales_Time >= curdate()
+	</select>
+	
+	<!-- 签约银行配置禁用或启用 -->
+	<update id="disabledChannelBank" parameterType="java.util.Map">
+		update bms_channel_bank 
+		<set>
+			MODIFIED_DATE = SYSDATE()
+			<if test="isdisabled != null">
+		  	   ,IS_DISABLED = #{isdisabled} 
+		    </if>
+		</set>
+		<where>
+			IS_DELETED = 0
+			<if test="channelId != null and channelId != ''">
+		  	  and CHANNEL_ID = #{channelId} 
+		    </if>
+		</where>
+	</update>
+	
+	<select id="isExistInBMS" parameterType="java.lang.String" resultType="int">
+		select count(*) from bms_loan_base where loan_no = #{loanNo}
+	</select>
+	
+	<select id="queryChannelList" parameterType="java.util.Map" resultMap="BMSChannelMap">
+		select * from BMS_CHANNEL where IS_DELETED=0 
+		<if test="ids !=null and ids !=''">
+		<![CDATA[ and id in (${ids})]]>
+	</if>
+	</select>
+	
+	<select id="queryChannelCount" parameterType="java.util.Map" resultType="int">
+		select count(*) from BMS_CHANNEL where IS_DELETED=0 
+		<if test="ids !=null and ids !=''">
+		<![CDATA[ and id in (${ids})]]>
+	</if>
+	</select>
+	
+	<select id="queryChannelByOrgIds" parameterType="java.util.Map" resultMap="BMSChannelMap">
+				SELECT DISTINCT
+			  C.ID,
+			  C.NAME
+			FROM
+			  bms_org_limit_channel B
+			  LEFT JOIN BMS_CHANNEL C
+			    ON B.CHANNEL_ID = C.ID
+			WHERE B.IS_DISABLED = 0
+			  AND B.IS_DELETED = 0
+			  AND C.IS_DELETED = 0
+			  AND C.IS_DISABLED = 0
+		<if test="orgIds !=null and orgIds != ''">
+			<![CDATA[  AND B.ORG_ID in (${orgIds})]]>
+		</if>
+	</select>
+</mapper> 

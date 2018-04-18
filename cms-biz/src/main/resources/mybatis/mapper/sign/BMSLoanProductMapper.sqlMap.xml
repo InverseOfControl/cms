@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.sign.impl.LoanContractSignDaoImpl">
+
+<sql id="table">BMS_LOAN_PRODUCT</sql>
+
+   <resultMap id="loanProductMap" type="com.ymkj.cms.biz.entity.sign.BMSLoanProduct">
+		<id property="id" column="ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="loanNo" column="LOAN_NO" />
+		<result property="bankPhone" column="BANK_PHONE" />
+	    <result property="applyBankCardNo" column="APPLY_BANK_CARD_NO" />
+		<result property="applyBankBranch" column="APPLY_BANK_BRANCH" />
+		<result property="applyBankName" column="APPLY_BANK_NAME" />
+		<result property="applyBankBranchId" column="APPLY_BANK_BRANCH_ID" />
+		<result property="applyBankNameId" column="APPLY_BANK_NAME_ID" />
+		<result property="contractSource" column="CONTRACT_SOURCE" />
+		<result property="contractLmt" column="CONTRACT_LMT" />
+		<result property="contractTrem" column="CONTRACT_TREM" />
+		<result property="version" column="VERSION" />
+	</resultMap>
+<!-- LOAN_BANK_ID_BORROW  LOAN_BANK_ID_STILL -->  
+	<sql id="set_sql">
+	 <trim prefix="" suffixOverrides=",">  
+		<if test="bankPhone != null and bankPhone != ''">
+        	 BANK_PHONE = #{bankPhone},
+        </if>
+        <if test="applyBankBranch != null and applyBankBranch != ''">
+        	 APPLY_BANK_BRANCH = #{applyBankBranch},
+        </if>
+        <if test="applyBankName != null and applyBankName != ''">
+        	 APPLY_BANK_NAME = #{applyBankName},
+        </if>
+         <if test="applyBankCardNo != null and applyBankCardNo != ''">
+        	 APPLY_BANK_CARD_NO = #{applyBankCardNo},
+        </if>
+        <if test="applyBankBranchId != null and applyBankBranchId != ''">
+        	 APPLY_BANK_BRANCH_ID = #{applyBankBranchId},
+        </if>
+        <if test="applyBankNameId != null and applyBankNameId != ''">
+        	 APPLY_BANK_NAME_ID = #{applyBankNameId},
+        	 LOAN_BANK_ID_BORROW = #{applyBankNameId},
+        	 LOAN_BANK_ID_STILL = #{applyBankNameId},
+        </if>
+        <if test="contractSource != null and contractSource != ''">
+        	CONTRACT_SOURCE = #{contractSource},
+        </if>
+         <if test="contractLmt != null and contractLmt != ''">
+        	CONTRACT_LMT = #{contractLmt},
+        </if>
+         <if test="contractTrem != null and contractTrem != ''">
+        	CONTRACT_TREM = #{contractTrem},
+        </if>
+         <if test="contractNum != null and contractNum != ''">
+        	CONTRACT_NUM = #{contractNum},
+        </if>
+        <if test="isDeleted != null">
+        	IS_DELETED = #{isDeleted},
+        </if>
+         <if test="modified != null and modified != ''">
+        	MODIFIER=#{modified},
+        </if>
+         <if test="modifiedId != null">
+        	MODIFIER_ID=#{modifiedId},
+        </if>
+         <if test="modifiedDate != null">
+        	MODIFIED_TIME=#{modifiedDate},
+        </if>
+        <if test="version != null and version != ''">
+        	VERSION = #{version} + 1 , 
+        </if>
+        <if test="contractType != null">
+        	contract_type = #{contractType}, 
+        </if>
+        </trim>
+	</sql>
+	
+	<!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.sign.BMSLoanProduct">
+		update
+		<include refid="table" />
+		set
+		<include refid="set_sql" />
+		<where>
+			LOAN_BASE_ID = #{loanBaseId}
+		<if test="version != null and version != ''">
+        	and VERSION= #{version}
+        </if>
+			
+		</where>
+	</update>
+
+	<select id="findBMSLoanProductByLoanNo" parameterType="java.util.Map" resultMap="loanProductMap">
+		select * from
+		<include refid="table" />
+		where IS_DELETE= 0
+		<if test="loanNo != null and loanNo != ''">
+			and  LOAN_NO =#{loanNo}
+		</if>
+	</select>
+</mapper> 

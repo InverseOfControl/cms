@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.sign.impl.RepaymentDetailDaoImpl">
+<resultMap id="RepaymentDetailMap" type="com.ymkj.cms.biz.entity.sign.BMSRepaymentDetail">
+		<id property="id" column="ID" />
+		<result property="currentAccrual" column="CURRENT_ACCRUAL" />
+		<result property="currentTerm" column="CURRENT_TERM" />
+		<result property="giveBackRate" column="GIVE_BACK_RATE" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="loanId" column="LOAN_ID" />
+		<result property="principalBalance" column="PRINCIPAL_BALANCE" />
+		<result property="repaymentAll" column="REPAYMENT_ALL" />
+		<result property="returnDate" column="RETURN_DATE" />
+		<result property="deficit" column="DEFICIT" />
+		<result property="factReturnDate" column="FACT_RETURN_DATE" />
+		<result property="penaltyDate" column="PENALTY_DATE" />
+		<result property="returneterm" column="RETURNETERM" />
+		<result property="penalty" column="PENALTY" />
+		<result property="accrualRevise" column="ACCRUAL_REVISE" />
+	</resultMap>
+
+		    
+
+<sql id="table">BMS_LOAN_REPAYMENT_DETAIL</sql>
+	
+	<insert id="batchInsert" parameterType="java.util.List"  keyProperty="id" useGeneratedKeys="true">
+	   <selectKey resultType ="java.lang.Integer" keyProperty= "id"
+                  order= "AFTER">
+                  SELECT LAST_INSERT_ID()
+             </selectKey >
+		insert into
+		 <include refid="table" />
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					CURRENT_ACCRUAL,
+					CURRENT_TERM,
+					GIVE_BACK_RATE,
+					LOAN_BASE_ID,
+					LOAN_ID,     
+				 	PRINCIPAL_BALANCE,    
+					REPAYMENT_ALL,          
+					RETURN_DATE,                   
+				 	DEFICIT,               
+					REPAYMENT_STATE,          
+				 	FACT_RETURN_DATE,              
+				 	PENALTY_DATE,                 
+				 	RETURNETERM,          
+				 	PENALTY,              
+				 	ACCRUAL_REVISE,         
+				    CREATOR,
+				    CREATOR_ID,
+				    CREATED_TIME,
+				    IS_DELETED,
+				    VERSION
+		</trim>
+		values
+		<foreach collection ="list" item="item" index= "index" separator =",">
+		<trim prefix=" (" suffix=")" suffixOverrides=",">
+					#{item.currentAccrual},
+					#{item.currentTerm},
+					#{item.giveBackRate},
+					#{item.loanBaseId},
+					#{item.loanId},     
+				 	#{item.principalBalance},    
+					#{item.repaymentAll},          
+					#{item.returnDate},                   
+				 	#{item.deficit},               
+					#{item.repaymentState},          
+				 	#{item.factReturnDate},              
+				 	#{item.penaltyDate},                 
+				 	#{item.returneterm},          
+				 	#{item.penalty},              
+				 	#{item.accrualRevise},         
+				  	#{item.creator}, 
+					#{item.creatorId}, 
+				 	#{item.creatorDate}, 
+					0,
+					1
+			</trim>
+	</foreach>
+	</insert>
+
+
+	
+	<select id="selectConutByLoanBaseId" resultType="int"
+		parameterType="long">
+		select
+		count(1)
+		from <include refid="table" />
+		where LOAN_BASE_ID = #{loanBaseId} and IS_DELETED=0
+	</select>
+	
+	<update id="deleteByLoanBaseId" parameterType="long">
+		update  <include refid="table" />
+		 set IS_DELETED = 1
+		where LOAN_BASE_ID = #{loanBaseId} 
+		and IS_DELETED=0
+	</update> 
+	
+	
+	<select id="listBy" parameterType="java.util.Map" resultMap="RepaymentDetailMap">
+		SELECT 
+			ID,
+			CURRENT_ACCRUAL,
+			CURRENT_TERM,
+			GIVE_BACK_RATE,
+			LOAN_BASE_ID,
+			LOAN_ID,     
+		 	PRINCIPAL_BALANCE,    
+			REPAYMENT_ALL,          
+			RETURN_DATE,                   
+		 	DEFICIT,               
+			REPAYMENT_STATE,          
+		 	FACT_RETURN_DATE,              
+		 	PENALTY_DATE,                 
+		 	RETURNETERM,          
+		 	PENALTY,              
+		 	ACCRUAL_REVISE      
+		FROM  <include refid="table" />
+		WHERE
+		IS_DELETED = 0  
+		and LOAN_BASE_ID = #{loanBaseId} 
+		order by CURRENT_TERM asc
+</select>
+
+
+</mapper> 

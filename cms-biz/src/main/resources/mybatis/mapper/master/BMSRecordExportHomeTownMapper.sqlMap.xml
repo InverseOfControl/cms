@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSRecordExportHomeTownDaoImpl">
+
+	
+	<sql id="condition_sql">
+		where 1=1
+		<if test="startDate != null and startDate != ''">
+			and a.SIGN_DATE &gt;=str_to_date(#{startDate},'%Y-%m-%d %H:%i:%s')
+		</if>
+		<if test="endDate != null and endDate !=''">
+        	and a.SIGN_DATE &lt;=str_to_date(#{endDate},'%Y-%m-%d %H:%i:%s')
+		</if>
+		<if test="channelName != null and channelName !=''">
+			and b.CONTRACT_SOURCE = #{channelName}
+		</if>
+		<if test="queryAreaType != null and queryAreaType !=''">
+			and f.REGION_TYPE = #{queryAreaType}
+		</if>
+		<if test="contractNo != null and contractNo !=''">
+			<![CDATA[ 
+        	and b.CONTRACT_NUM LIKE '%${contractNo}%']]>
+		</if>
+	</sql>
+	
+	
+	<select id="listPage" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.master.BMSRecordExportYD">
+		select a.ID AS id,f.BANK_No as bankNo,d.ACCOUNT as accountNumber,a.NAME as name,CONCAT(b.APPLY_BANK_NAME,b.APPLY_BANK_BRANCH) as remark from bms_loan_base a INNER JOIN bms_loan_product b on a.id=b.LOAN_BASE_ID inner join BMS_APP_PERSON c on a.person_id=c.ID inner join
+		BMS_LOAN_BANK d on b.LOAN_BANK_ID_STILL=d.id inner join BMS_LOAN_BANK_EXT e on d.id=e.LOAN_BANK_ID left join BMS_OFF_LINE_OFFER_BANK_DIC f on e.OFFER_BANK_ID=f.id
+		<include refid="condition_sql" />
+	</select>
+	
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1) from bms_loan_base a INNER JOIN bms_loan_product b on a.id=b.LOAN_BASE_ID inner join BMS_APP_PERSON c on a.person_id=c.ID inner join
+		BMS_LOAN_BANK d on b.LOAN_BANK_ID_STILL=d.id inner join BMS_LOAN_BANK_EXT e on d.id=e.LOAN_BANK_ID left join BMS_OFF_LINE_OFFER_BANK_DIC f on e.OFFER_BANK_ID=f.id
+		<include refid="condition_sql" />
+	</select>
+	
+	<select id="uploadExcelYD" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.master.BMSRecordExportYD">
+		select a.ID AS id,f.BANK_No as bankNo,d.ACCOUNT as accountNumber,a.NAME as name,CONCAT(b.APPLY_BANK_NAME,b.APPLY_BANK_BRANCH) as remark from bms_loan_base a INNER JOIN bms_loan_product b on a.id=b.LOAN_BASE_ID inner join BMS_APP_PERSON c on a.person_id=c.ID inner join
+		BMS_LOAN_BANK d on b.LOAN_BANK_ID_STILL=d.id inner join BMS_LOAN_BANK_EXT e on d.id=e.LOAN_BANK_ID left join BMS_OFF_LINE_OFFER_BANK_DIC f on e.OFFER_BANK_ID=f.id
+		<include refid="condition_sql" />
+	</select>
+</mapper>

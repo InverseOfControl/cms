@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSTmAppCarInfoDaoImpl">
+<!-- 车辆信息表 -->
+   <resultMap id="BMSTmAppCarInfoMap" type="com.ymkj.cms.biz.entity.master.BMSTmAppCarInfo">
+       <!--ID  -->
+		<id property="id" column="ID" />
+		<!-- LOAN_BASE_ID -->
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<!-- 客户主表ID  -->
+		<result property="perosnId" column="PERSON_ID" />
+		<!-- 借款编号 -->
+		<result property="loanNo" column="LOAN_NO" />
+		<!-- 申请件编号 -->
+		<result property="appNo" column="APP_NO" />
+		<!-- 机构号 -->
+		<result property="org" column="ORG" />
+		<!-- 资料核对流水号 -->
+		<result property="checkId" column="CHECK_ID" />
+		<!-- 车辆类型 -->
+		<result property="carType" column="CAR_TYPR" />
+		<!-- 是否有车贷 -->
+		<result property="carLoan" column="CAR_LOAN" />
+		<!-- 月供-->
+		<result property="monthPaymentAmt" column="MONTH_PAYMENT_AMT" />
+		<!-- 车辆购买时间 -->
+		<result property="carBuyDate" column="CAR_BUY_DATE" />
+		<!-- 裸车价/万元 -->
+		<result property="nakedCarPrice" column="NAKED_CAR_PRICE" />
+		<!-- 购买价/万元 -->
+		<result property="carBuyPrice" column="CAR_BUY_PRICE" />
+		<!-- 过户时间 -->
+		<result property="transferDate" column="TRANSFER_DATE" />
+		<!-- 贷款剩余期数 -->
+	    <result property="carLoanTerm" column="CAR_LOAN_TERM" />
+	    <!-- 营运状况 -->
+	    <result property="operationStatus" column="OPERATION_STATUS" />
+	    <!-- 车辆座数 -->
+	    <result property="carSeat" column="CAR_SEAT" />
+	    <!-- 本地车牌 -->
+	    <result property="localPlate" column="LOCAL_PLATE" />
+	    
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="createdTime" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modifier" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedTime" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifierId" column="MODIFIER_ID" />
+	    <!-- 版本号 -->
+	    <result property="version" column="VERSION" />
+	    <!-- 是否删除 -->
+	    <result property="isDelete" column="IS_DELETE" />
+	    
+	    <!-- 流程状态 -->
+		<result property="flowState" column="FLOW_STATE" />
+		<!-- 快照版本 -->
+		<result property="snapVersion" column="SNAP_VERSION" />
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        <if test="appNo != null and appNo != ''">
+        	and APP_NO = #{appNo}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	</sql>	
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSTmAppCarInfoMap">
+		     select 
+		     `ID`,
+             `LOAN_BASE_ID`,
+             `APP_NO`,
+             `LOAN_NO`,
+             `PERSON_ID`,
+             `ORG`,
+             `CHECK_ID`,
+             `CAR_TYPE`,
+             `CAR_LOAN`,
+             `MONTH_PAYMENT_AMT`,
+             `CAR_BUY_DATE`,
+             `NAKED_CAR_PRICE`,
+             `CAR_BUY_PRICE`,
+             `TRANSFER_DATE`,
+             `CAR_LOAN_TERM`,
+             `OPERATION_STATUS`,
+             `CAR_SEAT`,
+             `LOCAL_PLATE`,
+             `PLATE_NUM`,
+             `CREATOR`,
+             `CREATED_TIME`,
+             `CREATOR_ID`,
+             `MODIFIER`,
+             `MODIFIED_TIME`,
+             `MODIFIER_ID`,
+             `VERSION`,
+             `IS_DELETE`
+		      from BMS_TM_APP_CAR_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by CREATED_TIME desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_TM_APP_CAR_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+     
+</mapper> 

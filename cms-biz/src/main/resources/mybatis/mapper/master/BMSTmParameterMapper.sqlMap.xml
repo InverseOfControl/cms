@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSTmParameterDaoImpl">
+
+	<resultMap id="BMSTmParameterMap" type="com.ymkj.cms.biz.entity.master.BMSTmParameter">
+		<id property="id" column="id" />
+		<result property="code" column="CODE" />
+		<result property="name" column="NAME" />
+		<result property="parameterValue" column="parameter_value" />
+		<result property="inputType" column="input_type" />
+		<result property="remark" column="remark" />
+		<result property="creator" column="creator" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="creatorId" column="creator_id" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="version" column="version" />
+		<result property="isDelete" column="IS_DELETE" />
+		
+	</resultMap>
+
+	<sql id="table">bms_parameter</sql>
+
+	<sql id="condition_sql">
+		where IS_DELETE = 0
+		<if test="id != null and id != 0">
+			and id = #{id}
+		</if>
+		<if test="code != null and code != ''">
+			and CODE = #{code}
+		</if>
+		<if test="name != null and name != ''">
+			and NAME = #{name}
+		</if>
+		<if test="parameterValue != null and parameterValue != ''">
+			and parameter_value = #{parameterValue}
+		</if>
+		<if test="inputType != null and inputType != 0">
+			and input_type = #{inputType}
+		</if>
+		<if test="remark != null and remark != ''">
+			and remark = #{remark}
+		</if>
+	</sql>
+
+	<sql id="set_sql">
+		<trim prefix="set" suffixOverrides=",">
+			<if test="code != null and code != ''">
+				CODE = #{code},
+			</if>
+			<if test="name != null and name != ''">
+				NAME = #{name},
+			</if>
+			<if test="parameterValue != null and parameterValue != ''">
+				parameter_value = #{parameterValue},
+			</if>
+			<if test="inputType != null">
+				input_type = #{inputType},
+			</if>
+			<if test="remark != null and remark != ''">
+				remark = #{remark},
+			</if>
+			<if test="isDelete != null">
+				IS_DELETE = #{isDelete},
+			</if>
+			<if test="version != null">
+				VERSION = #{version},
+			</if>
+			<if test="creator != null and creator != ''">
+				CREATOR=#{creator},
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID=#{creatorId},
+			</if>
+			<if test="createdTime != null">
+				CREATED_TIME=#{createdTime},
+			</if>
+			<if test="modifier != null and modifier != ''">
+				MODIFIER=#{modifier},
+			</if>
+			<if test="modifierId != null">
+				MODIFIER_ID=#{modifierId},
+			</if>
+			<if test="modifiedTime != null">
+				MODIFIED_TIME=#{modifiedTime},
+			</if>
+		</trim>
+	</sql>
+
+	<!-- query -->
+	<select id="getById" parameterType="long" resultMap="BMSTmParameterMap">
+		select * from
+		<include refid="table" />
+		where id = #{id}
+	</select>
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSTmParameterMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by id desc]]>
+	</select>
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSTmParameter"
+		keyProperty="id" useGeneratedKeys="true">
+
+		insert into bms_parameter
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != 0">
+				id,
+			</if>
+			<if test="code != null and code != ''">
+				CODE,
+			</if>
+			<if test="name != null and name != ''">
+				NAME,
+			</if>
+			<if test="parameterValue != null and parameterValue != ''">
+				parameter_value,
+			</if>
+			<if test="inputType != null">
+				input_type,
+			</if>
+			<if test="remark != null and remark != ''">
+				remark,
+			</if>
+			<if test="isDelete != null">
+				IS_DELETE,
+			</if>
+			<if test="version != null">
+				VERSION,
+			</if>
+			<if test="creator != null and creator != ''">
+				CREATOR,
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID,
+			</if>
+			<if test="createdTime != null">
+				CREATED_TIME,
+			</if>
+			<if test="modifier != null and modifier != ''">
+				MODIFIER,
+			</if>
+			<if test="modifierId != null">
+				MODIFIER_ID,
+			</if>
+			<if test="modifiedTime != null">
+				MODIFIED_TIME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != 0">
+				#{id},
+			</if>
+			<if test="code != null and code != ''">
+				#{code},
+			</if>
+			<if test="name != null and name != ''">
+				#{name},
+			</if>
+			<if test="parameterValue != null and parameterValue != ''">
+				#{parameterValue},
+			</if>
+			<if test="inputType != null">
+				#{inputType},
+			</if>
+			<if test="remark != null and remark != ''">
+				#{remark},
+			</if>
+			<if test="isDelete != null">
+				#{isDelete},
+			</if>
+			<if test="version != null">
+				#{version},
+			</if>
+			<if test="creator != null and creator != ''">
+				#{creator},
+			</if>
+			<if test="creatorId != null">
+				#{creatorId},
+			</if>
+			<if test="createdTime != null">
+				#{createdTime},
+			</if>
+			<if test="modifier != null and modifier != ''">
+				#{modified},
+			</if>
+			<if test="modifierId != null">
+				#{modifierId},
+			</if>
+			<if test="modifiedTime != null">
+				#{modifiedTime},
+			</if>
+		</trim>
+	</insert>
+	<!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSTmParameter">
+		update
+		<include refid="table" />
+		<!-- VERSION = #{version}+1 , -->
+		<include refid="set_sql" />
+		<where>
+			id = #{id}
+		</where>
+	</update>
+   <select id="findByCode" parameterType="java.util.Map" resultMap="BMSTmParameterMap">
+   
+       SELECT * FROM bms_parameter WHERE CODE IN(#{code},'internal_radio')
+   </select>
+   
+   
+   <select id="queryByCode" parameterType="java.util.Map" resultMap="BMSTmParameterMap">
+       SELECT * FROM bms_parameter WHERE CODE = #{code}
+   </select>
+   <select id="listBy" parameterType="java.util.Map" resultMap="BMSTmParameterMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by id desc]]>
+	</select>
+</mapper> 

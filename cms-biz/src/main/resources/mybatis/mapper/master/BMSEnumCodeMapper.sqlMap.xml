@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSEnumCodeDaoImpl">
+
+	<sql id="table">bms_enum_code</sql>
+
+	<sql id="condition_sql">
+		where IS_DELETED = 0
+		<if test="codeId != null and codeId != 0">
+			and CODE_ID = #{codeId}
+		</if>
+		<if test="code != null and code != ''">
+			and CODE = #{code}
+		</if>
+		<if test="name != null and name != ''">
+			and NAME = #{name}
+		</if>
+		<if test="nameCN != null and nameCN != ''">
+			and NAME_CN = #{nameCN}
+		</if>
+		<if test="codeType != null and codeType != ''">
+			and CODE_TYPE = #{codeType}
+		</if>
+		<if test="codeIndex != null and codeIndex != ''">
+			and CODE_INDEX = #{codeIndex}
+		</if>
+		<!-- <if test="org != null and org != ''">
+			and ORG = #{org}
+		</if> -->
+	</sql>
+
+	<sql id="set_sql">
+		<trim prefix="set" suffixOverrides=",">
+			<if test="code != null and code != ''">
+				CODE = #{code},
+			</if>
+			<if test="name != null and name != ''">
+				NAME = #{name},
+			</if>
+			<if test="nameCN != null and nameCN != ''">
+				NAME_CN = #{nameCN},
+			</if>
+			<if test="codeType != null">
+				CODE_TYPE = #{codeType},
+			</if>
+			<if test="codeIndex != null and codeIndex != ''">
+				CODE_INDEX = #{codeIndex},
+			</if>
+			<!-- <if test="org != null and org != ''">
+				ORG = #{org},
+			</if> -->
+			<if test="isDeleted != null">
+				IS_DELETED = #{isDeleted},
+			</if>
+			<if test="version != null">
+				VERSION = #{version},
+			</if>
+			<if test="creator != null and creator != ''">
+				CREATOR=#{creator},
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID=#{creatorId},
+			</if>
+			<if test="creatorDate != null">
+				CREATOR_DATE=#{creatorDate},
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED=#{modified},
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID=#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE=#{modifiedDate},
+			</if>
+		</trim>
+	</sql>
+
+	<resultMap id="BMSEnumCodeMap" type="com.ymkj.cms.biz.entity.master.BMSEnumCode">
+		<id property="codeId" column="CODE_ID" />
+		<result property="code" column="CODE" />
+		<result property="name" column="NAME" />
+		<result property="nameCN" column="NAME_CN" />
+		<result property="codeType" column="CODE_TYPE" />
+		<result property="codeIndex" column="CODE_INDEX" />
+		<!-- <result property="org" column="ORG" /> -->
+		<result property="version" column="VERSION" />
+		<result property="isDeleted" column="IS_DELETED" />
+	</resultMap>
+
+	<!-- query -->
+	<select id="getById" parameterType="long" resultMap="BMSEnumCodeMap">
+		select * from
+		<include refid="table" />
+		where CODE_ID = #{codeId}
+	</select>
+	
+	<select id="getProducAssetsInfo" parameterType="java.util.Map" resultMap="BMSEnumCodeMap">
+		SELECT * FROM BMS_ENUM_CODE ec
+		LEFT JOIN BMS_PRODUCT_CODE_MODULE pcm ON (ec.CODE_ID = pcm.CODE_ID)
+		LEFT JOIN BMS_PRODUCT p ON (p.PRODUCT_ID = pcm.PRODUCT_ID)
+		WHERE pcm.IS_DELETED = 0
+		AND P.IS_DELETED = 0
+		<if test="productId != null">
+			AND p.PRODUCT_ID = #{productId}
+		</if>
+		<if test="productCode != null">
+			AND p.CODE = #{productCode}
+		</if>
+	</select>
+	
+	<select id="getProducAssetsInfoCode" parameterType="java.util.Map" resultMap="BMSEnumCodeMap">
+		SELECT * FROM BMS_ENUM_CODE ec
+		LEFT JOIN BMS_PRODUCT_CODE_MODULE pcm ON (ec.CODE_ID = pcm.CODE_ID)
+		LEFT JOIN BMS_PRODUCT p ON (p.PRODUCT_ID = pcm.PRODUCT_ID)
+		WHERE pcm.IS_DELETED = 0
+		AND P.IS_DELETED = 0
+		AND p.CODE = #{productCode}
+	</select>
+	
+	<!-- 按传入vo的信息查询 -->
+	<select id="getByVO" parameterType="java.util.Map" resultMap="BMSEnumCodeMap">
+		select * from
+		<include refid="table" />
+		where NAME_CN  = #{nameCN}
+	</select>
+
+	<select id="listBy" parameterType="java.util.Map" resultMap="BMSEnumCodeMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by CODE_INDEX ASC]]>
+	</select>
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSEnumCodeMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by CODE_ID desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+	<!-- 根据条件（产品ID）获取对象 -->
+	<select id="findEnumCodeByCondition" parameterType="java.util.Map"
+		resultMap="BMSEnumCodeMap">
+		SELECT * FROM BMS_ENUM_CODE EC
+		LEFT JOIN
+		BMS_PRODUCT_CODE_MODULE CM ON EC.CODE_ID = CM.CODE_ID
+		LEFT JOIN
+		BMS_PRODUCT BP ON BP.PRODUCT_ID = CM.PRODUCT_ID
+		WHERE
+		BP.PRODUCT_ID=#{productId} and ec.is_deleted=0
+	</select>
+	
+
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSEnumCode"
+		keyProperty="codeId" useGeneratedKeys="true">
+
+		insert into bms_enum_code
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="codeId != null and codeId != 0">
+				CODE_ID,
+			</if>
+			<if test="code != null and code != ''">
+				CODE,
+			</if>
+			<if test="name != null and name != ''">
+				NAME,
+			</if>
+			<if test="nameCN != null and nameCN != ''">
+				NAME_CN,
+			</if>
+			<if test="codeType != null">
+				CODE_TYPE,
+			</if>
+			<if test="codeIndex != null and codeIndex != ''">
+				CODE_INDEX,
+			</if>
+			<!-- <if test="org != null and org != ''">
+				ORG,
+			</if> -->
+			<if test="isDeleted != null">
+				IS_DELETED,
+			</if>
+			<if test="version != null">
+				VERSION,
+			</if>
+			<if test="creator != null and creator != ''">
+				CREATOR,
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID,
+			</if>
+			<if test="creatorDate != null">
+				CREATOR_DATE,
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED,
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID,
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="codeId != null and codeId != 0">
+				#{codeId},
+			</if>
+			<if test="code != null and code != ''">
+				#{code},
+			</if>
+			<if test="name != null and name != ''">
+				#{name},
+			</if>
+			<if test="nameCN != null and nameCN != ''">
+				#{nameCN},
+			</if>
+			<if test="codeType != null">
+				#{codeType},
+			</if>
+			<if test="codeIndex != null and codeIndex != ''">
+				#{codeIndex},
+			</if>
+			<!-- <if test="org != null and org != ''">
+				#{org},
+			</if> -->
+			<if test="isDeleted != null">
+				#{isDeleted},
+			</if>
+			<if test="version != null">
+				#{version},
+			</if>
+			<if test="creator != null and creator != ''">
+				#{creator},
+			</if>
+			<if test="creatorId != null">
+				#{creatorId},
+			</if>
+			<if test="creatorDate != null">
+				#{creatorDate},
+			</if>
+			<if test="modified != null and modified != ''">
+				#{modified},
+			</if>
+			<if test="modifiedId != null">
+				#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				#{modifiedDate},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- del -->
+	<delete id="deleteById" parameterType="long">
+		delete from
+		<include refid="table" />
+		where CODE_ID = #{codeId}
+	</delete>
+
+	<delete id="deletelAll">
+		delete from
+		<include refid="table" />
+	</delete>
+
+	<!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSEnumCode">
+		update
+		<include refid="table" />
+		<!-- VERSION = #{version}+1 , -->
+		<include refid="set_sql" />
+		<where>
+			CODE_ID = #{codeId}
+		</where>
+	</update>
+	
+	<select id="findCodeByUnit" parameterType="java.util.Map"
+		resultMap="BMSEnumCodeMap">
+		SELECT * FROM bms_enum_code where 1=1
+		<if test="code != null and code =='00002'">
+				AND code_type='CorpStructure'
+		</if>
+		<if test="code != null and code =='00001'">
+				AND code_type='CorpStructure'
+				AND CODE not in('00001','00002')
+		</if>
+		<if test="code != null and code =='00003'">
+				AND code_type='CorpStructure'
+				AND CODE not in('00001','00002')
+		</if>
+		AND IS_DELETED=0
+	</select>
+	
+	
+	<select id="findCodeByProfession" parameterType="java.util.Map"
+		resultMap="BMSEnumCodeMap">
+		SELECT * FROM bms_enum_code where 1=1
+		
+		<if test="parentCode != null and parentCode ==1">
+		<if test="code != null and code =='00001'">
+				AND code_type='professionType'
+				AND CODE in('00001','00002','00005')
+		</if>
+		<if test="code != null and code =='00002'">
+				AND code_type='professionType'
+				AND CODE in('00001','00002','00005')
+		</if>
+		<if test="code != null and code =='00003'">
+				AND code_type='professionType'
+				AND CODE in('00001','00002','00005')
+		</if>
+		<if test="code != null and code =='00004'">
+				AND code_type='professionType'
+				AND CODE in('00001','00002','00005')
+		</if>
+		<if test="code != null and code =='00005'">
+				AND code_type='professionType'
+				AND CODE in('00001','00002','00005')
+		</if>
+		<if test="code != null and code =='00006'">
+				AND code_type='professionType'
+				AND CODE in('00001','00002','00005')
+		</if>
+		<if test="code != null and code =='00007'">
+				AND code_type='professionType'
+				AND CODE in('00001','00002','00005')
+		</if>
+		<if test="code != null and code =='00008'">
+				AND code_type='professionType'
+				AND CODE in('00001','00002','00005')
+		</if>
+		<if test="code != null and code =='00009'">
+				AND code_type='professionType'
+				AND CODE = '00001'
+		</if>
+		</if>
+		<if test="parentCode != null and parentCode ==2">
+		<if test="code != null and code =='00003'">
+				AND code_type='professionType'
+				AND CODE in('A','B')
+		</if>
+		<if test="code != null and code =='00004'">
+				AND code_type='professionType'
+				AND CODE in('A','B')
+		</if>
+		<if test="code != null and code =='00005'">
+				AND code_type='professionType'
+				AND CODE in('A','B')
+		</if>
+		<if test="code != null and code =='00006'">
+				AND code_type='professionType'
+				AND CODE in('A','B')
+		</if>
+		<if test="code != null and code =='00007'">
+				AND code_type='professionType'
+				AND CODE in('A','B')
+		</if>
+		<if test="code != null and code =='00008'">
+				AND code_type='professionType'
+				AND CODE in('A','B')
+		</if>
+		<if test="code != null and code =='00009'">
+				AND code_type='professionType'
+				AND CODE in('A','B')
+		</if>
+		</if>
+		
+		
+		AND IS_DELETED=0
+	</select>
+	
+	
+	
+	<select id="findByservenProfession" parameterType="java.util.Map"
+		resultMap="BMSEnumCodeMap">
+		SELECT * FROM bms_enum_code where code_type='professionType'
+		AND IS_DELETED=0
+	</select>
+</mapper> 

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPMerchantLoanInfoDaoImpl">
+   <resultMap id="appMerchantLoanInfoMap" type="com.ymkj.cms.biz.entity.apply.APPMerchantLoanInfoEntity">
+		<id property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="org" column="ORG" />
+		<result property="personId" column="PERSON_ID" />
+		<result property="merchantLoanId" column="MERCHANT_LOAN_ID" />
+		<result property="loanNo" column="LOAN_NO"/>
+		<result property="setupShopDate" column="SETUP_SHOP_DATE" />
+		<result property="sellerCreditLevel" column="SELLER_CREDIT_LEVEL" />
+		<result property="sellerCreditType" column="SELLER_CREDIT_TYPE" />
+		<result property="regardedNum" column="REGARDED_NUM" />
+		<result property="billAmt1" column="BILL_AMT1" />
+		<result property="billAmt2" column="BILL_AMT2" />
+		<result property="billAmt3" column="BILL_AMT3" />
+		<result property="billAmt4" column="BILL_AMT4" />
+		<result property="billAmt5" column="BILL_AMT5" />
+		<result property="billAmt6" column="BILL_AMT6" />
+		<result property="payMonthAmt" column="PAY_MONTH_AMT" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		<result property="snapVersion" column="SNAP_VERSION" />
+	</resultMap> 
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+         <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.APPMerchantLoanInfoEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_TM_APP_MERCHANT_LOAN_INFO (LOAN_BASE_ID,APP_NO,LOAN_NO,ORG,PERSON_ID,MERCHANT_LOAN_ID,SETUP_SHOP_DATE,SELLER_CREDIT_LEVEL,SELLER_CREDIT_TYPE
+         				, REGARDED_NUM,BILL_AMT1, BILL_AMT2,BILL_AMT3,BILL_AMT4,BILL_AMT5,BILL_AMT6
+         				,PAY_MONTH_AMT 
+         				,CREATOR_ID,CREATOR,CREATED_TIME,SNAP_VERSION)
+         	 VALUES(#{loanBaseId},  #{appNo},#{loanNo},#{org},  #{personId},  #{merchantLoanId}, #{setupShopDate},
+         	 #{sellerCreditLevel}, #{sellerCreditType},  #{regardedNum}, #{billAmt1},  #{billAmt2},
+         	 	 #{billAmt3}, #{billAmt4},  #{billAmt5}, #{billAmt6},  
+         	 	 	 #{payMonthAmt}, 
+         	  #{creatorId}, #{creator}, #{createdTime},#{snapVersion})
+    </insert >
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="appMerchantLoanInfoMap">
+		select * from BMS_TM_APP_MERCHANT_LOAN_INFO
+		where id = #{id}
+	</select>
+        
+       <select id="listBy" parameterType="java.util.Map" resultMap="appMerchantLoanInfoMap">
+		select * from  BMS_TM_APP_MERCHANT_LOAN_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+		 
+		<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.APPMerchantLoanInfoEntity">
+		update 	BMS_TM_APP_MERCHANT_LOAN_INFO
+ 			set 	 
+	 
+ 	    <if test="setupShopDate != null">
+        	SETUP_SHOP_DATE = #{setupShopDate},
+        </if>
+        <if test="sellerCreditLevel != null and sellerCreditLevel != ''">
+        	SELLER_CREDIT_LEVEL = #{sellerCreditLevel},
+        </if>
+         <if test="sellerCreditType != null and sellerCreditType != ''">
+        	SELLER_CREDIT_TYPE = #{sellerCreditType},
+        </if>
+         <if test="(regardedNum != null and regardedNum != '') or regardedNum == 0">
+        	REGARDED_NUM = #{regardedNum},
+        </if>
+         <if test="(billAmt1 != null and billAmt1 != '') or billAmt1 == 0">
+        	BILL_AMT1 = #{billAmt1},
+        </if>
+         <if test="(billAmt2 != null and billAmt2 != '') or billAmt2 == 0">
+        	BILL_AMT2 = #{billAmt2},
+        </if>
+        <if test="(billAmt3 != null and billAmt3 != '') or billAmt3 == 0">
+        	BILL_AMT3 = #{billAmt3},
+        </if>
+         <if test="(billAmt4 != null and billAmt4 != '') or billAmt4 == 0">
+        	BILL_AMT4 = #{billAmt4},
+        </if>
+         <if test="(billAmt5 != null and billAmt5 != '') or billAmt5 == 0">
+        	BILL_AMT5 = #{billAmt5},
+        </if>
+        <if test="(billAmt6 != null and billAmt6 != '') or billAmt6 == 0">
+        	BILL_AMT6 = #{billAmt6},
+        </if>
+         <if test="(payMonthAmt != null and payMonthAmt != '')  or payMonthAmt == 0">
+        	PAY_MONTH_AMT = #{payMonthAmt},
+        </if>
+        
+       
+        
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	
+	
+	<update id="updateAll" parameterType="com.ymkj.cms.biz.entity.apply.APPMerchantLoanInfoEntity">
+		update 	BMS_TM_APP_MERCHANT_LOAN_INFO
+ 			set 	 
+        	SETUP_SHOP_DATE = #{setupShopDate},
+        	SELLER_CREDIT_LEVEL = #{sellerCreditLevel},
+        	SELLER_CREDIT_TYPE = #{sellerCreditType},
+        	REGARDED_NUM = #{regardedNum},
+        	BILL_AMT1 = #{billAmt1},
+        	BILL_AMT2 = #{billAmt2},
+        	BILL_AMT3 = #{billAmt3},
+        	BILL_AMT4 = #{billAmt4},
+        	BILL_AMT5 = #{billAmt5},
+        	BILL_AMT6 = #{billAmt6},
+        	PAY_MONTH_AMT = #{payMonthAmt},
+ 		    MODIFIER_ID = #{modifierId},
+ 		    MODIFIER = #{modifier},
+ 		    MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+</mapper> 

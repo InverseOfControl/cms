@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSTmAppMasterLoanInfoDaoImpl">
+<!-- 淘宝达人贷信息表 -->
+   <resultMap id="BMSTmAppMasterLoanInfoMap" type="com.ymkj.cms.biz.entity.master.BMSTmAppMasterLoanInfo">
+       <!--ID  -->
+		<id property="id" column="ID" />
+		<!-- LOAN_BASE_ID -->
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<!-- 客户主表ID  -->
+		<result property="perosnId" column="PERSON_ID" />
+		<!-- 借款编号 -->
+		<result property="loanNo" column="LOAN_NO" />
+		<!-- 申请件编号 -->
+		<result property="appNo" column="APP_NO" />
+		<!-- 机构号 -->
+		<result property="org" column="ORG" />
+		<!-- 淘宝达人贷信息流水号 -->
+		<result property="masterLoadId" column="MASTER_LOAD_ID" />
+		<!-- 账户注册时间 -->
+		<result property="acctRegisterDate" column="ACCT_REGISTER_DATE" />
+		<!-- 卖家信用等级 -->
+		<result property="buyerCreditLevel" column="BUYER_CREDIT_LEVEL" />
+		<!-- 卖家信用类型-->
+		<result property="buyerCreditType" column="BUYER_CREDIT_TYPE" />
+		<!-- 上一年度支出额-->
+		<result property="lastYearPayAmt" column="LAST_YEAR_PAY_AMT" />
+		<!-- 近1个月支出额 -->
+		<result property="payAmt1" column="PAY_AMT1" />
+		<!-- 近 2个月支出额-->
+		<result property="payAmt2" column="PAY_AMT2" />
+		<!-- 近3个月支出额 -->
+		<result property="payAmt3" column="PAY_AMT3" />
+		<!-- 近1个月购物额-->
+		<result property="shoppingAmt1" column="SHOPPING_AMT1" />
+		<!-- 近2个月购物额 -->
+		<result property="shoppingAmt2" column="SHOPPING_AMT2" />
+		<!-- 近3个月购物额 -->
+		<result property="shoppingAmt3" column="SHOPPING_AMT3" />
+		<!-- 月均支出额 -->
+		<result property="payMonthAmt" column="PAY_MONTH_AMT" />
+		<!-- 月均购物额 -->
+		<result property="shoppingMonthAmt" column="SHOPPING_MONTH_AMT" />
+		<!-- 好评率 -->
+		<result property="goodRate" column="GOOD_RATE" />
+		<!-- 上一年度购物额[淘宝] -->
+		<result property="lastYearShoppingAmt" column="LAST_YEAR_SHOPPING_AMT" />
+		<!--收货地址  -->
+		<result property="deliveryAddress" column="DELIVERY_ADDRESS" />
+		<!-- 京东用户等级 -->
+		<result property="jiDongUserLevel" column="JI_DONG_USER_LEVEL" />
+		<!-- 近一年消费总量[京东] -->
+		<result property="pastYearShoppingAmount" column="PAST_YEAR_SHOPPING_AMOUNT" />
+		<!-- 小白信用分 -->
+		<result property="whiteCreditValue" column="WHITE_CREDIT_VALUE" />
+		<!-- 芝麻信用分 -->
+		<result property="sesameCreditValut" column="SESAME_CREDIT_VALUE" />
+	
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="createdTime" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modifier" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedTime" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifierId" column="MODIFIER_ID" />
+	    <!-- 版本号 -->
+	    <result property="version" column="VERSION" />
+	    <!-- 是否删除 -->
+	    <result property="isDelete" column="IS_DELETE" />
+	    
+	    <!-- 流程状态 -->
+		<result property="flowState" column="FLOW_STATE" />
+		<!-- 快照版本 -->
+		<result property="snapVersion" column="SNAP_VERSION" />
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        <if test="appNo != null and appNo != ''">
+        	and APP_NO = #{appNo}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	 </sql>	
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSTmAppMasterLoanInfoMap">
+		     select 
+		     `ID`,
+             `LOAN_BASE_ID`,
+             `APP_NO`,
+             `LOAN_NO`,
+             `PERSON_ID`,
+             `ORG`,
+             `MASTER_LOAD_ID`,
+             `ACCT_REGISTER_DATE`,
+             `BUYER_CREDIT_LEVEL`,
+             `BUYER_CREDIT_TYPE`,
+             `LAST_YEAR_PAY_AMT`,
+             `PAY_AMT1`,
+             `PAY_AMT2`,
+             `PAY_AMT3`,
+             `SHOPPING_AMT1`,
+             `SHOPPING_AMT2`,
+             `SHOPPING_AMT3`,
+             `PAY_MONTH_AMT`,
+             `SHOPPING_MONTH_AMT`,
+             `GOOD_RATE`,
+             `LAST_YEAR_SHOPPING_AMT`,
+             `DELIVERY_ADDRESS`,
+             `JI_DONG_USER_LEVEL`,
+             `PAST_YEAR_SHOPPING_AMOUNT`,
+             `WHITE_CREDIT_VALUE`,
+             `SESAME_CREDIT_VALUE`,
+             `CREATOR`,
+             `CREATED_TIME`,
+             `CREATOR_ID`,
+             `MODIFIER`,
+             `MODIFIED_TIME`,
+             `MODIFIER_ID`,
+             `VERSION`,
+             `IS_DELETE`
+		      from BMS_TM_APP_MASTER_LOAN_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by CREATED_TIME desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_TM_APP_MASTER_LOAN_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+     
+</mapper> 

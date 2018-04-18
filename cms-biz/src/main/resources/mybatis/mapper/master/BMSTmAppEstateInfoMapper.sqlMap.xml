@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSTmAppEstateInfoDaoImpl">
+<!-- 房产信息表 -->
+   <resultMap id="BMSTmAppEstateInfoMap" type="com.ymkj.cms.biz.entity.master.BMSTmAppEstateInfo">
+       <!--ID  -->
+		<id property="id" column="ID" />
+		<!-- 客户主表ID  -->
+		<result property="perosnId" column="PERSON_ID" />
+		<!-- 借款编号 -->
+		<result property="loanNo" column="LOAN_NO" />
+		<!-- 申请件编号 -->
+		<result property="appNo" column="APP_NO" />
+		<!-- 房产信息流水号 -->
+		<result property="estateId" column="ESTATE_ID" />
+		<!-- 机构号 -->
+		<result property="org" column="ORG" />
+		<!-- 房产类型 -->
+		<result property="estateType" column="ESTATE_TYPE" />
+		<!-- 房贷情况 -->
+		<result property="estateLoan" column="ESTATE_LOAN" />
+		<!-- 购买时间 -->
+		<result property="estateBuyDate" column="ESTATE_BUY_DATE" />
+		<!-- 购买总价值/万元 -->
+		<result property="estateAmt" column="ESTATE_AMT" />
+		<!-- 市值参考价/万元 -->
+		<result property="referenceAmt" column="REFERENCE_AMT" />
+		<!-- 房贷金额/万元 -->
+		<result property="estateLoanAmt" column="ESTATE_LOAN_AMT" />
+		<!-- 月供 -->
+		<result property="monthPaymentAmt" column="MONTH_PAYMENT_AMT" />
+		<!-- 已还期数 -->
+		<result property="hasRepaymentNum" column="HAS_REPAYMENT_NUM" />
+		<!-- 建筑面积 -->
+		<result property="builtupArea" column="BUILTUP_AREA" />
+		<!-- 房产所有权 -->
+		<result property="houseOwnership" column="HOUSE_OWNERSHIP" />
+		<!-- 产权比例 -->
+		<result property="equityRate" column="EQUITY_RATE" />
+		<!-- 共有人姓名 -->
+		<result property="otherName" column="OTHER_NAME" />
+		<!-- 共有人身份证号 -->
+		<result property="otherIdNo" column="OTHER_ID_NO" />
+		<!-- 房产所在省 -->
+		<result property="estateState" column="ESTATE_STATE" />
+		<!-- 房产所在市 -->
+		<result property="estateCity" column="ESTATE_CITY" />
+		<!-- 房产所在区/县 -->
+		<result property="estateZone" column="ESTATE_ZONE" />
+		<!-- 房产地址 -->
+		<result property="estateAddress" column="ESTATE_ADDRESS" />
+		<!--  单据户名为本人-->
+		<result property="ifMe" column="IF_ME" />
+		<!-- 鹏元验证共有人 -->
+		<result property="pengyuanCheck" column="PENGYUAN_CHECK" />
+		<!-- 人行是否获取到住址或房产地址 -->
+		<result property="personBankCheck" column="PERSON_BANK_CHECK" />
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="createdTime" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modifier" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedTime" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifierId" column="MODIFIER_ID" />
+	    <!-- 版本号 -->
+	    <result property="version" column="VERSION" />
+	    <!-- 是否删除 -->
+	    <result property="isDelete" column="IS_DELETE" />
+	    <!-- 流程状态 -->
+		<!-- <result property="flowState" column="FLOW_STATE" /> -->
+		<!-- 快照版本 -->
+		<!-- <result property="snapVersion" column="SNAP_VERSION" /> -->
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        <if test="appNo != null and appNo != ''">
+        	and APP_NO = #{appNo}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	</sql>	
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSTmAppEstateInfoMap">
+		     select 
+		     `ID`,
+             `PERSON_ID`,
+             `LOAN_BASE_ID`,
+             `APP_NO`,
+             `LOAN_NO`,
+             `ESTATE_ID`,
+             `ORG`,
+             `ESTATE_TYPE`,
+             `ESTATE_LOAN`,
+             `ESTATE_BUY_DATE`,
+             `ESTATE_AMT`,
+             `REFERENCE_AMT`,
+             `ESTATE_LOAN_AMT`,
+             `MONTH_PAYMENT_AMT`,
+             `HAS_REPAYMENT_NUM`,
+             `BUILTUP_AREA`,
+             `HOUSE_OWNERSHIP`,
+             `EQUITY_RATE`,
+             `OTHER_NAME`,
+             `OTHER_ID_NO`,
+             `ESTATE_STATE`,
+             `ESTATE_CITY`,
+             `ESTATE_ZONE`,
+             `ESTATE_STATE_ID`,
+             `ESTATE_CITY_ID`,
+             `ESTATE_ZONE_ID`,
+             `ESTATE_ADDRESS`,
+             `IF_ME`,
+             `PENGYUAN_CHECK`,
+             `PERSON_BANK_CHECK`,
+             `CREATOR`,
+             `CREATED_TIME`,
+             `CREATOR_ID`,
+             `MODIFIER`,
+             `MODIFIED_TIME`,
+             `MODIFIER_ID`,
+             `VERSION`,
+             `IS_DELETE`
+		      from BMS_TM_APP_ESTATE_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by CREATED_TIME desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_TM_APP_ESTATE_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+     
+</mapper> 

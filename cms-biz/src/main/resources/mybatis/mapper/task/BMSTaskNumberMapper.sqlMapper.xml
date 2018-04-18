@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.task.impl.BMSTaskNumberDaoImpl">
+	
+	<select id="queryNormalQueCount" parameterType="java.util.Map"
+	resultType="java.lang.Integer">
+		select count(1) from 
+		(select a.ID from bms_loan_audit a 
+			INNER JOIN bms_loan_base b on a.LOAN_BASE_ID = b.ID 
+			<where>
+				<if test="personRole == '1'.toString()">
+					a.CHECK_PERSON_CODE = #{personCode} 
+				    and b.RTF_STATE ='XSCS'
+				    and b.RTF_NODE_STATE = 'XSCS-ASSIGN'
+				    and b.IF_NEW_LOAN_NO = #{ifNewLoanNo}
+				</if>
+				<if test="personRole == '2'.toString()">
+				   ((
+	               a.FINAL_PERSON_CODE=#{personCode}
+	               AND a.APPROVAL_PERSON_CODE IS NULL
+	                )
+	              OR a.APPROVAL_PERSON_CODE=#{personCode}
+	               )
+					and b.RTF_STATE ='XSZS'
+				    and b.RTF_NODE_STATE = 'XSZS-ASSIGN'
+				    and b.ZS_IF_NEW_LOAN_NO = #{ifNewLoanNo}
+				</if>
+				
+			</where>
+		) m
+	</select>
+	
+	<select id="queryPriorityQueCount" parameterType="java.util.Map"
+	resultType="java.lang.Integer">
+		select count(1) from 
+		(select a.ID from bms_loan_audit a 
+			INNER JOIN bms_loan_base b on a.LOAN_BASE_ID = b.ID 
+			<where>
+				<if test="personRole == '1'.toString()">
+					a.CHECK_PERSON_CODE = #{personCode} 
+					and b.IF_NEW_LOAN_NO = #{ifNewLoanNo} 
+				</if>
+				<if test="personRole == '2'.toString()">
+	                b.ZS_IF_NEW_LOAN_NO = #{ifNewLoanNo}
+	             AND ((
+	               a.FINAL_PERSON_CODE=#{personCode}
+	               AND a.APPROVAL_PERSON_CODE IS NULL
+	                )
+	              OR a.APPROVAL_PERSON_CODE=#{personCode}
+	               )
+                  </if>
+			 	and b.RTF_STATE = #{rtfStatus} 
+				and b.RTF_NODE_STATE = #{rtfNodeState}
+			</where>
+		) m
+	</select>
+	
+	
+	<select id="queryPendingQueCount" parameterType="java.util.Map"
+	resultType="java.lang.Integer">
+		select count(1) from 
+		(select a.ID from bms_loan_audit a 
+			INNER JOIN bms_loan_base b on a.LOAN_BASE_ID = b.ID 
+			<where>
+				<if test="personRole == '1'.toString()">
+					a.CHECK_PERSON_CODE = #{personCode} 
+					<!-- and b.IF_NEW_LOAN_NO = #{ifNewLoanNo}  -->
+				</if>
+				<if test="personRole == '2'.toString()">
+					<!--  b.ZS_IF_NEW_LOAN_NO = #{ifNewLoanNo}  -->
+					  ((
+	               a.FINAL_PERSON_CODE=#{personCode}
+	               AND a.APPROVAL_PERSON_CODE IS NULL
+	                )
+	              OR a.APPROVAL_PERSON_CODE=#{personCode}
+	               )
+				</if>
+				and b.RTF_STATE = #{rtfStatus} 
+				and b.RTF_NODE_STATE = #{rtfNodeState}
+			</where> 
+		) m
+	</select>
+	
+</mapper>

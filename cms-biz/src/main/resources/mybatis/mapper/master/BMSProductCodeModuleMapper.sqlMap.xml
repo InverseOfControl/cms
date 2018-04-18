@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSProductCodeModuleDaoImpl">
+
+	<sql id="table">bms_product_code_module</sql>
+
+	<sql id="condition_sql">
+	where IS_DELETED = 0 
+		<if test="id != null and id != 0">
+        	and ID = #{id}
+		</if>
+		<if test="productId != null and productId != 0">
+        	and PRODUCT_ID = #{productId}
+        </if>
+        <if test="codeId != null and codeId != 0">
+        	and CODE_ID = #{codeId}
+        </if>
+        <if test="isDeleted != null">
+        	and IS_DELETED = #{isDeleted}
+        </if>
+        <if test="creator != null and creator != ''">
+        	CREATOR=#{creator},
+        </if>
+         <if test="creatorId != null">
+        	CREATOR_ID=#{creatorId},
+        </if>
+         <if test="creatorDate != null">
+        	CREATOR_DATE=#{creatorDate},
+        </if>
+         <if test="modified != null and modified != ''">
+        	MODIFIED=#{modified},
+        </if>
+         <if test="modifiedId != null">
+        	MODIFIED_ID=#{modifiedId},
+        </if>
+         <if test="modifiedDate != null">
+        	MODIFIED_DATE=#{modifiedDate},
+        </if>
+        
+	</sql>
+	
+    <sql id="set_sql">
+    <trim prefix="set" suffixOverrides=",">  
+		<if test="productId != null and productId != 0">
+        	PRODUCT_ID = #{productId},
+        </if>
+        <if test="codeId != null and codeId != 0">
+        	CODE_ID = #{codeId},
+        </if>
+         <if test="isDeleted != null">
+        	IS_DELETED = #{isDeleted},
+        </if>
+    </trim>
+    </sql>
+	
+    <resultMap id="proCodeModule" type="com.ymkj.cms.biz.entity.master.BMSProductCodeModule">
+		<id property="id" column="ID" />
+		<result property="productId" column="PRODUCT_ID" />
+		<result property="codeId" column="CODE_ID" />
+		<result property="isDeleted" column="IS_DELETED" />
+	</resultMap>
+	
+	  <resultMap id="proCodeModuleVo" type="com.ymkj.cms.biz.entity.master.BMSProductCodeModule">
+		<id property="id" column="ID" />
+		<result property="productId" column="PRODUCT_ID" />
+		<result property="codeId" column="CODE_ID" />
+		<result property="isDeleted" column="IS_DELETED" />
+		<result property="name" column="NAME" />
+		<result property="nameCN" column="NAME_CN" />
+	</resultMap>
+      
+      <!-- 根据条件（产品ID）获取模板CODE -->
+	<select id="findModuleCodeByProId" parameterType="java.util.Map"
+		resultMap="proCodeModuleVo">
+		SELECT * FROM BMS_PRODUCT_CODE_MODULE CM 
+		LEFT JOIN
+		BMS_ENUM_CODE EC
+		ON EC.CODE_ID = CM.CODE_ID
+		WHERE
+		CM.PRODUCT_ID=#{productId} and ec.is_deleted=0 and CM.is_deleted = 0
+	</select>
+	
+      
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="proCodeModule">
+		select * from
+		<include refid="table" />
+		where id = #{id}
+	</select>
+    
+    <select id="listBy" parameterType="java.util.Map" resultMap="proCodeModule">
+		select * from
+		<include refid="table" />
+			<include refid="condition_sql" />
+	</select>
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="proCodeModule">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by id desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+    
+    <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSProductCodeModule" keyProperty="id" useGeneratedKeys="true">
+    	INSERT INTO <include refid="table" />
+    	<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="productId != null and productId != 0">
+	        	PRODUCT_ID,
+	        </if>
+	        <if test="codeId != null and codeId != 0">
+	        	CODE_ID,
+	        </if>
+	        <if test="isDeleted != null">
+        		IS_DELETED,
+        	</if>
+    	</trim>
+    	<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="productId != null and productId != 0">
+	        	#{productId},
+	        </if>
+	        <if test="codeId != null and codeId != 0">
+	        	#{codeId},
+	        </if>
+	        <if test="isDeleted != null">
+        		#{isDeleted},
+        </if>
+    	</trim>
+        
+    </insert >
+    
+    
+    <insert id="batchInsert" useGeneratedKeys="true" parameterType="java.util.List">  
+      <selectKey resultType="long" keyProperty="id" order="AFTER">  
+	        SELECT  
+	        LAST_INSERT_ID()  
+	    </selectKey>  
+	   	 insert into <include refid="table" /> (PRODUCT_ID,CODE_ID,IS_DELETED,
+	        	CREATOR,
+	        	CREATOR_ID,
+	        	CREATOR_DATE,
+	        	VERSION)
+	       values
+	       <foreach collection="list" item="item" index="index" separator="," >  
+			(#{item.productId},#{item.codeId},#{item.isDeleted},#{item.creator},#{item.creatorId},
+			sysdate(),1) 
+        </foreach>  
+	</insert>  
+    
+    <!-- del -->
+    <delete id="deleteById" parameterType="long">
+    	delete from
+		<include refid="table" />
+		where id = #{id}
+    </delete>
+    
+    <delete id="deletelAll">
+    	delete from
+    	<include refid="table" />
+    </delete>    
+    
+    
+    <!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSProductCodeModule">
+		update
+		<include refid="table" />
+		set
+		VERSION = #{version} + 1 , 
+		<include refid="set_sql" />
+		<where>
+			id = #{id}
+			and VERSION= #{version}
+		</where>
+	</update>
+
+	
+
+	<update id="batchUpdate" parameterType="java.util.Map">    
+        update  <include refid="table" />  set         
+            IS_DELETED = 1 ,
+             <if test="modified != null and modified != ''"> 
+            MODIFIED =#{item.modified}, 
+            </if>
+             <if test="modifiedId != null and modifiedId != ''">
+	        MODIFIED_ID =#{item.modifiedId},
+	        </if>
+	        MODIFIED_DATE =sysdate()
+        where ID in 
+        <foreach  collection="delPromoduleCodes" index="index" item="item" open="("  separator="," close=")">       
+           #{item.id}    
+        </foreach>  
+	</update>
+	
+	
+	
+</mapper> 

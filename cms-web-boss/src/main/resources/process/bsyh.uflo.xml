@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uflo-process name="00018" key="包银渠道">
+   <task assignment-handler-bean="BMSContractSignHandler" g="527,64,136,45" assignment-type="Handler" task-type="Normal" name="保存信息" allow-specify-assignee="false">
+      <description>在该节点上点击上一步，将会删除该流程，重新发起一个流程</description>
+      <sequence-flow g="869,115:-78,-31" name="拒绝/取消" to="结束"/>
+      <sequence-flow g="-25,-17" name="保存" to="黑名单校验"/>
+      <sequence-flow g="500,95;500,57:8,-16" name="上一步" to="开始"/>
+   </task>
+   <task assignment-handler-bean="BMSContractSignHandler" g="536,324,128,45" assignment-type="ProcessPromoter" task-type="Normal" name="生成合同" allow-specify-assignee="false">
+      <sequence-flow g="-46,-15" name="拒绝/取消" to="结束"/>
+      <sequence-flow g="421,338;415,38:7,127" name="上一步" to="开始"/>
+      <sequence-flow g="-51,-11" name="生成合同" to="合同签订"/>
+   </task>
+   <task assignment-handler-bean="BMSContractConfirmHandler" g="541,486,129,45" assignment-type="Handler" task-type="Normal" name="合同确认" allow-specify-assignee="false">
+      <sequence-flow g="367,500:-30,-47" name="退回" to="退件箱"/>
+      <sequence-flow g="-51,-15" name="合同确认" to="放款审核"/>
+   </task>
+   <task assignment-handler-bean="BMSLoanAuditHandler" g="546,563,123,40" assignment-type="Handler" task-type="Normal" name="放款审核" allow-specify-assignee="false">
+      <sequence-flow g="311,533:36,-10" name="退回" to="退件箱"/>
+      <sequence-flow g="-34,-14" name="通过" to="放款确认(核心)"/>
+   </task>
+   <end g="902,307,72,62" name="结束" terminate="true"/>
+   <start g="557,1,76,46" name="开始">
+      <sequence-flow g="-37,-7" name="保存" to="保存信息"/>
+   </start>
+   <task g="166,318,115,50" assignment-type="ProcessPromoter" task-type="Normal" name="退件箱" allow-specify-assignee="false">
+      <sequence-flow g="318,26:55,-21" name="上一步" to="开始"/>
+      <sequence-flow g="-27,-29" name="拒绝/取消" to="结束2"/>
+      <sequence-flow g="398,449:-29,-33" name="合同签订" to="合同签订"/>
+   </task>
+   <task assignment-handler-bean="BMSLoanConfirmHandler" g="551,646,122,44" assignment-type="Handler" task-type="Normal" name="放款确认(核心)" allow-specify-assignee="false">
+      <description>扣款失败/未放款成功  可以退回  
+成功 结束流程</description>
+      <sequence-flow g="310,594:53,-1" name="退回" to="退件箱"/>
+      <sequence-flow g="861,598:-29,-7" name="结束" to="结束"/>
+   </task>
+   <end g="35,310,74,58" name="结束2" terminate="true"/>
+   <task g="531,137,131,41" assignment-type="ProcessPromoter" task-type="Normal" name="黑名单校验" task-name="黑名单校验" allow-specify-assignee="false">
+      <sequence-flow g="-31,-14" name="通过" to="银行卡鉴权"/>
+      <sequence-flow g="847,203:-67,-30" name="拒绝/取消" to="结束"/>
+      <sequence-flow g="508,151;507,119:7,-11" name="上一步" to="保存信息"/>
+   </task>
+   <task g="535,201,122,41" assignment-type="ProcessPromoter" task-type="Normal" name="银行卡鉴权" allow-specify-assignee="false">
+      <sequence-flow g="-33,-11" name="通过" to="风控审核"/>
+      <sequence-flow g="850,276:-74,-38" name="拒绝/取消" to="结束"/>
+      <sequence-flow g="479,209;480,54:10,55" name="上一步" to="开始"/>
+   </task>
+   <task g="535,265,125,40" assignment-type="ProcessPromoter" task-type="Normal" name="风控审核" allow-specify-assignee="false">
+      <sequence-flow g="-36,-6" name="通过" to="生成合同"/>
+      <sequence-flow g="-70,-37" name="拒绝/取消" to="结束"/>
+      <sequence-flow g="449,281;448,52:7,92" name="上一步" to="开始"/>
+   </task>
+   <task g="540,410,128,46" assignment-type="ProcessPromoter" task-type="Normal" name="合同签订" allow-specify-assignee="false">
+      <sequence-flow g="-58,-13" name="拒绝/取消" to="结束"/>
+      <sequence-flow g="-56,-12" name="合同签订" to="合同确认"/>
+      <sequence-flow g="507,429;506,353:-33,-7" name="上一步" to="生成合同"/>
+   </task>
+</uflo-process>

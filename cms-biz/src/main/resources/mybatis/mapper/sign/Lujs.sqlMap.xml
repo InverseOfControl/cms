@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.sign.impl.LujsDaoImpl">
+
+	<select id="getApplicationList" parameterType="java.lang.String" resultType="java.util.Map">
+		select 
+		  lb.id,
+		  lb.apply_date,
+		  lc.pact_money contract_lmt,
+		  lp.contract_trem apply_term,
+		  lp.apply_bank_name,
+		  lp.apply_bank_branch,
+		  lp.apply_bank_card_no,
+		  lp.bank_phone,
+		  lb.name,
+		  lb.id_no,
+		  lb.owning_branch_id,
+		  lb.id_no as gender,
+		  api.id_last_date,
+		  api.cellphone,
+		  la.sys_check_lmt month_salary,	
+		  api.marital_status,
+		  api.occupation,
+		  api.age,
+		  api.id_issuer_address,
+		  api.cus_work_type,
+		  api.qualification,
+		  api.corp_province,
+		  api.corp_city,
+		  api.corp_name,
+		  api.corp_depapment,
+		  api.house_type,
+		  api.home_state,
+		  api.home_city,
+		  api.home_zone,
+		  api.home_address,
+		  cl.rateey rate,
+		  le.lujs_name,
+		  le.lujs_apply_no ,
+		  le.lujs_loan_req_id,
+		  bb.code as apply_bank_code
+		from
+		  bms_loan_base lb 
+		  left join bms_loan_product lp on lb.id = lp.loan_base_id 
+		  left join bms_app_person_info api on lb.id = api.loan_base_id 
+		  left join bms_contract_loan cl on lb.id = cl.loan_base_id
+		  left join bms_loan_ext le on lb.id = le.loan_base_id
+		  left join bms_bank bb on lp.apply_bank_name_id = bb.id
+		  left join bms_loan_contract lc on lb.id = lc.loan_base_id	
+		  left join bms_loan_audit la on lb.id = la.loan_base_id
+		where lb.loan_no = #{loanNo} and cl.is_deleted = 0 and lc.is_deleted=0
+	</select>
+
+	<!-- 保存陆金所推送过来的进件流水号 -->
+	<update id="saveApsApplyNo" parameterType="java.util.Map">
+		update bms_loan_ext set lujs_apply_no = #{lujsApplyNo} where loan_no = #{loanNo}	
+	</update>
+	
+	<!-- 保存陆金所外部进件通知接口响应结果 -->
+	<insert id="saveLufaxNoticeExternal" parameterType="com.ymkj.cms.biz.api.vo.request.sign.ReqLufax800001Vo">
+		insert bms_lujs_inform values(#{aps_apply_no},#{apply_no},#{notify_type},#{notify_code},#{notify_desc},now())
+	</insert>
+	
+	<!-- 根据借款编号获取loanBaseId -->
+	<select id="getLoanBaseIdByLoanNo" parameterType="java.lang.String" resultType="java.lang.String">
+		select id from bms_loan_base where loan_no = #{loanNo}
+	</select>
+	
+	<!-- 获取人工审核流程节点的返回结果 -->
+	<select id="getAuditReturnResult" parameterType="java.lang.String" resultType="java.util.Map">
+		select inform_type informType, inform_result informResult, inform_desc informDesc from bms_lujs_inform 
+		where loan_no = #{loanNo} AND (inform_result = '005' OR inform_result = '00401' OR inform_result = '013' OR inform_result = '00201')
+	</select>
+	
+	<!-- 删除陆金所人工审核结果 -->
+	<delete id="delLujsManualAnditInfo" parameterType="java.lang.String">
+		delete from bms_lujs_inform 
+		where loan_no = #{loanNo} AND (inform_result = '005' OR inform_result = '00401' OR inform_result = '013' OR inform_result = '00201')
+	</delete>
+	
+	<select id="getPersonInfo" parameterType="java.lang.String" resultType="java.util.Map">
+		select id_no idNo,name from bms_loan_base where loan_no = #{loanNo}
+	</select>
+	
+	<!--  查询陆金所证件到期日 -->
+	<select id="getAppPersonInfo" parameterType="java.lang.String" resultType="java.util.Map">
+		select loan_no,id_last_date,report_id from bms_app_person_info where loan_no = #{loanNo}
+	</select>
+	
+	<!--  修改证件到期日 -->
+	<update id="updateIdLastDate" parameterType="java.util.Map">
+		update bms_app_person_info set id_last_date=#{idLastDate} where loan_no = #{loanNo}
+	</update>
+</mapper> 

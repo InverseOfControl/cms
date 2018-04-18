@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 批次管理 -->
+<mapper namespace="com.ymkj.cms.biz.dao.channel.impl.BMSBaseLoanDaoImpl">
+	<!-- 借款信息结果集 -->
+	<resultMap id="BMSLoanBaseBatch"
+		type="com.ymkj.cms.biz.entity.channel.BMSLoanBaseBatch">
+		<result column="loanBaseId" property="loanBaseId" />
+		<result column="B_NAME" property="name" />
+		<result column="B_ID_NO" property="idNo" />
+		<result column="B_LOAN_NO" property="loanNo" />
+		<result column="B_PRODUCT_NAME" property="productName" />
+		<result column="B_RATERY" property="rateey" />
+		<result column="B_TIME" property="time" />
+		<result column="B_CONTRACT_LMT" property="pactMoney" />
+		<result column="B_PACT_MONEY" property="grantMoney" />
+		<result column="B_STARTRDATE_FORT1" property="startRDateForT1" />
+	</resultMap>
+
+	<resultMap id="BMSLoanBatch" type="com.ymkj.cms.biz.entity.channel.BMSLoanBatch">
+		<result column="BATCH_NUM" property="batchNum" />
+		<result column="CREATE_TIME" property="createdTime" />
+		<result column="CHANNEL_NAME" property="channelName" />
+		<result column="CHANNEL_CODE" property="channelCode" />
+	</resultMap>
+	<!-- 借款数据查询 -->
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSLoanBaseBatch">
+		SELECT
+		V.LOAN_BASE_ID AS loanBaseId,
+		AP.NAME AS B_NAME,
+		AP.ID_NO AS
+		B_ID_NO,
+		V.LOAN_NO AS B_LOAN_NO,
+		V.PRODUCT_NAME AS B_PRODUCT_NAME,
+		V.CONTRACT_LMT AS B_CONTRACT_LMT,
+		CL.TIME AS B_TIME,
+		CL.RATEEY AS
+		B_RATERY,
+		CL.PACT_MONEY AS B_PACT_MONEY,
+		LC.STARTRDATE_FORT1 AS
+		B_STARTRDATE_FORT1
+		FROM
+		V_BMS_LOAN V
+		INNER JOIN BMS_APP_PERSON_INFO API
+		ON API.LOAN_BASE_ID = V.LOAN_BASE_ID
+		INNER JOIN BMS_CONTRACT_LOAN CL
+		ON
+		CL.LOAN_BASE_ID = V.LOAN_BASE_ID
+		INNER JOIN BMS_LOAN_CONTRACT LC
+		ON
+		LC.LOAN_BASE_ID = V.LOAN_BASE_ID
+		INNER JOIN BMS_APP_PERSON AP
+		ON AP.ID =
+		API.PERSON_ID
+		LEFT JOIN BMS_LOAN_BATCHNUM LB
+		ON V.LOAN_NO = LB.LOAN_NO
+		WHERE V.RTF_STATE = 'FKQR'
+		<if test="queryType != null and queryType =='01'">
+			AND LB.BATCH_NUM IS NULL
+		</if>
+		<if test="queryType != null and queryType =='02'">
+			AND LB.BATCH_NUM IS NOT NULL
+		</if>
+		<if test="batchNum != null and batchNum != ''">
+			AND LB.BATCH_NUM = #{batchNum}
+		</if>
+
+		<if test="channelId != null and channelId != ''">
+			AND V.CHANNEL_CD = #{channelId}
+		</if>
+		<if test="accDateEnd != null and accDateEnd != ''">
+			 <![CDATA[  AND V.FINANCE_AUDIT_TIME >= #{accDateStart}]]>
+		</if>
+		<if test="accDateStart != null and accDateStart != ''">
+			 <![CDATA[ AND V.FINANCE_AUDIT_TIME <= #{accDateEnd}]]>
+		</if>
+	</select>
+
+	<!-- 借款数据总数查询 -->
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT
+		V.LOAN_BASE_ID AS loanBaseId,
+		AP.NAME AS B_NAME,
+		AP.ID_NO AS
+		B_ID_NO,
+		V.LOAN_NO AS B_LOAN_NO,
+		V.PRODUCT_NAME AS B_PRODUCT_NAME,
+		V.CONTRACT_LMT AS B_CONTRACT_LMT,
+		CL.TIME AS B_TIME,
+		CL.RATEEY AS
+		B_RATERY,
+		CL.PACT_MONEY AS B_PACT_MONEY,
+		LC.STARTRDATE_FORT1 AS
+		B_STARTRDATE_FORT1
+		FROM
+		V_BMS_LOAN V
+		INNER JOIN BMS_APP_PERSON_INFO API
+		ON API.LOAN_BASE_ID = V.LOAN_BASE_ID
+		INNER JOIN BMS_CONTRACT_LOAN CL
+		ON
+		CL.LOAN_BASE_ID = V.LOAN_BASE_ID
+		INNER JOIN BMS_LOAN_CONTRACT LC
+		ON
+		LC.LOAN_BASE_ID = V.LOAN_BASE_ID
+		INNER JOIN BMS_APP_PERSON AP
+		ON AP.ID =
+		API.PERSON_ID
+		LEFT JOIN BMS_LOAN_BATCHNUM LB
+		ON V.LOAN_NO = LB.LOAN_NO
+		WHERE V.RTF_STATE = 'FKQR'
+		<if test="queryType != null and queryType == '01'">
+			AND LB.BATCH_NUM IS NULL
+		</if>
+		<if test="queryType != null and queryType == '02'">
+			AND LB.BATCH_NUM IS NOT NULL
+		</if>
+		<if test="batchNum != null and batchNum != ''">
+			AND LB.BATCH_NUM = #{batchNum}
+		</if>
+
+		<if test="channelId != null and channelId != ''">
+			AND V.CHANNEL_CD = #{channelId}
+		</if>
+		<if test="accDateEnd != null and accDateEnd != ''">
+			 <![CDATA[  AND V.FINANCE_AUDIT_TIME >= #{accDateStart}]]>
+		</if>
+		<if test="accDateStart != null and accDateStart != ''">
+			 <![CDATA[ AND V.FINANCE_AUDIT_TIME <= #{accDateEnd}]]>
+		</if>
+		)T
+	</select>
+
+	<!-- 批次生成 -->
+	<insert id="batchInsert" useGeneratedKeys="true" parameterType="java.util.List">
+		<selectKey resultType="long" keyProperty="id" order="AFTER">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+		insert into BMS_LOAN_BATCHNUM
+		(BATCH_NUM,APP_NO,LOAN_NO,CREATOR_ID,CREATOR,CREATED_TIME,VERSION)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.batchNum},#{item.appNo},#{item.loanNo},
+			#{item.creatorId}, #{item.creator},
+			#{item.createdTime},#{item.version})
+		</foreach>
+	</insert>
+
+	<!-- 批次删除 -->
+	<delete id="batchDelete" parameterType="java.util.List">
+		DELETE FROM BMS_LOAN_BATCHNUM WHERE LOAN_NO IN
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+	<!-- 批次数据查询 -->
+	<select id="listBatchInfoPage" parameterType="java.util.Map"
+		resultMap="BMSLoanBatch">
+		SELECT V.CHANNEL_CD AS CHANNEL_CODE,V.CHANNEL_NAME AS CHANNEL_NAME,LB.BATCH_NUM AS BATCH_NUM,LB.CREATED_TIME AS CREATE_TIME FROM
+		V_BMS_LOAN V,BMS_LOAN_BATCHNUM LB WHERE V.LOAN_NO=LB.LOAN_NO
+		<if test="channelId != null and channelId != ''">
+			AND V.CHANNEL_ID = #{channelId}
+		</if>
+		<if test="channelId != null and channelId != ''">
+			AND LB.BATCH_NUM= #{batchNum}
+		</if>
+	</select>
+
+	<!-- 批次数据总数查询 -->
+	<select id="countBatchInfoByPageParam" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+		SELECT LB.BATCH_NUM AS BATCH_NUM,LB.CREATED_TIME
+		AS CREATE_TIME FROM
+		V_BMS_LOAN V,BMS_LOAN_BATCHNUM LB WHERE
+		V.LOAN_NO=LB.LOAN_NO
+		<if test="channelId != null and channelId != ''">
+			AND V.CHANNEL_ID = #{channelId}
+		</if>
+		<if test="channelId != null and channelId != ''">
+			AND LB.BATCH_NUM= #{batchNum}
+		</if>
+		)T
+	</select>
+
+	<!-- 债权审核导出 -->
+	<select id="listLoanCheck" parameterType="java.util.Map"
+			resultType="com.ymkj.cms.biz.api.vo.response.channel.ResLoanCheckExpVo">
+	SELECT
+	AP. NAME AS NAME,
+	api.GENDER AS gender,
+	api.AGE AS age,
+	enumOne.NAME_CN AS maritalStatus,
+	enumTwo.NAME_CN AS qualification,
+	enumThree.NAME_CN AS corpStructure,
+	IFNULL(
+	enumFour.NAME_CN,
+	API.CORP_POST
+	) AS corpPost,
+	AP.ID_NO AS idNo,
+	V.PRODUCT_NAME AS productName,
+	V.CONTRACT_LMT / 10000 AS pactMoney,
+	V.CONTRACT_TREM AS time,
+	lc.purpose AS creditApplication,
+	IFNULL(taci.CAR_TYPe, '') AS carTypr,
+	IFNULL(taci.CAR_BUY_PRICE, '') AS estateAmt,
+	IFNULL(taei.ESTATE_TYPE,'') AS estateType,
+	IFNULL(taei.BUILTUP_AREA, '') AS builtupArea,
+	api.HOME_ADDRESS AS homeAddress,
+	api.CORP_STAND_FROM AS corpStandFrom,
+	enumFive.NAME_CN AS priEnterpriseType,
+	CONCAT(api.SHARES_SCALE, '%') AS sharesScale,
+	LRD.RETURNETERM currentPrincipal,
+	LRD.RETURN_DATE dueDate,
+	LC.PROMISE_RETURN_DATE startRdate,
+	IFNULL(V.LOAN_DATE, '') loanDate,
+	IFNULL(API.SETUP_DATE,'') setupDate
+	FROM
+	V_BMS_LOAN V
+	INNER JOIN BMS_APP_PERSON_INFO API ON V.LOAN_BASE_ID = API.LOAN_BASE_ID
+	INNER JOIN BMS_APP_PERSON AP ON AP.ID = API.PERSON_ID
+	INNER JOIN BMS_CONTRACT_LOAN CL ON V.LOAN_BASE_ID = CL.LOAN_BASE_ID
+	INNER JOIN BMS_LOAN_CONTRACT LC ON V.LOAN_BASE_ID = LC.LOAN_BASE_ID
+	INNER JOIN bms_loan_batchnum batch ON batch.LOAN_NO = v.lOAN_NO
+	LEFT JOIN BMS_LOAN_REPAYMENT_DETAIL LRD ON LRD.ID = (
+	SELECT
+	max(a.id)
+	FROM
+	BMS_LOAN_REPAYMENT_DETAIL a
+	WHERE
+	a.LOAN_BASE_ID = V.LOAN_BASE_ID
+	)
+	LEFT JOIN BMS_TM_APP_CAR_INFO TACI ON V.LOAN_BASE_ID = TACI.LOAN_BASE_ID
+	LEFT JOIN BMS_TM_APP_ESTATE_INFO TAEI ON V.LOAN_BASE_ID =
+	TAEI.LOAN_BASE_ID
+	LEFT JOIN bms_enum_code enumOne ON api.MARITAL_STATUS = enumOne.`CODE`
+	AND enumOne.CODE_TYPE = 'MaritalStatus'
+	LEFT JOIN bms_enum_code enumTwo ON api.QUALIFICATION = enumTwo.`CODE`
+	AND enumTwo.CODE_TYPE = 'EducationType'
+	LEFT JOIN bms_enum_code enumThree ON api.CORP_STRUCTURE = enumThree.`CODE`
+	AND enumThree.CODE_TYPE = 'CorpStructure'
+	LEFT JOIN bms_enum_code enumFour ON api.CORP_POST = enumFour.`CODE`
+	AND enumFour.CODE_TYPE = 'NoGovInstitution'
+	LEFT JOIN bms_enum_code enumFive ON api.PRI_ENTERPRISE_TYPE =
+	enumFive.`CODE`
+	AND enumFive.CODE_TYPE = 'PriEnterpriseType'
+	WHERE
+	batch.BATCH_NUM = #{batchNum}
+	</select>
+
+	<!-- 债权导出 -->
+	<select id="listLoan" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.api.vo.response.channel.ResLoanExpVo">
+	SELECT
+	V.LOAN_BASE_ID AS loanNo,
+	AP.NAME AS name,
+	API.GENDER AS sex,
+	API.AGE AS age,
+	AP.ID_NO AS idNo,
+	V.PRODUCT_NAME AS productName,
+	LC.PACT_MONEY AS pactMonney,
+	LC.PURPOSE AS creditAppliction,
+	LC.CONTRACT_NUM AS contractId,
+	V.CONTRACT_TREM AS loanLmt,
+	V.CONTRACT_LMT AS grantMonney,
+	LB.BATCH_NUM AS projectBacthNum,
+	LC.BANK AS bankName,
+	LC.BANK_FULL_NAME AS bankFullName,
+	LC.GB_ACCOUNT AS account,
+	IFNULL(base.LOAN_BRANCH,'') as loanBranck,
+	LRD.RETURNETERM as returneterm,
+	LC.STARTRDATE as loanDate,
+	LC.SIGN_DATE as signDate,
+	LRD.RETURN_DATE as dueDate,
+	IFNULL(LR.CURRENT_TERM,0) as payLmt,
+	LC.PACT_MONEY-V.CONTRACT_LMT as serviceMonney
+	FROM
+	V_BMS_LOAN V
+	INNER JOIN BMS_APP_PERSON_INFO API
+	ON V.LOAN_BASE_ID = API.LOAN_BASE_ID
+	INNER JOIN BMS_APP_PERSON AP
+	ON AP.ID = API.PERSON_ID
+	INNER JOIN BMS_CONTRACT_LOAN CL
+	ON V.LOAN_BASE_ID = CL.LOAN_BASE_ID
+	INNER JOIN BMS_LOAN_CONTRACT LC
+	ON V.LOAN_BASE_ID = LC.LOAN_BASE_ID
+	INNER JOIN BMS_LOAN_BATCHNUM LB
+	ON V.LOAN_NO = LB.LOAN_NO
+	INNER JOIN bms_loan_base base
+	on base.LOAN_NO = V.lOAN_NO
+	LEFT JOIN BMS_LOAN_REPAYMENT_DETAIL LRD ON
+	LRD.ID = (
+	SELECT
+	max(a.id)
+	FROM
+	BMS_LOAN_REPAYMENT_DETAIL a
+	WHERE
+	a.LOAN_BASE_ID = V.LOAN_BASE_ID
+	)
+	LEFT JOIN BMS_LOAN_REPAYMENT_DETAIL LR ON
+	LR.ID = (
+	SELECT
+	max(b.id)
+	FROM
+	BMS_LOAN_REPAYMENT_DETAIL b
+	WHERE
+	b.LOAN_BASE_ID = V.LOAN_BASE_ID
+	<![CDATA[
+	and DATE_FORMAT(b.RETURN_DATE,'%Y%m%d')>=DATE_FORMAT(date_sub(now(),interval 1 month),'%Y%m%d')
+	and DATE_FORMAT(b.RETURN_DATE,'%Y%m%d')<=DATE_FORMAT(now(),'%Y%m%d')
+	]]>
+	)
+	where LB.BATCH_NUM = #{batchNum}
+	</select>
+
+	<select id="findLoanNoByNum" parameterType="string"
+		resultType="com.ymkj.cms.biz.entity.channel.BMSLoanBatch">
+		select ID as id,LOAN_NO as loanNo from bms_loan_batchnum where BATCH_NUM=#{num}
+	</select>
+
+
+	<select id="wmxtExpLoanQuery" parameterType="java.util.Map"
+		resultType="com.ymkj.cms.biz.entity.finance.WMXTExportEntity">
+				SELECT
+			'01603' AS organizationCode,
+			g.CONTRACT_NUM AS contractNum,
+			'0' AS loggedArea,
+			g.CONTRACT_NUM AS loanNo,
+			'外贸信托' AS channelSource,
+			'0' AS idType,
+			d.ID_NO AS idNo,
+			d. NAME AS NAME,
+			f.CELLPHONE AS cellPhone,
+			f.CELLPHONE AS homePhone,
+			'0' AS issuerPostcode,
+			f.HOME_ADDRESS AS homeAddress,
+			i.CREDIT_APPLICATION AS creditApplication,
+			g.PACT_MONEY AS pactMoney,
+			g.PACT_MONEY AS contractLmt,
+			'01' AS applyMoney,
+			c.APPLY_TERM AS applyTerm,
+			'0201' AS repaymentAccountType,
+			(
+				SELECT
+					blb.ACCOUNT
+				FROM
+					bms_loan_bank blb
+				WHERE
+					blb.id = c.LOAN_BANK_ID_STILL
+			) AS gbAccount,
+			'01' AS gbMode,
+			'02' AS dateOfDebitType,
+			'02' AS dateOfDebitType2,
+			c.REPAY_DATE AS startrdate,
+			CASE
+		WHEN f.MARITAL_STATUS = '00001' THEN
+			'10'
+		WHEN f.MARITAL_STATUS = '00002' THEN
+			'20'
+		WHEN f.MARITAL_STATUS = '00003' THEN
+			'40'
+		ELSE
+			'90'
+		END AS maritalStatus,
+		 CASE
+		WHEN f.QUALIFICATION = '00006' THEN
+			'70'
+		WHEN f.QUALIFICATION = '00005' THEN
+			'60'
+		WHEN f.QUALIFICATION = '00004' THEN
+			'40'
+		WHEN f.QUALIFICATION = '00003' THEN
+			'30'
+		WHEN f.QUALIFICATION = '00002' THEN
+			'20'
+		WHEN f.QUALIFICATION = '00001' THEN
+			'10'
+		ELSE
+			'90'
+		END AS qualification,
+		 '0' AS idIssuerAddress,
+		 IFNULL(f.TOTAL_MONTH_SALARY, 0) AS monthSalary,
+		 f.HOME_ADDRESS AS homeAddress2,
+		 '0' AS homePostcode,
+		 '0' AS homePhone1,
+		 '证大速贷' AS organization,
+		 '02' AS repayMentway,
+		 '03' AS loanType,
+		 '99' AS borrowerType,
+		 c.PRODUCT_CD AS productCd,
+		 c.PRODUCT_NAME AS productName,
+		 0 AS poundage,
+		 0 AS chargeRate,
+		 h.RATEEM * 100 AS rateem,
+		 3 AS penaltyRateem,
+		 0.05 AS penaltyInterestRate,
+		 0 AS guaranteeDays,
+		 0 AS manageRate,
+		 0 AS manageRateRateem,
+		 0 AS guaranteeFee,
+		 0 AS guaranteeFeeRateem,
+		 (
+			SELECT
+				blb.BANK_CODE
+			FROM
+				bms_loan_bank blb
+			WHERE
+				blb.id = c.LOAN_BANK_ID_STILL
+		) AS loanBankIdStill,
+		 '0' AS provincesAndCities,
+		 0 AS costOne,
+		 0 AS costTwo,
+		 0 AS costThree,
+		 0 AS costFour,
+		 0 AS costFix,
+		 NULL AS loanDate,
+		 NULL AS loanAccountType,
+		 NULL AS loanBankCode,
+		 NULL AS loanAccountName,
+		 NULL AS loanAccountCode,
+		 a.MANAGE_BRANCH_ID as manageBranchId
+		FROM
+			bms_loan_base a,
+			bms_loan_audit b,
+			bms_loan_product c,
+			BMS_APP_PERSON d,
+			bms_loan_bank e,
+			BMS_APP_PERSON_INFO f,
+			BMS_LOAN_CONTRACT g,
+			BMS_CONTRACT_LOAN h,
+			BMS_LOAN_EXT i
+		WHERE
+			a.id = b.LOAN_BASE_ID
+		AND a.id = c.loan_base_id
+		AND a.PERSON_ID = d.id
+		AND c.LOAN_BANK_ID_BORROW = e.id
+		AND d.id = f.PERSON_ID
+		AND a.id = g.LOAN_BASE_ID
+		AND a.id = h.loan_base_id
+		AND a.id = i.loan_base_id
+		<if test="orgIds!=null and orgIds.size()>0">
+				AND a.OWNING_BRANCH_ID IN (
+				<foreach item="orgId" index="index" collection="orgIds"
+				separator=",">
+					#{orgId}
+				</foreach>
+				) 
+		</if>	
+		<if test="loanNos!=null and loanNos.size()>0">
+				AND a.LOAN_NO IN (
+				<foreach item="loanNo" index="index" collection="loanNos"
+				separator=",">
+					#{loanNo}
+				</foreach>
+				) 
+		</if>	
+	</select>
+	
+	<select id="wmxtExpLoanCheck" parameterType="java.util.Map"
+		resultType="com.ymkj.cms.biz.entity.finance.WMXTExportCheckEntity">
+		select c.CONTRACT_NUM as contractNum,b.CURRENT_TERM as currentTerm,b.RETURN_DATE as returnDate,b.RETURNETERM as returneterm,b.CURRENT_ACCRUAL as currentAccrual,b.PRINCIPAL_BALANCE as principalBalance
+ 		from bms_loan_base a,BMS_LOAN_REPAYMENT_DETAIL b,BMS_LOAN_CONTRACT c where a.id=b.loan_base_id and a.id=c.loan_base_id
+		<if test="loanNos!=null and loanNos.size()>0">
+				AND a.LOAN_NO IN (
+				<foreach item="loanNo" index="index" collection="loanNos"
+				separator=",">
+					#{loanNo}
+				</foreach>
+				) 
+		</if>	
+	</select>
+	<select id="findFileSeqByBatchNum" parameterType="java.util.Map"
+		resultType="com.ymkj.cms.biz.entity.channel.RequestFileOperateRecord">
+		select file_seq as fileSeq from bms_request_file_operate_record where 1=1
+		and OPERATE_TYPE=${dowmType} and FILE_TYPE=${fileType} and OPERATE_DATE=current_date
+		<if test="batchNum !=null and batchNum !=''">
+			and BATCH_NUM=#{batchNum}
+		</if>
+	</select>
+	
+	<select id="checkRequestManagerOperateRecord" parameterType="java.util.Map"
+		resultType="com.ymkj.cms.biz.entity.channel.RequestFileOperateRecord">
+		select ID as id,BATCH_NUM as batchNum,OPERATE_TYPE as operateType,FILE_TYPE as fileType,OPERATE_DATE as operateDate,TIMES as times,FILE_SEQ as fileSeq from bms_request_file_operate_record where 1=1
+		and OPERATE_TYPE=#{dowmType} and FILE_TYPE=#{fileType} and OPERATE_DATE=current_date
+		<if test="batchNum !=null and batchNum !=''">
+			and BATCH_NUM=#{batchNum}
+		</if>
+	</select>
+	
+	
+	<insert id="insertRequestManagerOperateRecord" parameterType="java.util.Map" keyProperty="id" useGeneratedKeys="true">
+		insert into bms_request_file_operate_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID,
+			BATCH_NUM,
+			OPERATE_TYPE,
+			FILE_TYPE,
+			OPERATE_DATE,
+			TIMES,
+			FILE_SEQ,
+			CREATOR_ID,
+			CREATOR,
+			CREATED_TIME,
+			VERSION,
+			IS_DELETE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},
+			#{batchNum},
+			'01',
+			'08',
+			current_date,
+			1,
+			#{seqFile},
+			#{createId},
+			#{create},
+			sysdate(),
+			0,
+			1
+		</trim>
+	</insert>
+	
+	
+	
+	
+	<update id="updateRequestManagerOperateRecord" parameterType="java.util.Map">
+		update bms_request_file_operate_record set OPERATE_DATE=current_date,TIMES=#{times},FILE_SEQ=#{seqFile},MODIFIED_TIME=sysdate(),MODIFIER_ID=#{createId},MODIFIER=#{create} where ID=#{id} 
+	</update>
+	
+	
+	<select id="findCodebyParentIds" parameterType="java.util.Map"
+		resultType="com.ymkj.cms.biz.entity.channel.BMSBhxtCitOrg">
+		select ID as id,ORG_ID as orgId,CODE as code from bms_bhxt_city_org
+		where 1=1
+		<if test="listReq!=null and listReq.size()>0">
+				and ORG_ID in(
+				<foreach item="listReqData" index="index" collection="listReq"
+				separator=",">
+					#{listReqData.parent_Id}
+				</foreach>
+				) 
+		</if>
+	</select>
+	
+</mapper>

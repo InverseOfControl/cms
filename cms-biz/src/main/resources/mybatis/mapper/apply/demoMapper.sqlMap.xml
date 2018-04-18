@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.DemoDaoImpl">
+
+	<sql id="table">demo</sql>
+
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="name != null and name != ''">
+        	and name = #{name}
+        </if>
+	</sql>
+	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+        <if test="name != null and name != ''">
+        	name = #{name},
+        </if>
+        <if test="address != null and address != ''">
+        	address = #{address},
+        </if>
+    </sql>
+	
+    <resultMap id="beanMap" type="com.ymkj.cms.biz.entity.apply.DemoEntity">
+		<id property="id" column="ID" />
+		<result property="name" column="NAME" />
+		<result property="address" column="ADDRESS" />
+	</resultMap>
+      
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="beanMap">
+		select * from
+		<include refid="table" />
+		where id = #{id}
+	</select>
+    
+    <select id="listBy" parameterType="java.util.Map" resultMap="beanMap">
+		select * from
+		<include refid="table" />
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="beanMap">
+		select * from
+		<include refid="table" />
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by id desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+    
+    <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.DemoEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into demo(name, address) VALUES(#{name}, #{address})
+    </insert >
+    
+    <insert id="batchInsert" useGeneratedKeys="true" parameterType="java.util.List">  
+	    <selectKey resultType="long" keyProperty="id" order="AFTER">  
+	        SELECT  
+	        LAST_INSERT_ID()  
+	    </selectKey>  
+	    insert into demo(name, address)   
+	    values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (#{item.name},#{item.address})  
+	    </foreach>  
+	</insert>
+    <!-- del -->
+    <delete id="deleteById" parameterType="long">
+    	delete from
+		<include refid="table" />
+		where id = #{id}
+    </delete>
+    
+    <delete id="deletelAll">
+    	delete from
+    	<include refid="table" />
+    </delete>    
+    
+    
+    <!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.DemoEntity">
+		update
+		<include refid="table" />
+		<set>
+<!-- 			VERSION = #{version}+1 , -->
+			<include refid="set_sql" />
+		</set>
+		<where>
+			id = #{id}
+		</where>
+	</update>
+</mapper> 

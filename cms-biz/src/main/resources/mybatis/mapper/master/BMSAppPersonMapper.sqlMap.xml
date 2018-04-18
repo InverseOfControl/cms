@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSAppPersonDaoImpl">
+<!-- 客户主表 -->
+   <resultMap id="BMSAppPersonMap" type="com.ymkj.cms.biz.entity.master.BMSAppPerson">
+       <!--ID  -->
+		<id property="id" column="ID" />
+		<!-- 姓名-->
+		<result property="name" column="NAME" />
+		<!-- 客户编号  -->
+		<result property="perosnNo" column="PERSON_NO" />
+		<!-- 身份证号 -->
+		<result property="idNo" column="ID_NO" />
+		<!-- 证件类型 -->
+		<result property="idType" column="ID_TYPE" />
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="createdTime" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modifier" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedTime" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifierId" column="MODIFIER_ID" />
+	    <!-- 版本号 -->
+	    <result property="version" column="VERSION" />
+	    <!-- 是否删除 -->
+	    <result property="isDelete" column="IS_DELETE" />
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="name != null and name != ''">
+        	and name = #{name}
+        </if>
+        <if test="idNo != null and idNo != ''">
+        	and id_no = #{idNo}
+        </if>
+        <if test="perosnNo != null and perosnNo != ''">
+        	and PERSON_NO = #{perosnNo}
+        </if>
+	</sql>	
+	
+	<select id="byLoanNoQueryInfo" parameterType="Map" resultMap="BMSAppPersonMap">
+	
+	
+	</select>
+	
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSAppPersonMap">
+		     select 
+		     `ID`,
+             `PERSON_NO`,
+             `name`,
+              SUBSTRING(`ID_NO`,-4) ID_NO,
+             `ID_TYPE`,
+             `CREATOR_ID`,
+             `CREATOR`,
+             `CREATED_TIME`,
+             `MODIFIER_ID`,
+             `MODIFIER`,
+             `MODIFIED_TIME`,
+             `VERSION`,
+             `IS_DELETE`
+		      from BMS_APP_PERSON
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by CREATED_TIME desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_APP_PERSON
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+     
+</mapper> 

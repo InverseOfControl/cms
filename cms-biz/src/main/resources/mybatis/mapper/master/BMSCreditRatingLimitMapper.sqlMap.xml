@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSCreditRatingLimitDaoImpl">
+	<sql id="table">bms_credit_rating_limit</sql>
+	
+	<sql id="condition_sql">
+		where IS_DELETE = 0
+		<if test="creditRating!= null and creditRating != ''">
+			and GRADE = #{creditRating}
+		</if>
+	</sql>
+
+
+
+	
+
+	<select id="listPage" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.master.BMSCreditRatingLimit">
+		select 
+			ID as id,
+			GRADE as grade,
+			CUSTOMER_TYPE as customerType,
+			PRODUCT_NAME as productName,
+			PRODUCT_TYPE as productType,
+			REMARK as remark,
+			CREATOR_ID as creatorId,
+			CREATED_TIME as createdTime,
+			CREATOR as creator,
+			MODIFIER_ID as modifierId,
+			MODIFIER as modifier,
+			MODIFIED_TIME as modifiedTime,
+			VERSION as version,
+			IS_DELETE as isDelete,
+			CREDIT_TYPE as creditType
+		 from
+		<include refid="table" />
+		<include refid="condition_sql" />
+		<![CDATA[ order by ID desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1) from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+
+	
+
+	<select id="findByProductAll" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select CODE as id,NAME as text from bms_product where is_deleted=0
+	</select>
+
+
+	<!-- add -->
+	<insert id="addCreditRatingLimit" parameterType="java.util.Map" keyProperty="id" useGeneratedKeys="true">
+		insert into bms_credit_rating_limit
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ID,
+			GRADE,
+			<if test="addCustomerType != null and addCustomerType != ''">
+			CUSTOMER_TYPE,
+			</if>
+			<if test="addProductText != null and addProductText != ''">
+			PRODUCT_NAME,
+			</if>
+			<if test="addProductCode != null and addProductCode != ''">
+			PRODUCT_TYPE,
+			</if>
+			REMARK,
+			CREATOR,
+			CREATOR_ID,
+			CREATED_TIME,		
+			IS_DELETE,
+			VERSION,
+			CREDIT_TYPE
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{id},
+			<if test="addCreditRating != null and addCreditRating != ''">
+				#{addCreditRating},
+			</if>
+			<if test="addCustomerType != null and addCustomerType != ''">
+				#{addCustomerType},
+			</if>
+			<if test="addProductText != null and addProductText != ''">
+				#{addProductText},
+			</if>
+			<if test="addProductCode != null and addProductCode != ''">
+				#{addProductCode},
+			</if>
+			<if test="addRemark != null and addRemark != ''">
+				#{addRemark},
+			</if>
+			#{creator},
+			#{creatorId},
+			sysdate(),			
+			0,
+			1,
+			#{addCreaditType}
+		</trim>
+	</insert>
+
+	<!-- del -->
+	<delete id="deleteCreditRatingLimit" parameterType="java.util.Map">
+		update
+		<include refid="table" />
+		 set is_delete=1,MODIFIER_ID=#{modifierId},MODIFIER=#{modifier},MODIFIED_TIME=sysdate()
+		where ID = #{id}
+	</delete>
+
+
+	<select id="loadCreditRatingLimit" parameterType="java.util.Map"
+		resultType="com.ymkj.cms.biz.entity.master.BMSCreditRatingLimit">
+		select 
+			ID as id,
+			GRADE as grade,
+			CUSTOMER_TYPE as customerType,
+			PRODUCT_NAME as productName,
+			PRODUCT_TYPE as productType,
+			REMARK as remark,
+			CREATOR_ID as creatorId,
+			CREATED_TIME as createdTime,
+			CREATOR as creator,
+			MODIFIER_ID as modifierId,
+			MODIFIER as modifier,
+			MODIFIED_TIME as modifiedTime,
+			VERSION as version,
+			IS_DELETE as isDelete,
+			CREDIT_TYPE as creditType
+		 from
+		 <include refid="table" />
+		 where ID=#{id}
+	</select>
+	
+	
+	<select id="listBy" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.master.BMSCreditRatingLimit">
+		select 
+			ID as id,
+			GRADE as grade,
+			CUSTOMER_TYPE as customerType,
+			PRODUCT_NAME as productName,
+			PRODUCT_TYPE as productType,
+			REMARK as remark,
+			CREATOR_ID as creatorId,
+			CREATED_TIME as createdTime,
+			CREATOR as creator,
+			MODIFIER_ID as modifierId,
+			MODIFIER as modifier,
+			MODIFIED_TIME as modifiedTime,
+			VERSION as version,
+			IS_DELETE as isDelete,
+			CREDIT_TYPE as creditType
+		 from
+		 <include refid="table" />
+		 
+		 where IS_DELETE = 0
+		 <if test="grade != null and grade !=''">
+		 	AND GRADE IN (#{grade})
+		 </if>
+		 <if test="customerType != null and customerType !=''">
+		 	AND CUSTOMER_TYPE = #{customerType}
+		 </if>
+		 <if test="creditType != null and creditType !=''">
+		 	AND CREDIT_TYPE = #{creditType}
+		 </if>
+		 
+		 <if test="noGrade != null and noGrade !=''">
+		 	AND GRADE NOT IN (#{noGrade})
+		 </if>
+		 
+		 
+		 
+		 order by grade
+	</select>
+	
+	
+	
+	
+
+	<!-- 更新 -->
+	<update id="updateCreditRatingLimit" parameterType="java.util.Map">
+		update
+		<include refid="table" />
+		<include refid="set_sql" />
+		<where>
+			ID = #{id}
+		</where>
+	</update>
+
+
+
+	<sql id="set_sql">
+		<trim prefix="set" suffixOverrides=",">
+				GRADE = #{updateCreditRating},
+				CUSTOMER_TYPE = #{updateCustomerType},
+				PRODUCT_NAME=#{updateProductText},
+				PRODUCT_TYPE=#{updateProductCode},
+				REMARK=#{updateRemark},
+				MODIFIER=#{modifier},
+				MODIFIER_ID=#{modifierId},
+				MODIFIED_TIME=sysdate(),
+				CREDIT_TYPE=#{updateCreaditType}
+		</trim>
+	</sql>
+	
+	
+	
+
+
+	<select id="findAddIsRepeat" parameterType="com.ymkj.cms.biz.api.vo.request.master.ReqBMSCreditRatingLimitVO"
+		resultType="int">
+		select count(1) from 
+		<include refid="table" />
+		where 1=1 
+		<if test="addCreditRating != null and addCreditRating != ''">
+			and GRADE = #{addCreditRating}
+		</if>
+		<if test="addCustomerType != null and addCustomerType != ''">
+			and CUSTOMER_TYPE = #{addCustomerType}
+		</if>
+		<if test="addCreaditType != null and addCreaditType != ''">
+			and CREDIT_TYPE = #{addCreaditType}
+		</if>
+		and IS_DELETE = 0
+	</select>
+	
+	
+	
+	<select id="findUpdateIsRepeat" parameterType="com.ymkj.cms.biz.api.vo.request.master.ReqBMSCreditRatingLimitVO"
+		resultType="int">
+		select count(1) from 
+		<include refid="table" />
+		where 1=1 
+		<if test="updateCreditRating != null and updateCreditRating != ''">
+			and GRADE = #{updateCreditRating}
+		</if>
+		<if test="updateCustomerType != null and updateCustomerType != ''">
+			and CUSTOMER_TYPE = #{updateCustomerType}
+		</if>
+		<if test="updateCreaditType != null and updateCreaditType != ''">
+			and CREDIT_TYPE = #{updateCreaditType}
+		</if>
+		and ID != #{id}
+		and IS_DELETE = 0
+	</select>
+</mapper>

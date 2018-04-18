@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSTmAppContactInfoDaoImpl">
+<!-- 联系人表 -->
+   <resultMap id="BMSTmAppContactInfoMap" type="com.ymkj.cms.biz.entity.master.BMSTmAppContactInfo">
+		<result column ="ID"  property ="id"/>
+		<result column ="HEAD_ID"  property ="headId"/>
+		<result column ="LOAN_BASE_ID"  property ="loanBaseId"/>
+		<result column ="PERSON_ID"  property ="personId"/>
+		<result column ="APP_NO"  property ="appNo"/>
+		<result column ="LOAN_NO"  property ="loanNo"/>
+		<result column ="ORG"  property ="org"/>
+		<result column ="CONTACT_ID"  property ="contactId"/>
+		<result column ="SEQUENCE_NUM"  property ="sequenceNum"/>
+		<result column ="IF_KNOW_LOAN"  property ="ifKnowLoan"/>
+		<result column ="CONTACT_NAME"  property ="contactName"/>
+		<result column ="CONTACT_RELATION"  property ="contactRelation"/>
+		<result column ="CONTACT_GENDER"  property ="contactGender"/>
+		<result column ="CONTACT_CELLPHONE"  property ="contactCellphone"/>
+		<result column ="CONTACT_CELLPHONE_1"  property ="contactCellphone1"/>
+		<result column ="CONTACT_ID_NO"  property ="contactIdNo"/>
+		<result column ="CONTACT_EMP_NAME"  property ="contactEmpName"/>
+		<result column ="CONTACT_CORP_PHONE"  property ="contactCorpPhone"/>
+		<result column ="CONTACT_CORP_PHONE_1"  property ="contactCorpPhone1"/>
+		<result column ="CONTACT_CORP_FAX"  property ="contactCorpFax"/>
+		<result column ="CONTACT_CORP_POST"  property ="contactCorpPost"/>
+		<result column ="CREATOR"  property ="creator"/>
+		<result column ="CREATED_TIME"  property ="createdTime"/>
+		<result column ="CREATOR_ID"  property ="creatorId"/>
+		<result column ="MODIFIER"  property ="modifier"/>
+		<result column ="MODIFIED_TIME"  property ="modifiedTime"/>
+		<result column ="MODIFIER_ID"  property ="modifierId"/>
+		<result column ="VERSION"  property ="version"/>
+		<result column ="IS_DELETE"  property ="isDelete"/>
+		<result column ="SNAP_VERSION"  property ="snapVersion"/>
+	    
+	    <!-- 流程状态 -->
+		<!-- <result property="flowState" column="FLOW_STATE" /> -->
+		<!-- 快照版本 -->
+		<!-- <result property="snapVersion" column="SNAP_VERSION" /> -->
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        <if test="appNo != null and appNo != ''">
+        	and APP_NO = #{appNo}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+        <if test="contactRelation != null and contactRelation != ''">
+        	and CONTACT_RELATION = #{contactRelation}
+        </if>
+	 </sql>
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSTmAppContactInfoMap">
+		     select 
+		     `ID`,
+             `LOAN_BASE_ID`,
+             `PERSON_ID`,
+             `APP_NO`,
+             `LOAN_NO`,
+             `ORG`,
+             `CONTACT_ID`,
+             `SEQUENCE_NUM`,
+             `IF_KNOW_LOAN`,
+             `CONTACT_NAME`,
+             `CONTACT_RELATION`,
+             `CONTACT_GENDER`,
+              SUBSTRING(`CONTACT_CELLPHONE`,-4) `CONTACT_CELLPHONE`,
+              SUBSTRING(`CONTACT_CELLPHONE_1`,-4) CONTACT_CELLPHONE_1,
+              SUBSTRING(`CONTACT_ID_NO`,-4) `CONTACT_ID_NO`,
+             `CONTACT_EMP_NAME`,
+              SUBSTRING(`CONTACT_CORP_PHONE`,-4) `CONTACT_CORP_PHONE`,
+              SUBSTRING(`CONTACT_CORP_PHONE_1`,-4)`CONTACT_CORP_PHONE_1`,
+             `CONTACT_CORP_FAX`,
+             `CONTACT_CORP_POST`,
+             `CREATOR`,
+             `CREATED_TIME`,
+             `CREATOR_ID`,
+             `MODIFIER`,
+             `MODIFIED_TIME`,
+             `MODIFIER_ID`,
+             `VERSION`,
+             `IS_DELETE`,
+             SNAP_VERSION
+		      from BMS_TM_APP_CONTACT_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by CREATED_TIME desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_TM_APP_CONTACT_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+
+	<select id="listByLoanNo" parameterType="java.util.Map" resultMap="BMSTmAppContactInfoMap">
+		select
+		`ID`,
+		`LOAN_BASE_ID`,
+		`PERSON_ID`,
+		`APP_NO`,
+		`LOAN_NO`,
+		`ORG`,
+		`CONTACT_ID`,
+		`SEQUENCE_NUM`,
+		`IF_KNOW_LOAN`,
+		`CONTACT_NAME`,
+		`CONTACT_RELATION`,
+		`CONTACT_GENDER`,
+		`CONTACT_CELLPHONE`,
+		`CONTACT_CELLPHONE_1`,
+		`CONTACT_ID_NO`,
+		`CONTACT_EMP_NAME`,
+		`CONTACT_CORP_PHONE`,
+		`CONTACT_CORP_PHONE_1`,
+		`CONTACT_CORP_FAX`,
+		`CONTACT_CORP_POST`,
+		`CREATOR`,
+		`CREATED_TIME`,
+		`CREATOR_ID`,
+		`MODIFIER`,
+		`MODIFIED_TIME`,
+		`MODIFIER_ID`,
+		`VERSION`,
+		`IS_DELETE`,
+		SNAP_VERSION
+
+		from BMS_TM_APP_CONTACT_INFO
+
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	<select id="listBy" parameterType="java.util.Map" resultMap="BMSTmAppContactInfoMap">
+		select
+		`ID`,
+		`LOAN_BASE_ID`,
+		`PERSON_ID`,
+		`APP_NO`,
+		`LOAN_NO`,
+		`ORG`,
+		`CONTACT_ID`,
+		`SEQUENCE_NUM`,
+		`IF_KNOW_LOAN`,
+		`CONTACT_NAME`,
+		`CONTACT_RELATION`,
+		`CONTACT_GENDER`,
+		`CONTACT_CELLPHONE`,
+		`CONTACT_CELLPHONE_1`,
+		`CONTACT_ID_NO`,
+		`CONTACT_EMP_NAME`,
+		`CONTACT_CORP_PHONE`,
+		`CONTACT_CORP_PHONE_1`,
+		`CONTACT_CORP_FAX`,
+		`CONTACT_CORP_POST`,
+		`CREATOR`,
+		`CREATED_TIME`,
+		`CREATOR_ID`,
+		`MODIFIER`,
+		`MODIFIED_TIME`,
+		`MODIFIER_ID`,
+		`VERSION`,
+		`IS_DELETE`,
+		SNAP_VERSION
+
+		from BMS_TM_APP_CONTACT_INFO
+
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+     
+</mapper> 

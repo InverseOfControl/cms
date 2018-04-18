@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPPolicyInfoDaoImpl">
+   <resultMap id="appPolicyInfoMap" type="com.ymkj.cms.biz.entity.apply.APPPolicyInfoEntity">
+		<id property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="loanNo" column="LOAN_NO"/>
+		<result property="org" column="ORG" />
+	    <result property="personId" column="PERSON_ID" />
+	     <result property="policyId" column="POLICY_ID" />
+		<result property="insuranceAmt" column="INSURANCE_AMT" />
+		<result property="insuranceTerm" column="INSURANCE_TERM" />
+		<result property="paidTerm" column="PAID_TERM" />
+		<result property="lastPaymentDate" column="LAST_PAYMENT_DATE" />
+		<result property="paymentMethod" column="PAYMENT_METHOD" />
+		<result property="policyRelation" column="POLICY_RELATION" />
+		<result property="yearPaymentAmt" column="YEAR_PAYMENT_AMT" />
+		<result property="policyCheck" column="POLICY_CHECK" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		<result property="snapVersion" column="SNAP_VERSION" />
+		<result property="policyCheckIsVerify" column="POLICY_CHECKISVERIFY" />
+	</resultMap>
+ 
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+         <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.APPPolicyInfoEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_TM_APP_POLICY_INFO(LOAN_BASE_ID,APP_NO,LOAN_NO,ORG,PERSON_ID,POLICY_ID
+         				, INSURANCE_AMT,INSURANCE_TERM,PAID_TERM, LAST_PAYMENT_DATE,PAYMENT_METHOD,POLICY_RELATION
+         				,YEAR_PAYMENT_AMT,POLICY_CHECK 
+         				,CREATOR_ID,CREATOR,CREATED_TIME,SNAP_VERSION)
+         	 VALUES(#{loanBaseId},  #{appNo},#{loanNo},#{org}, #{personId},#{policyId}, #{insuranceAmt}, #{insuranceTerm},
+         	 #{paidTerm}, #{lastPaymentDate},  #{paymentMethod}, #{policyRelation},  #{yearPaymentAmt}, #{policyCheck}, 
+         	  #{creatorId}, #{creator}, #{createdTime},#{snapVersion})
+    </insert >
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="appPolicyInfoMap">
+		select * from BMS_TM_APP_POLICY_INFO
+		where id = #{id}
+	</select>
+               	  
+   <select id="listBy" parameterType="java.util.Map" resultMap="appPolicyInfoMap">
+		select * from  BMS_TM_APP_POLICY_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	<!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.APPPolicyInfoEntity">
+		update  BMS_TM_APP_POLICY_INFO
+ 			set 	 
+ 	    <if test="(insuranceAmt != null and insuranceAmt != '') or insuranceAmt ==0">
+        	INSURANCE_AMT = #{insuranceAmt},
+        </if>
+        <if test="insuranceTerm != null and insuranceTerm != ''">
+        	INSURANCE_TERM = #{insuranceTerm},
+        </if>
+         <if test="(paidTerm != null and paidTerm != '') or paidTerm ==0">
+        	PAID_TERM = #{paidTerm},
+        </if>
+         <if test="lastPaymentDate != null">
+        	LAST_PAYMENT_DATE = #{lastPaymentDate},
+        </if>
+        <if test="paymentMethod != null and paymentMethod != ''">
+        	PAYMENT_METHOD = #{paymentMethod},
+        </if>
+        <if test="policyRelation != null and policyRelation != ''">
+        	POLICY_RELATION = #{policyRelation},
+        </if>
+         <if test="(yearPaymentAmt != null and yearPaymentAmt != '') or yearPaymentAmt ==0">
+        	YEAR_PAYMENT_AMT = #{yearPaymentAmt},
+        </if>
+         <if test="policyCheck != null and policyCheck != ''">
+        	POLICY_CHECK = #{policyCheck},
+        </if>
+	 
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+    
+    
+    <update id="updateAll" parameterType="com.ymkj.cms.biz.entity.apply.APPPolicyInfoEntity">
+		update  BMS_TM_APP_POLICY_INFO
+ 			set 	 
+        	INSURANCE_AMT = #{insuranceAmt},
+        	INSURANCE_TERM = #{insuranceTerm},
+        	PAID_TERM = #{paidTerm},
+        	LAST_PAYMENT_DATE = #{lastPaymentDate},
+        	PAYMENT_METHOD = #{paymentMethod},
+        	POLICY_RELATION = #{policyRelation},
+        	YEAR_PAYMENT_AMT = #{yearPaymentAmt},
+        	POLICY_CHECK = #{policyCheck},
+ 		    MODIFIER_ID = #{modifierId},
+ 		    MODIFIER = #{modifier},
+ 		    MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+</mapper> 

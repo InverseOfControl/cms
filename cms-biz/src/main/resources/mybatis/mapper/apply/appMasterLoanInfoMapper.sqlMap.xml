@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPMasterLoanInfoDaoImpl">
+   <resultMap id="appMasterLoanInfoMap" type="com.ymkj.cms.biz.entity.apply.APPMasterLoanInfoEntity">
+		<id property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="org" column="ORG" />
+		<result property="loanNo" column="LOAN_NO"/>
+		<result property="personId" column="PERSON_ID" />
+		<result property="masterLoadId" column="MASTER_LOAD_ID" />
+		<result property="acctRegisterDate" column="ACCT_REGISTER_DATE" />
+		<result property="buyerCreditLevel" column="BUYER_CREDIT_LEVEL" />
+		<result property="buyerCreditType" column="BUYER_CREDIT_TYPE" />
+		<result property="lastYearPayAmt" column="LAST_YEAR_PAY_AMT" />
+		<result property="goodRate" column="GOOD_RATE" />
+		<result property="sesameCreditValue" column="SESAME_CREDIT_VALUE" />
+		<result property="payAmt1" column="PAY_AMT1" />
+		<result property="payAmt2" column="PAY_AMT2" />
+		<result property="payAmt3" column="PAY_AMT3" />
+		<result property="payMonthAmt" column="PAY_MONTH_AMT" />
+		<result property="jiDongUserLevel" column="JI_DONG_USER_LEVEL" />
+	    <result property="pastYearShoppingAmount" column="PAST_YEAR_SHOPPING_AMOUNT" />
+		<result property="whiteCreditValue" column="WHITE_CREDIT_VALUE" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		<result property="snapVersion" column="SNAP_VERSION" />
+		
+		<result property="onlineAWithin3MonthsAddress" column="ONLINE_A_WITHIN3_MONTHS_ADDRESS" />
+		<result property="onlineAWithin6MonthsAddress" column="ONLINE_A_WITHIN6_MONTHS_ADDRESS" />
+		<result property="onlineAWithin12MonthsAddress" column="ONLINE_A_WITHIN12_MONTHS_ADDRESS" />
+		
+	</resultMap> 
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+          <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.APPMasterLoanInfoEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_TM_APP_MASTER_LOAN_INFO (LOAN_BASE_ID,APP_NO,LOAN_NO,ORG,PERSON_ID,MASTER_LOAD_ID,ACCT_REGISTER_DATE,BUYER_CREDIT_LEVEL,BUYER_CREDIT_TYPE
+         				, LAST_YEAR_PAY_AMT,GOOD_RATE,SESAME_CREDIT_VALUE, PAY_AMT1,PAY_AMT2,PAY_AMT3,PAY_MONTH_AMT,JI_DONG_USER_LEVEL
+         				,PAST_YEAR_SHOPPING_AMOUNT ,WHITE_CREDIT_VALUE
+         				,CREATOR_ID,CREATOR,CREATED_TIME,SNAP_VERSION)
+         	 VALUES(#{loanBaseId},  #{appNo},#{loanNo},#{org},  #{personId}, #{masterLoadId}, #{acctRegisterDate},
+         	 #{buyerCreditLevel}, #{buyerCreditType},  #{lastYearPayAmt}, #{goodRate},  #{sesameCreditValue},
+         	 	 #{payAmt1}, #{payAmt2},  #{payAmt3}, #{payMonthAmt},  #{jiDongUserLevel},
+         	 	 	 #{pastYearShoppingAmount}, #{whiteCreditValue},
+         	  #{creatorId}, #{creator}, #{createdTime},#{snapVersion})
+    </insert >
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="appMasterLoanInfoMap">
+		select * from BMS_TM_APP_MASTER_LOAN_INFO
+		where id = #{id}
+	</select>
+        	  
+   <select id="listBy" parameterType="java.util.Map" resultMap="appMasterLoanInfoMap">
+		select * from  BMS_TM_APP_MASTER_LOAN_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.APPMasterLoanInfoEntity">
+		update 	BMS_TM_APP_MASTER_LOAN_INFO
+ 			set 	 
+	 
+ 	    <if test="acctRegisterDate != null">
+        	ACCT_REGISTER_DATE = #{acctRegisterDate},
+        </if>
+        <if test="buyerCreditLevel != null and buyerCreditLevel != ''">
+        	BUYER_CREDIT_LEVEL = #{buyerCreditLevel},
+        </if>
+         <if test="buyerCreditType != null and buyerCreditType != ''">
+        	BUYER_CREDIT_TYPE = #{buyerCreditType},
+        </if>
+         <if test="(lastYearPayAmt != null and lastYearPayAmt != '') or lastYearPayAmt == 0 ">
+        	LAST_YEAR_PAY_AMT = #{lastYearPayAmt},
+        </if>
+         <if test="(goodRate != null and goodRate != '') or goodRate == 0">
+        	GOOD_RATE = #{goodRate},
+        </if>
+         <if test="(sesameCreditValue != null and sesameCreditValue != '') or sesameCreditValue == 0">
+        	SESAME_CREDIT_VALUE = #{sesameCreditValue},
+        </if>
+        <if test="(payAmt1 != null and payAmt1 != '') or payAmt1 == 0">
+        	PAY_AMT1 = #{payAmt1},
+        </if>
+         <if test="(payAmt2 != null and payAmt2 != '') or payAmt2 == 0">
+        	PAY_AMT2 = #{payAmt2},
+        </if>
+         <if test="(payAmt3 != null and payAmt3 != '') or payAmt3 == 0">
+        	PAY_AMT3 = #{payAmt3},
+        </if>
+        <if test="(payMonthAmt != null and payMonthAmt != '') or payMonthAmt == 0">
+        	PAY_MONTH_AMT = #{payMonthAmt},
+        </if>
+         <if test="jiDongUserLevel != null and jiDongUserLevel != ''">
+        	JI_DONG_USER_LEVEL = #{jiDongUserLevel},
+        </if>
+        
+         <if test="(pastYearShoppingAmount != null and pastYearShoppingAmount != '') or pastYearShoppingAmount =0" >
+        	PAST_YEAR_SHOPPING_AMOUNT = #{pastYearShoppingAmount},
+        </if>
+        <if test="(whiteCreditValue != null and whiteCreditValue != '') or whiteCreditValue =0">
+        	WHITE_CREDIT_VALUE = #{whiteCreditValue},
+        </if>
+        
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	
+	<update id="updateAll" parameterType="com.ymkj.cms.biz.entity.apply.APPMasterLoanInfoEntity">
+		update 	BMS_TM_APP_MASTER_LOAN_INFO
+ 			set 	 
+        	ACCT_REGISTER_DATE = #{acctRegisterDate},
+        	BUYER_CREDIT_LEVEL = #{buyerCreditLevel},
+        	BUYER_CREDIT_TYPE = #{buyerCreditType},
+        	LAST_YEAR_PAY_AMT = #{lastYearPayAmt},
+        	GOOD_RATE = #{goodRate},
+        	SESAME_CREDIT_VALUE = #{sesameCreditValue},
+        	PAY_AMT1 = #{payAmt1},
+        	PAY_AMT2 = #{payAmt2},
+        	PAY_AMT3 = #{payAmt3},
+        	PAY_MONTH_AMT = #{payMonthAmt},
+        	JI_DONG_USER_LEVEL = #{jiDongUserLevel},
+        	PAST_YEAR_SHOPPING_AMOUNT = #{pastYearShoppingAmount},
+        	WHITE_CREDIT_VALUE = #{whiteCreditValue},
+ 		    MODIFIER_ID = #{modifierId},
+ 		    MODIFIER = #{modifier},
+ 		    MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+    
+</mapper> 

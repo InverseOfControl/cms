@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPContactInfoDaoImpl">
+   <resultMap id="appContactInfoMap" type="com.ymkj.cms.biz.entity.apply.APPContactInfoEntity">
+		<id property="id" column="ID" />
+		<result property="headId" column="HEAD_ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="org" column="ORG" />
+		<result property="loanNo" column="LOAN_NO"/>
+		<result property="personId" column="PERSON_ID" />
+		<result property="contactName" column="CONTACT_NAME" />
+		<result property="contactRelation" column="CONTACT_RELATION" />
+		<result property="contactCellPhone" column="CONTACT_CELLPHONE" />
+		<result property="contactCellPhone_1" column="CONTACT_CELLPHONE_1" />
+		<result property="ifKnowLoan" column="IF_KNOW_LOAN" />
+		<result property="sequenceNum" column="SEQUENCE_NUM" />
+		<result property="contactEmpName" column="CONTACT_EMP_NAME" />
+		<result property="contactCorpPost" column="CONTACT_CORP_POST" />
+		<result property="contactCorpPhone" column="CONTACT_CORP_PHONE" />
+		<result property="contactCorpPhone_1" column="CONTACT_CORP_PHONE_1" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		<result property="snapVersion" column="SNAP_VERSION" />
+		<result property="contacGender" column="CONTACT_GENDER" />
+		
+		<result property="contactIdNo" column="CONTACT_ID_NO" />
+		<result property="ifForeignPenple" column="IF_FOREIGN_PENPLE" />
+		<!-- 推送核心 联系人手机号码与json定义-->
+		<result property="contactCellphone" column="CONTACT_CELLPHONE" />
+		
+	</resultMap>
+ 
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+         <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+        
+        <if test="loanNo != null and loanNo != ''">
+       	 	and LOAN_NO = #{loanNo}
+        </if>
+        <if test="sequenceNum != null and sequenceNum != ''">
+       	 	and SEQUENCE_NUM = #{sequenceNum}
+        </if>
+        
+        <if test="contactName != null and contactName != ''">
+       	 	and CONTACT_NAME = #{contactName}
+        </if>
+        <if test="contactRelation != null and contactRelation != ''">
+       	 	and CONTACT_RELATION = #{contactRelation}
+        </if>
+        
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.APPContactInfoEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_TM_APP_CONTACT_INFO (HEAD_ID,LOAN_BASE_ID,APP_NO,LOAN_NO,ORG,PERSON_ID
+         				, CONTACT_NAME,CONTACT_RELATION,CONTACT_CELLPHONE,CONTACT_CELLPHONE_1, IF_KNOW_LOAN,SEQUENCE_NUM,CONTACT_EMP_NAME
+         				,CONTACT_CORP_POST ,CONTACT_CORP_PHONE,CONTACT_CORP_PHONE_1
+         				,CREATOR_ID,CREATOR,CREATED_TIME,SNAP_VERSION,CONTACT_GENDER,CONTACT_ID_NO,IF_FOREIGN_PENPLE)
+         	 VALUES(#{headId}, #{loanBaseId},  #{appNo},#{loanNo},#{org},  #{personId}, #{contactName},#{contactRelation},
+         	 #{contactCellPhone},#{contactCellPhone_1}, #{ifKnowLoan},  #{sequenceNum}, #{contactEmpName},  #{contactCorpPost},#{contactCorpPhone},#{contactCorpPhone_1},
+         	  #{creatorId}, #{creator}, #{createdTime},#{snapVersion},#{contacGender},#{contactIdNo},#{ifForeignPenple})
+    </insert >
+    
+    <insert id="batchInsert" useGeneratedKeys="true" parameterType="java.util.List">  
+	    <selectKey resultType="long" keyProperty="id" order="AFTER">  
+	        SELECT  
+	        LAST_INSERT_ID()  
+	    </selectKey>  
+	     insert into BMS_TM_APP_CONTACT_INFO (HEAD_ID,LOAN_BASE_ID,APP_NO,LOAN_NO,ORG,PERSON_ID
+         				, CONTACT_NAME,CONTACT_RELATION,CONTACT_CELLPHONE,CONTACT_CELLPHONE_1, IF_KNOW_LOAN,SEQUENCE_NUM,CONTACT_EMP_NAME
+         				,CONTACT_CORP_POST ,CONTACT_CORP_PHONE,CONTACT_CORP_PHONE_1
+         				,CREATOR_ID,CREATOR,CREATED_TIME,SNAP_VERSION,CONTACT_GENDER,CONTACT_ID_NO,IF_FOREIGN_PENPLE)
+	    values  
+	  	 <foreach collection="list" item="item" index="index" separator="," >   
+	       (#{item.headId},#{item.loanBaseId},  #{item.appNo},#{item.loanNo},#{item.org},  #{item.personId}, #{item.contactName},#{item.contactRelation},
+         	 #{item.contactCellPhone},#{item.contactCellPhone_1}, #{item.ifKnowLoan},  #{item.sequenceNum}, #{item.contactEmpName},  #{item.contactCorpPost},#{item.contactCorpPhone},#{item.contactCorpPhone_1},
+         	  #{item.creatorId}, #{item.creator}, #{item.createdTime},#{item.snapVersion},#{item.contacGender},#{item.contactIdNo},#{item.ifForeignPenple})
+	    </foreach>   
+	</insert>
+	
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="appContactInfoMap">
+		select * from BMS_TM_APP_CONTACT_INFO
+		where id = #{id}
+	</select>
+        
+   <select id="listBy" parameterType="java.util.Map" resultMap="appContactInfoMap">
+		select * from  BMS_TM_APP_CONTACT_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.APPContactInfoEntity">
+		update 	BMS_TM_APP_CONTACT_INFO
+ 			set
+ 	    <if test="contactName != null and contactName != ''">
+        	CONTACT_NAME = #{contactName},
+        </if>
+        <if test="contactRelation != null and contactRelation != ''">
+        	CONTACT_RELATION = #{contactRelation},
+        </if>
+         <if test="contactCellPhone != null and contactCellPhone != ''">
+        	CONTACT_CELLPHONE = #{contactCellPhone},
+        </if><if test="contactCellPhone_1 != null and contactCellPhone_1 != ''">
+        	CONTACT_CELLPHONE_1 = #{contactCellPhone_1},
+        </if>
+         <if test="ifKnowLoan != null and ifKnowLoan != ''">
+        	IF_KNOW_LOAN = #{ifKnowLoan},
+        </if>
+         <if test="sequenceNum != null and sequenceNum != ''">
+        	SEQUENCE_NUM = #{sequenceNum},
+        </if>
+         <if test="contactEmpName != null and contactEmpName != ''">
+        	CONTACT_EMP_NAME = #{contactEmpName},
+        </if>
+        <if test="contactCorpPost != null and contactCorpPost != ''">
+        	CONTACT_CORP_POST = #{contactCorpPost},
+        </if>
+        <if test="contactCorpPhone != null and contactCorpPhone != ''">
+        	CONTACT_CORP_PHONE = #{contactCorpPhone},
+        </if>
+        <if test="contactCorpPhone != null and contactCorpPhone != ''">
+        	CONTACT_CORP_PHONE_1 = #{contactCorpPhone_1},
+        </if>
+        <if test="contacGender != null and contacGender != ''">
+        	CONTACT_GENDER = #{contacGender},
+        </if>
+        <if test="contactIdNo != null and contactIdNo != ''">
+        	CONTACT_ID_NO = #{contactIdNo},
+        </if>
+         <if test="ifForeignPenple != null and ifForeignPenple != ''">
+        	IF_FOREIGN_PENPLE = #{ifForeignPenple},
+        </if>
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	<update id="updateAll" parameterType="com.ymkj.cms.biz.entity.apply.APPContactInfoEntity">
+		update 	BMS_TM_APP_CONTACT_INFO
+ 			set
+        	CONTACT_NAME = #{contactName},
+        	CONTACT_RELATION = #{contactRelation},
+        	CONTACT_CELLPHONE = #{contactCellPhone},
+        	CONTACT_CELLPHONE_1 = #{contactCellPhone_1},
+        	IF_KNOW_LOAN = #{ifKnowLoan},
+        	SEQUENCE_NUM = #{sequenceNum},
+        	CONTACT_EMP_NAME = #{contactEmpName},
+        	CONTACT_CORP_POST = #{contactCorpPost},
+        	CONTACT_CORP_PHONE = #{contactCorpPhone},
+        	CONTACT_CORP_PHONE_1 = #{contactCorpPhone_1},
+        	CONTACT_GENDER = #{contacGender},
+        	CONTACT_ID_NO = #{contactIdNo},
+ 		    MODIFIER_ID = #{modifierId},
+ 		    MODIFIER = #{modifier},
+ 		    MODIFIED_TIME = #{modifiedTime},
+ 		    IF_FOREIGN_PENPLE = #{ifForeignPenple}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+    <delete id="deleteByloanBaseId" parameterType="long">
+    	delete from BMS_TM_APP_CONTACT_INFO
+	 
+		where LOAN_BASE_ID = #{loanBaseId}
+    </delete>
+    
+    
+    <update id="updateContactInfoByAudit" parameterType="com.ymkj.cms.biz.entity.apply.APPContactInfoEntity">
+		update 	BMS_TM_APP_CONTACT_INFO
+ 			set
+ 			
+ 		<choose>
+ 			<when test="contactEmpName != null and contactEmpName != ''">
+ 				CONTACT_EMP_NAME = #{contactEmpName},
+ 			</when>
+ 			<otherwise>
+ 				CONTACT_EMP_NAME = null,
+ 			</otherwise>
+ 		</choose>
+ 		
+ 		<!-- 
+ 		<if test="contactEmpName != null and contactEmpName != ''">
+        	CONTACT_EMP_NAME = #{contactEmpName},
+        </if>	
+ 		-->
+ 		
+ 	    <if test="contactName != null and contactName != ''">
+        	CONTACT_NAME = #{contactName},
+        </if>
+        <if test="contactRelation != null and contactRelation != ''">
+        	CONTACT_RELATION = #{contactRelation},
+        </if>
+         <if test="contactCellPhone != null and contactCellPhone != ''">
+        	CONTACT_CELLPHONE = #{contactCellPhone},
+        </if>
+         <if test="ifKnowLoan != null and ifKnowLoan != ''">
+        	IF_KNOW_LOAN = #{ifKnowLoan},
+        </if>
+         <if test="sequenceNum != null and sequenceNum != ''">
+        	SEQUENCE_NUM = #{sequenceNum},
+        </if>
+         
+        <if test="contactCorpPost != null and contactCorpPost != ''">
+        	CONTACT_CORP_POST = #{contactCorpPost},
+        </if>
+        <if test="contactCorpPhone != null and contactCorpPhone != ''">
+        	CONTACT_CORP_PHONE = #{contactCorpPhone},
+        </if>
+        <if test="contactCellPhone_1 != null and contactCellPhone_1 != ''">
+        	CONTACT_CELLPHONE_1 = #{contactCellPhone_1},
+        </if>
+        <if test="contactCorpPhone_1 != null and contactCorpPhone_1 != ''">
+        	CONTACT_CORP_PHONE_1 = #{contactCorpPhone_1},
+        </if>
+        <if test="contactIdNo != null and contactIdNo != ''">
+        	CONTACT_ID_NO = #{contactIdNo},
+        </if>
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	<!-- 清空字段 -->
+	 <update id="deleteContactInfoByAudit" parameterType="com.ymkj.cms.biz.entity.apply.APPContactInfoEntity">
+		update 	BMS_TM_APP_CONTACT_INFO
+ 			set
+ 	    <if test="contactName != null and contactName != ''">
+        	CONTACT_NAME = null,
+        </if>
+        <if test="contactRelation != null and contactRelation != ''">
+        	CONTACT_RELATION = null,
+        </if>
+         <if test="contactCellPhone != null and contactCellPhone != ''">
+        	CONTACT_CELLPHONE = null,
+        </if>
+         <if test="ifKnowLoan != null and ifKnowLoan != ''">
+        	IF_KNOW_LOAN = null,
+        </if>
+         <if test="sequenceNum != null and sequenceNum != ''">
+        	SEQUENCE_NUM = null,
+        </if>
+         <if test="contactEmpName != null and contactEmpName != ''">
+        	CONTACT_EMP_NAME = null,
+        </if>
+        <if test="contactCorpPost != null and contactCorpPost != ''">
+        	CONTACT_CORP_POST = null,
+        </if>
+        <if test="contactCorpPhone != null and contactCorpPhone != ''">
+        	CONTACT_CORP_PHONE = null,
+        </if>
+        <if test="contactCellPhone_1 != null and contactCellPhone_1 != ''">
+        	CONTACT_CELLPHONE_1 = null,
+        </if>
+        <if test="contactCorpPhone_1 != null and contactCorpPhone_1 != ''">
+        	CONTACT_CORP_PHONE_1 = null,
+        </if>
+        <if test="contactIdNo != null and contactIdNo != ''">
+        	CONTACT_ID_NO = null,
+        </if>
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	
+	<delete id="deleteApplyContactInfo" parameterType="java.util.Map">
+    	delete from BMS_TM_APP_CONTACT_INFO
+		where LOAN_NO=#{loanNo} and SEQUENCE_NUM=#{sequenceNum}
+    </delete>
+	
+	
+	<delete id="deleteByLoanAndNumAll" parameterType="java.util.Map">
+    	delete from BMS_TM_APP_CONTACT_INFO
+		where LOAN_NO=#{loanNo} 
+		<if test="appContactInfoEntityList!=null and appContactInfoEntityList.size()>0">
+				and SEQUENCE_NUM not in(
+				<foreach item="appContactInfoEntity" index="index" collection="appContactInfoEntityList"
+				separator=",">
+					#{appContactInfoEntity.sequenceNum}
+				</foreach>
+				) 
+		</if>	
+    </delete>
+</mapper> 

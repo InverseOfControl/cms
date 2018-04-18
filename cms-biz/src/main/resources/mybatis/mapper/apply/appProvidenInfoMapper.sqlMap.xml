@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPProvidentInfoDaoImpl">
+   <resultMap id="appProvidentInfoMap" type="com.ymkj.cms.biz.entity.apply.APPProvidentInfoEntity">
+		<id property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="org" column="ORG" />
+		<result property="loanNo" column="LOAN_NO"/>
+		<result property="providentId" column="PROVIDENT_ID"  />
+	    <result property="personId" column="PERSON_ID" />
+		<result property="openAccountDate" column="OPEN_ACCOUNT_DATE" />
+		<result property="depositBase" column="DEPOSIT_BASE" />
+		<result property="depositRate" column="DEPOSIT_RATE" />
+		<result property="monthDepositAmt" column="MONTH_DEPOSIT_AMT" />
+		<result property="providentInfo" column="PROVIDENT_INFO" />
+		<result property="paymentUnit" column="PAYMENT_UNIT" />
+		<result property="paymentMonthNum" column="PAYMENT_MONTH_NUM" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		<result property="snapVersion" column="SNAP_VERSION" />
+	</resultMap>
+ 
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+           <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.APPProvidentInfoEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_TM_APP_PROVIDENT_INFO(LOAN_BASE_ID,APP_NO,LOAN_NO,ORG,PERSON_ID,PROVIDENT_ID         
+         				, OPEN_ACCOUNT_DATE,DEPOSIT_BASE,DEPOSIT_RATE, MONTH_DEPOSIT_AMT,PROVIDENT_INFO,PAYMENT_UNIT
+         				,PAYMENT_MONTH_NUM 
+         				,CREATOR_ID,CREATOR,CREATED_TIME,SNAP_VERSION)
+         	 VALUES(#{loanBaseId},  #{appNo},#{loanNo},#{org}, #{personId},#{providentId}, #{openAccountDate}, #{depositBase},
+         	 #{depositRate}, #{monthDepositAmt},  #{providentInfo}, #{paymentUnit},  #{paymentMonthNum},
+         	  #{creatorId}, #{creator}, #{createdTime},#{snapVersion})
+    </insert >
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="appProvidentInfoMap">
+		select * from BMS_TM_APP_PROVIDENT_INFO
+		where id = #{id}
+	</select>
+        <select id="listBy" parameterType="java.util.Map" resultMap="appProvidentInfoMap">
+		select * from  BMS_TM_APP_PROVIDENT_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select> 
+    
+    
+    	<!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.APPProvidentInfoEntity">
+		update  BMS_TM_APP_PROVIDENT_INFO
+ 			set 
+ 	    <if test="openAccountDate != null">
+        	OPEN_ACCOUNT_DATE = #{openAccountDate},
+        </if>
+        <if test="(depositBase != null and depositBase != '') or depositBase == 0">
+        	DEPOSIT_BASE = #{depositBase},
+        </if>
+         <if test="(depositRate != null and depositRate != '') or depositRate ==0 ">
+        	DEPOSIT_RATE = #{depositRate},
+        </if>
+        <if test="(monthDepositAmt != null and monthDepositAmt != '') or monthDepositAmt ==0">
+        	MONTH_DEPOSIT_AMT = #{monthDepositAmt},
+        </if>
+        <if test="providentInfo != null and providentInfo != ''">
+        	PROVIDENT_INFO = #{providentInfo},
+        </if>
+         <if test="paymentUnit != null and paymentUnit != ''">
+        	PAYMENT_UNIT = #{paymentUnit},
+        </if>
+         <if test="(paymentMonthNum != null and paymentMonthNum != '') or paymentMonthNum ==0">
+        	PAYMENT_MONTH_NUM = #{paymentMonthNum},
+        </if>
+	 
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+    
+    
+    <update id="updateAll" parameterType="com.ymkj.cms.biz.entity.apply.APPProvidentInfoEntity">
+		update  BMS_TM_APP_PROVIDENT_INFO
+ 			set 
+        	OPEN_ACCOUNT_DATE = #{openAccountDate},
+        	DEPOSIT_BASE = #{depositBase},
+        	DEPOSIT_RATE = #{depositRate},
+        	MONTH_DEPOSIT_AMT = #{monthDepositAmt},
+        	PROVIDENT_INFO = #{providentInfo},
+        	PAYMENT_UNIT = #{paymentUnit},
+        	PAYMENT_MONTH_NUM = #{paymentMonthNum},
+	 
+ 		    MODIFIER_ID = #{modifierId},
+ 		    MODIFIER = #{modifier},
+ 		    MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+</mapper> 

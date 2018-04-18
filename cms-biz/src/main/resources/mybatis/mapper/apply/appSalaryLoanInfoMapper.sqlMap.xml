@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPSalaryInfoDaoImpl">
+   <resultMap id="appSalaryLoanInfoMap" type="com.ymkj.cms.biz.entity.apply.APPSalaryLoanInfoEntity">
+		<id property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="org" column="ORG" />
+		<result property="loanNo" column="LOAN_NO"/>
+		<result property="conditionType" column="CONDITION_TYPE" />
+		<result property="ifOwnHouseProperty" column="IF_OWN_HOUSE_PROPERTY" />
+		<result property="ifRelativesHouseProperty" column="IF_RELATIVES_HOUSE_PROPERTY" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		<result property="snapVersion" column="SNAP_VERSION" />
+	</resultMap>
+ 
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+           <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+    	 
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.APPSalaryLoanInfoEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into bms_tm_app_salary_loan_info (LOAN_BASE_ID,APP_NO,LOAN_NO,ORG
+         				, CONDITION_TYPE,IF_OWN_HOUSE_PROPERTY,IF_RELATIVES_HOUSE_PROPERTY
+         				,CREATOR_ID,CREATOR,CREATED_TIME,SNAP_VERSION)
+         	 VALUES(#{loanBaseId},  #{appNo},#{loanNo},#{org},  #{conditionType}, #{ifOwnHouseProperty},
+         	 #{ifRelativesHouseProperty},
+         	  #{creatorId}, #{creator}, #{createdTime},#{snapVersion})
+    </insert >
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="appSalaryLoanInfoMap">
+		select * from bms_tm_app_salary_loan_info
+		where id = #{id}
+	</select>
+        
+       <select id="listBy" parameterType="java.util.Map" resultMap="appSalaryLoanInfoMap">
+		select * from  bms_tm_app_salary_loan_info
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	
+    	<!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.APPSalaryLoanInfoEntity">
+		update  bms_tm_app_salary_loan_info
+ 			set 
+ 	    <if test="conditionType != null and conditionType != ''">
+        	CONDITION_TYPE = #{conditionType},
+        </if>
+        <if test="ifOwnHouseProperty != null and ifOwnHouseProperty != ''">
+        	IF_OWN_HOUSE_PROPERTY = #{ifOwnHouseProperty},
+        </if>
+         <if test="ifRelativesHouseProperty != null and ifRelativesHouseProperty != ''">
+        	IF_RELATIVES_HOUSE_PROPERTY = #{ifRelativesHouseProperty},
+        </if>
+         
+	 
+ 		  MODIFIER_ID = #{modifierId},
+ 		  MODIFIER = #{modifier},
+ 		  MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	
+	<update id="updateAll" parameterType="com.ymkj.cms.biz.entity.apply.APPSalaryLoanInfoEntity">
+		update  bms_tm_app_salary_loan_info
+ 			set 
+        	CONDITION_TYPE = #{conditionType},
+        	IF_OWN_HOUSE_PROPERTY = #{ifOwnHouseProperty},
+        	IF_RELATIVES_HOUSE_PROPERTY = #{ifRelativesHouseProperty},
+	 
+ 		    MODIFIER_ID = #{modifierId},
+ 		    MODIFIER = #{modifier},
+ 		    MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+</mapper> 

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSContractTemplateDaoImpl">
+	<sql id="table">bms_contract_template</sql>
+
+	<resultMap id="BMSContractTemplateMap" type="com.ymkj.cms.biz.entity.master.BMSContractTemplate">
+		<id property="id" column="ID" />
+		<result property="name" column="NAME" />
+		<result property="channelName" column="channelName" />
+		<result property="code" column="CODE" />
+		<result property="printType" column="PRINT_TYPE" />
+		<result property="templateUrl" column="TEMPLATE_URL" />
+		<result property="channelId" column="channelId" />
+		<result property="channelCd" column="channel_code" />
+		<result property="contractChannelId" column="contractChannelId" />
+		<result property="templateContent" column="TEMPLATE_CONTENT" />
+		<result property="version" column="VERSION" />
+		<result property="isDeleted" column="IS_DELETED" />
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="creatorDate" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modified" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedDate" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifiedId" column="MODIFIER_ID" />
+	     <result property="eContractFlag" column="E_CONTRACT_FLAG" />
+	     <result property="contractType" column="CONTRACT_TYPE" />
+	     <result property="isDisabled" column="IS_DISABLED" />
+	</resultMap>
+	
+
+	<sql id="condition_sql">
+		where IS_DELETED = 0
+		<if test="id != null and id != 0">
+			and ID = #{id}
+		</if>
+		<if test="name != null and name != ''">
+		<![CDATA[ 
+        	and  NAME like '%${name}%']]>
+		</if>
+		<if test="code != null and code != ''">
+        	and  CODE =#{code}
+		</if>
+		<if test="printType != null and printType !=''">
+			and PRINT_TYPE = #{printType}
+		</if>
+		<if test="templateUrl != null and templateUrl !=''">
+			and TEMPLATE_URL = #{templateUrl}
+		</if>
+	</sql>
+
+
+
+	<select id="listBy" parameterType="java.util.Map" resultMap="BMSContractTemplateMap">
+		SELECT bt.id,bt.code,b.NAME AS channelName,b.id as channelId,bt.NAME,bt.PRINT_TYPE,bt.TEMPLATE_URL,bc.id as contractChannelId  FROM bms_contract_template bt 
+		INNER JOIN bms_contract_channel bc ON bc.TEMPLATE_ID = bt.id 
+		LEFT JOIN bms_channel b ON b.ID = bc.CHANNEL_ID
+		where bt.IS_DELETED = 0
+			and bt.ID = #{id}
+	</select>
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSContractTemplateMap">
+		SELECT 
+		  bt.id,
+		  bt.*,
+		  bt.code,
+		  b.NAME AS channelName,
+		  b.id AS channelId,
+		  bt.NAME,
+		  bt.PRINT_TYPE,
+		  bt.TEMPLATE_URL,
+		  bc.id AS contractChannelId,
+		  bt.TEMPLATE_CONTENT AS templateContent,
+		  b.code AS channel_code
+		FROM
+		  bms_contract_template bt 
+		  INNER JOIN bms_contract_channel bc 
+		    ON bc.TEMPLATE_ID = bt.id 
+		  LEFT JOIN bms_channel b 
+		    ON b.ID = bc.CHANNEL_ID 
+		WHERE bt.IS_DELETED = 0 
+		  AND b.IS_DELETED = 0 
+		<if test="channelId != null and channelId != ''">
+        	and  b.id =#{channelId}
+		</if>
+		<![CDATA[ order by bt.ID desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1) from bms_contract_template bt 
+		INNER JOIN bms_contract_channel bc ON bc.TEMPLATE_ID = bt.id 
+		LEFT JOIN bms_channel b ON b.ID = bc.CHANNEL_ID
+		where bt.IS_DELETED = 0 and b.IS_DELETED = 0
+		<if test="channelId != null and channelId != ''">
+        	and  b.id =#{channelId}
+		</if>
+	</select>
+
+	<select id="getById" parameterType="long" resultMap="BMSContractTemplateMap">
+		select * from
+		<include refid="table" />
+		where ID = #{id}
+	</select>
+
+    <select id="findByVO" parameterType="java.util.Map" resultMap="BMSContractTemplateMap">
+     select * from 
+     <include refid="table" /> ct
+     LEFT JOIN bms_contract_channel cc
+     on cc.TEMPLATE_ID=ct.id
+     where ct.IS_DELETED = 0
+<!--     	 and ct.IS_DISABLED = 0 -->
+     	 and ct.IS_DELETED = 0
+		<if test="id != null and id != 0">
+			and ct.ID = #{id}
+		</if>
+		<if test="name != null and name != ''">
+        	and  ct.NAME = #{name}
+		</if>
+		<if test="code != null and code != ''">
+        	and  ct.CODE =#{code}
+		</if>
+		<if test="printType != null and printType !=''">
+			and ct.PRINT_TYPE = #{printType}
+		</if>
+		<if test="templateUrl != null and templateUrl !=''">
+		<![CDATA[ 
+			and ct.TEMPLATE_URL like '%${templateUrl}']]>
+		</if>
+		<if test="channelId != null and channelId !=''">
+			and cc.CHANNEL_ID = #{channelId}
+		</if>
+    </select>
+    
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSContractTemplate"  keyProperty="id" useGeneratedKeys="true">
+		insert into bms_contract_template
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="code != null and code !=''">
+				CODE,
+			</if>
+			<if test="name != null and name != ''">
+				NAME,
+			</if>
+			<if test="printType != null and printType != ''">
+				PRINT_TYPE,
+			</if>
+			<if test="templateUrl != null and templateUrl != ''">
+				TEMPLATE_URL,
+			</if>
+			<if test="templateContent != null and templateContent != ''">
+				TEMPLATE_CONTENT,
+			</if>
+			<if test="creator != null and creator != ''">
+			CREATOR,
+			 </if> <if test="creatorId != null">
+			CREATOR_ID,
+			</if> 
+			<if test="creatorDate != null">
+			CREATOR_DATE,
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED,
+			</if>
+			<if test="modifiedId != null">
+				MODIFIED_ID,
+			</if>
+			<if test="modifiedDate != null">
+				MODIFIED_DATE,
+			</if>
+			<if test="isDisabled != null">
+				IS_DISABLED,
+			</if>
+			<if test="contractType != null">
+				contract_type,
+			</if>
+			IS_DELETED,
+			VERSION
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			
+			<if test="code != null and code != ''">
+				#{code},
+			</if>
+			<if test="name != null and name != ''">
+				#{name},
+			</if>
+			<if test="printType != null and printType != ''">
+				#{printType},
+			</if>
+			<if test="templateUrl != null and templateUrl != ''">
+				#{templateUrl},
+			</if>
+			<if test="templateContent != null and templateContent != ''">
+				#{templateContent},
+			</if>
+			 <if test="creator != null and creator != ''">
+			  #{creator}, 
+			  </if>
+			 <if test="creatorId != null"> #{creatorId}, </if> 
+			<if test="creatorDate != null"> #{creatorDate}, </if>
+			<if test="modified != null and modified != ''">
+				#{modified},
+			</if>
+			<if test="modifiedId != null">
+				#{modifiedId},
+			</if>
+			<if test="modifiedDate != null">
+				#{modifiedDate},
+			</if>
+			<if test="isDisabled != null">
+				#{isDisabled},
+			</if>
+			<if test="contractType != null">
+				#{contractType},
+			</if>
+			0,
+			1
+		</trim>
+	</insert>
+
+	<!-- del -->
+	<delete id="deleteById" parameterType="long">
+		delete from
+		<include refid="table" />
+		where ID = #{id}
+	</delete>
+
+
+	<!-- 更新 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSContractTemplate">
+		update
+		<include refid="table" />
+		<include refid="set_sql" />
+		<where>
+			ID = #{id}
+		</where>
+	</update>
+	<sql id="set_sql">
+		<trim prefix="set" suffixOverrides=",">
+			<if test="code != null and code != ''">
+				CODE=#{code},
+			</if>
+			<if test="name != null and name != ''">
+				NAME=#{name},
+			</if>
+			<if test="printType != null and printType != ''">
+				PRINT_TYPE=#{printType},
+			</if>
+			<if test="templateUrl != null and templateUrl != ''">
+				TEMPLATE_URL=#{templateUrl},
+			</if>
+			<if test="templateContent != null and templateContent != ''">
+				TEMPLATE_CONTENT=#{templateContent},
+			</if>
+			<if test="creator != null and creator != ''">
+				CREATOR=#{creator},
+			</if>
+			<if test="creatorId != null">
+				CREATOR_ID=#{creatorId},
+			</if>
+			<if test="creatorDate != null">
+				CREATOR_DATE=#{creatorDate},
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED=#{modified},
+			</if>
+			<if test="isDisabled != null">
+				IS_DISABLED=#{isDisabled},
+			</if>
+			<if test="contractType != null">
+				contract_type=#{contractType},
+			</if>
+		</trim>
+	</sql>
+	
+	<select id="listByChannelCd" parameterType="java.util.Map" resultMap="BMSContractTemplateMap">
+		SELECT bt.id,bt.code,b.CODE channel_code,b.NAME AS channelName,b.id as channelId,bt.NAME,bt.PRINT_TYPE,bt.TEMPLATE_CONTENT,bt.TEMPLATE_URL,bc.id as contractChannelId,b.e_contract_flag,bt.contract_type  FROM bms_contract_template bt 
+		INNER JOIN bms_contract_channel bc ON bc.TEMPLATE_ID = bt.id 
+		LEFT JOIN bms_channel b ON b.ID = bc.CHANNEL_ID
+		where bt.IS_DELETED = 0
+		and bt.IS_DISABLED = 0
+		<if test="channelCd != null and channelCd != ''">
+        	and  b.CODE =#{channelCd}
+		</if>
+	</select>
+
+</mapper>

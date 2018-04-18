@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.FileFormDaoImpl">
+    <sql id="table">bms_file_form</sql>
+   <resultMap id="FileFormMap" type="com.ymkj.cms.biz.entity.apply.FileFormEntity">
+        <id property="id" column="ID"/>
+		<result property="name" column="NAME" />
+		<result property="productName" column="PRODUCT_NAME" />
+		<result property="idNo" column="ID_NO" />
+		<result property="branchManagerName" column="BRANCH_MANAGER_NAME" />
+		<result property="serviceName" column="SERVICE_NAME"/>
+		<result property="accLmt" column="APPLY_LMT" />
+		<result property="loanDate" column="LOAN_DATE" />
+		<result property="accTerm" column="APPLY_TERM" />
+		<result property="loanBranch" column="LOAN_BRANCH"/>
+		<result property="loanBarnchId" column="LOAN_BRANCH_ID"/>
+		<result property="loanNo" column="LOAN_NO"/>
+	</resultMap>
+	<resultMap  id="FileFormEntityMap" type="com.ymkj.cms.biz.entity.apply.FileFormEntity">
+	    <id property="id" column="ID"/>
+	    <result column="LOAN_NO" property="loanNo" />
+	    <result column="LOAN_NO_1" property="loanNo"/>
+	    <result column="file_no" property="fileNo" />
+	    <result column="file_status" property="fileStatus" />
+	    <result column="approval" property="approval" />
+	    <result column="approval_num" property="approvalNum" />
+	    <result column="loan_form" property="loanForm" />
+	    <result column="loan_form_num" property="loanFormNum" />
+	    <result column="bank_card_copy" property="bankCardCopy" />
+	    <result column="bank_card_copy_num" property="bankCardCopyNum" />
+	    <result column="loan_sign_record_table" property="loanSignRecordTable" />
+	    <result column="loan_sign_record_table_num" property="loanSignRecordTableNum" />
+	    <result column="personal_credit_report" property="personalCreditReport" />
+	    <result column="personal_credit_report_num" property="personalCreditReportNum" />
+	    <result column="identity_prove" property="identityProve" />
+	    <result column="identity_prove_num" property="identityProveNum" />
+	    <result column="income_prove" property="incomeProve" />
+	    <result column="income_prove_num" property="incomeProveNum" />
+	    <result column="job_prove" property="jobProve" />
+	    <result column="job_prove_num" property="jobProveNum" />
+	    <result column="address_prove" property="addressProve" />
+	    <result column="address_prove_num" property="addressProveNum" />
+	    <result column="bussiness_prove" property="bussinessProve" />
+	    <result column="bussiness_prove_num" property="bussinessProveNum" />
+	    <result column="property_prove" property="propertyProve" />
+	    <result column="property_prove_num" property="propertyProveNum"/>
+	    <result column="others_prove" property="othersProve" />
+	    <result column="others_prove_num" property="othersProveNum" />
+	    <result column="remark" property="remark" />
+	    <result column="remark_num" property="remarkNum" />
+	    <result column="VERSION" property="version" />
+	    <result column="LOAN_BRANCH" property="loanBranch" />
+	    <result column="LOAN_DATE" property="loanDate"/>
+	    <result column="PRODUCT_NAME" property="productName"/>
+	    <result column="NAME" property="name"/>
+	</resultMap>
+	
+	<sql id="condition_sql">
+	    1=1
+		<if test="id != null and id != 0">
+			and blb.id = #{id}
+		</if>
+		<if test="name != null and name != ''">
+			and blb.NAME like CONCAT('%',trim(#{name}),'%') 
+		</if>
+		<if test="idNo != null and idNo != ''">
+			and blb.ID_NO like CONCAT('%',trim(#{idNo}),'%') 
+		</if>
+		<if test="mobilePhone != null and mobilePhone != ''">
+			and bapi.CELLPHONE like CONCAT('%',trim(#{mobilePhone}),'%') 
+		</if>
+		<if test="branchManagerCode != null and branchManagerCode != ''">
+			and blb.BRANCH_MANAGER_CODE = #{branchManagerCode}
+		</if>
+		<if test="lendingTimeStart != null">
+			and blb.LOAN_DATE >= #{lendingTimeStart}
+		</if>
+		<if test="lendingTimeEnd != null">
+			and blb.LOAN_DATE <![CDATA[<=]]>#{lendingTimeEnd}
+		</if>
+		<if test="owningBranchId !=null">
+	       AND (blb.CONTRACT_BRANCH_ID in(
+	         <foreach item="guard" index="index" collection="owningBranchId" separator=",">
+		         #{guard}
+	         </foreach>
+	         )
+	          OR blb.OWNING_BRANCH_ID in(
+	        <foreach item="guard" index="index" collection="owningBranchId" separator=",">
+		      #{guard}
+	        </foreach>
+	                 )
+	          )
+		</if>
+		AND blb.status='NORMAL' AND blb.RTF_STATE='DHHK'
+	</sql>	
+	<!--申请件档案列表查询-->
+   <select id="listPage" parameterType="java.util.Map" resultMap="FileFormMap">
+	SELECT blb.ID ,
+	blb.NAME,
+	blb.ID_NO,
+	blb.LOAN_NO,
+	bapi.CELLPHONE,
+	blb.BRANCH_MANAGER_CODE,
+	blb.BRANCH_MANAGER_NAME,
+	blb.SERVICE_CODE,
+	blb.SERVICE_NAME,
+	blb.LOAN_DATE ,
+	blb.LOAN_BRANCH,
+	blb.LOAN_BRANCH_ID,
+	blp.APPLY_LMT,
+	blp.APPLY_TERM,
+	blp.PRODUCT_CD,
+    blp.PRODUCT_NAME
+	FROM bms_loan_base blb
+	INNER JOIN bms_loan_product blp ON blb.LOAN_NO=blp.LOAN_NO
+	INNER JOIN bms_app_person_info bapi ON blb.LOAN_NO=bapi.LOAN_NO
+	INNER JOIN (SELECT * FROM bms_loan_contract bc WHERE  bc.`IS_DELETED`='0') blc  ON blb.id=blc.LOAN_BASE_ID
+	<where>
+	  <include refid="condition_sql" />
+	</where>
+	 <![CDATA[ order by blb.LOAN_DATE desc]]>
+  </select>
+  
+  <select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+	 select count(1) FROM bms_loan_base blb
+	INNER JOIN bms_loan_product blp ON blb.LOAN_NO=blp.LOAN_NO
+	INNER JOIN bms_app_person_info bapi ON blb.LOAN_NO=bapi.LOAN_NO
+	INNER JOIN (SELECT * FROM bms_loan_contract bc WHERE  bc.`IS_DELETED`='0') blc  ON blb.id=blc.LOAN_BASE_ID
+	<where>
+	  <include refid="condition_sql" />
+	</where>
+	 <![CDATA[ order by blb.LOAN_DATE desc]]>
+	</select>
+	<!-- 新增档案信息 -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.FileFormEntity" keyProperty="id" useGeneratedKeys="true">
+	insert into bms_file_form
+	 <trim prefix="(" suffix=")" suffixOverrides="," >
+	 <if test="loanNo != null and loanNo != ''">
+		LOAN_NO,
+	 </if>
+    <if test="fileNo != null and fileNo != ''">
+		file_no,
+	 </if>
+	 <if test="fileStatus != null and fileStatus != ''">
+		file_status,
+	 </if>
+	 <if test="approval != null and approval != ''">
+		approval,
+	 </if>
+	 <if test="approvalNum != null ">
+		approval_num,
+	 </if>
+	 <if test="loanForm != null and loanForm != ''">
+		loan_form,
+	 </if>
+	 <if test="loanFormNum != null ">
+		loan_form_num,
+	 </if>
+	 <if test="bankCardCopy != null and bankCardCopy != ''">
+		bank_card_copy,
+	 </if>
+	 <if test="bankCardCopyNum != null ">
+		bank_card_copy_num,
+	 </if>
+	 <if test="loanSignRecordTable != null and loanSignRecordTable != ''">
+		loan_sign_record_table,
+	 </if>
+	 <if test="loanSignRecordTableNum != null ">
+		loan_sign_record_table_num,
+	 </if>
+	 <if test="personalCreditReport != null and personalCreditReport != ''">
+		personal_credit_report,
+	 </if>
+	 <if test="personalCreditReportNum != null ">
+		personal_credit_report_num,
+	 </if>
+	 <if test="identityProve != null and identityProve != ''">
+		identity_prove,
+	 </if>
+	 <if test="identityProveNum != null ">
+		identity_prove_num,
+	 </if>
+	 <if test="incomeProve != null and incomeProve != ''">
+		income_prove,
+	 </if>
+	 <if test="incomeProveNum != null">
+		income_prove_num,
+	 </if>
+	 <if test="jobProve != null and jobProve != ''">
+		job_prove,
+	 </if>
+	 <if test="jobProveNum != null ">
+		job_prove_num,
+	 </if>
+	 <if test="addressProve != null and addressProve != ''">
+		address_prove,
+	 </if>
+	 <if test="addressProveNum != null ">
+		address_prove_num,
+	 </if>
+	 <if test="bussinessProve != null and bussinessProve != ''">
+		bussiness_prove,
+	 </if>
+	 <if test="bussinessProveNum != null ">
+		bussiness_prove_num,
+	 </if>
+	 <if test="propertyProve != null and propertyProve != ''">
+		property_prove,
+	 </if>
+	 <if test="propertyProveNum != null ">
+		property_prove_num,
+	 </if>
+	 <if test="othersProve != null and othersProve != ''">
+		others_prove,
+	 </if>
+	 <if test="othersProveNum != null ">
+		others_prove_num,
+	 </if>
+	 <if test="remark != null and remark != ''">
+		remark,
+	 </if>
+	 <if test="remarkNum != null ">
+		remark_num,
+	 </if>
+	 <if test="creatorId != null ">
+		CREATOR_ID,
+	 </if>
+	 <if test="creator != null and creator != ''">
+		CREATOR,
+	 </if>
+	 <if test="creatorDate != null ">
+		CREATED_TIME,
+	 </if>
+	 <if test="modifiedId != null ">
+		MODIFIER_ID,
+	 </if>
+	 <if test="modified != null and modified != 0">
+		MODIFIER,
+	 </if>
+	  <if test="modifiedDate != null">
+		MODIFIED_TIME,
+	 </if> 
+	 <if test="version != null ">
+		VERSION
+	 </if> 
+	 </trim>
+	<trim prefix="values (" suffix=")" suffixOverrides=",">
+		<if test="loanNo != null and loanNo != ''">
+		#{loanNo},
+	 </if>
+     <if test="fileNo != null and fileNo != ''">
+		#{fileNo},
+	 </if> 
+	 <if test="fileStatus != null and fileStatus != ''">
+		#{fileStatus},
+	 </if>
+	 <if test="approval != null and approval != ''">
+		#{approval},
+	 </if>
+	 <if test="approvalNum != null ">
+		#{approvalNum},
+	 </if>
+	 <if test="loanForm != null and loanForm != ''">
+		#{loanForm},
+	 </if>
+	 <if test="loanFormNum != null ">
+		#{loanFormNum},
+	 </if>
+	 <if test="bankCardCopy != null and bankCardCopy != ''">
+		#{bankCardCopy},
+	 </if>
+	 <if test="bankCardCopyNum != null ">
+		#{bankCardCopyNum},
+	 </if>
+	 <if test="loanSignRecordTable != null and loanSignRecordTable != ''">
+		#{loanSignRecordTable},
+	 </if>
+	 <if test="loanSignRecordTableNum != null ">
+		#{loanSignRecordTableNum},
+	 </if>
+	 <if test="personalCreditReport != null and personalCreditReport != ''">
+		#{personalCreditReport},
+	 </if>
+	 <if test="personalCreditReportNum != null ">
+		#{personalCreditReportNum},
+	 </if>
+	 <if test="identityProve != null and identityProve != ''">
+		#{identityProve},
+	 </if>
+	 <if test="identityProveNum != null ">
+		#{identityProveNum},
+	 </if>
+	 <if test="incomeProve != null and incomeProve != ''">
+		#{incomeProve},
+	 </if>
+	 <if test="incomeProveNum != null">
+		#{incomeProveNum},
+	 </if>
+	 <if test="jobProve != null and jobProve != ''">
+		#{jobProve},
+	 </if>
+	 <if test="jobProveNum != null ">
+		#{jobProveNum},
+	 </if>
+	 <if test="addressProve != null and addressProve != ''">
+		#{addressProve},
+	 </if>
+	 <if test="addressProveNum != null ">
+		#{addressProveNum},
+	 </if>
+	 <if test="bussinessProve != null and bussinessProve != ''">
+		#{bussinessProve},
+	 </if>
+	 <if test="bussinessProveNum != null ">
+		#{bussinessProveNum},
+	 </if>
+	 <if test="propertyProve != null and propertyProve != ''">
+		#{propertyProve},
+	 </if>
+	 <if test="propertyProveNum != null ">
+		#{propertyProveNum},
+	 </if>
+	 <if test="othersProve != null and othersProve != ''">
+		#{othersProve},
+	 </if>
+	 <if test="othersProveNum != null ">
+		#{othersProveNum},
+	 </if>
+	 <if test="remark != null and remark != ''">
+		#{remark},
+	 </if>
+	 <if test="remarkNum != null ">
+		#{remarkNum},
+	 </if>
+	 <if test="creatorId != null ">
+		#{creatorId},
+	 </if>
+	 <if test="creator != null and creator != ''">
+		#{creator},
+	 </if>
+	 <if test="creatorDate != null ">
+		#{creatorDate},
+	 </if>
+	 <if test="modifiedId != null ">
+		#{modifiedId},
+	 </if>
+	 <if test="modified != null and modified != 0">
+		#{modified},
+	 </if>
+	  <if test="modifiedDate != null">
+		#{modifiedDate},
+	 </if> 
+	 <if test="version != null ">
+		#{version}
+	 </if> 
+	</trim>
+    </insert>
+    <update id="update" parameterType="com.ymkj.cms.biz.entity.apply.FileFormEntity">
+    update  bms_file_form set 	
+		file_status=#{fileStatus},
+		approval=#{approval},
+		approval_num=#{approvalNum},
+		loan_form=#{loanForm},
+		loan_form_num=#{loanFormNum},
+		bank_card_copy=#{bankCardCopy},
+		bank_card_copy_num=#{bankCardCopyNum},
+		loan_sign_record_table=#{loanSignRecordTable},
+		loan_sign_record_table_num=#{loanSignRecordTableNum},
+		personal_credit_report=#{personalCreditReport},
+		personal_credit_report_num=#{personalCreditReportNum},
+		identity_prove=#{identityProve},
+		identity_prove_num=#{identityProveNum},
+		income_prove=#{incomeProve},
+		income_prove_num=#{incomeProveNum},
+		job_prove=#{jobProve},
+		job_prove_num=#{jobProveNum},
+		address_prove=#{addressProve},
+		address_prove_num=#{addressProveNum},
+		bussiness_prove=#{bussinessProve},
+		bussiness_prove_num=#{bussinessProveNum},
+		property_prove=#{propertyProve},
+		property_prove_num=#{propertyProveNum},
+		others_prove=#{othersProve},
+		others_prove_num=#{othersProveNum},
+		remark=#{remark},
+		remark_num=#{remarkNum},
+		MODIFIER=#{modified},
+		MODIFIED_TIME=#{modifiedDate},
+	    MODIFIER_ID = #{modifiedId},
+	    VERSION=#{version}+1
+        WHERE
+		LOAN_NO=#{loanNo}
+    </update>
+    <select id="getByLoanNo" parameterType="java.util.Map" resultMap="FileFormEntityMap">
+   SELECT bf.* ,
+	blb.NAME,
+	blb.LOAN_NO AS LOAN_NO_1,
+	blb.LOAN_BRANCH,
+	blb.LOAN_DATE,
+	blp.PRODUCT_CD,
+	blp.PRODUCT_NAME
+	FROM  bms_loan_base blb 
+	LEFT JOIN bms_file_form bf ON bf.loan_no=blb.LOAN_NO
+	INNER JOIN bms_loan_product blp ON blb.id=blp.loan_base_id
+	where blb.LOAN_NO=#{loanNo}
+</select>
+   
+</mapper> 

@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSAppPersonInfoDaoImpl">
+<!-- 主卡申请人信息 -->
+    <resultMap id="BMSAppPersonInfoMap" type="com.ymkj.cms.biz.entity.master.BMSAppPersonInfo">
+        <!-- ID -->
+		<id property="id" column="ID" />
+		<!-- LOAN_BASE_ID -->
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<!-- 借款编号 -->
+		<result property="loanNo" column="LOAN_NO" />
+		<!-- 申请件编号 -->
+		<result property="appNo" column="APP_NO" />
+		<!-- 申请件信息流水 -->
+	    <result property="applyPersonId" column="APPLY_PERSON_ID" />
+	    <!-- 客户Id -->
+	    <result property="personId" column="PERSON_ID" />
+	    <!-- 机构号 -->
+		<result property="org" column="ORG" />
+		<!-- 生日 -->
+		<result property="birthday" column="BIRTHDAY" />
+		<!-- 性别 -->
+		<result property="gender" column="GENDER" />
+		<!-- 年龄 -->
+		<result property="age" column="AGE" />
+		<!-- 证件到期日 -->
+		<result property="idLastDate" column="ID_LAST_DATE" />
+		<!-- 户籍地址 -->
+		<result property="idIssuerAddress" column="ID_ISSUER_ADDRESS" />
+		<!-- 户籍所在省ID -->
+		<result property="issuerStateId" column="ISSUER_STATE_ID" />
+		<!-- 户籍所在市ID -->
+		<result property="issuerCityId" column="ISSUER_CITY_ID" />
+		<!-- 户籍所在区/县ID -->
+		<result property="issuerZoneId" column="ISSUER_ZONE_ID" />
+		<!-- 户籍所在省 -->
+		<result property="issuerState" column="ISSUER_STATE" />
+		<!-- 户籍所在市 -->
+		<result property="issuerCity" column="ISSUER_CITY" />
+		<!-- 户籍所在区/县 -->
+		<result property="issuerZone" column="ISSUER_ZONE" /> 
+		<!-- 户籍邮编 -->
+		<result property="issuerPostcode" column="ISSUER_POSTCODE" />
+		<!-- 国籍 -->
+		<result property="nationality" column="NATIONALITY" />
+		<!-- 永久居住地国家 -->
+		<result property="residencyCountryCd" column="RESIDENCY_COUNTRY_CD" />
+		<!-- 婚姻状况 -->
+		<result property="maritalStatus" column="MARITAL_STATUS" />
+		<!-- 子女数 -->
+		<result property="childrenNum" column="CHILDREN_NUM" />
+		<!-- 教育状况 -->
+		<result property="qualification" column="QUALIFICATION" />
+		<!-- 毕业时间 -->
+		<result property="graduationDate" column="GRADUATION_DATE" />
+		<!-- 房屋持有类型 -->
+		<result property="houseOwnership" column="HOUSE_OWNERSHIP" />
+		<!-- 住宅类型 -->
+		<result property="houseType" column="HOUSE_TYPE" />
+		<!-- 租金/元 -->
+		<result property="houseRent" column="HOUSE_RENT" />
+		<!-- 个人资产类型 -->
+		<result property="liquidAsset" column="LIQUID_ASSET" />
+		<!-- 常用手机 -->
+		<result property="cellphone" column="CELLPHONE" />
+		<!-- 备用手机 -->
+	    <result property="cellphoneSec" column="CELLPHONE_SEC" />
+	    <!-- qq号 -->
+	    <result property="qqNum" column="QQ_NUM" />
+	    <!-- 微信号 -->
+		<result property="wechatNum" column="WECHAT_NUM" />
+		<!-- 电子邮箱 -->
+		<result property="email" column="EMAIL" />
+		<!-- 家庭人口 -->
+		<result property="familyMember" column="FAMILY_MEMBER" />
+		<!-- 家庭人均年收入 -->
+		<result property="familyAvgeVenue" column="FAMILY_AVGE_VENUE" />
+		<!-- 每月家庭支出 -->
+		<result property="familyMonthPay" column="FAMILY_MONTH_PAY" />
+		<!-- 家庭国家代码 -->
+		<result property="homeAddrCtryCd" column="HOME_ADDR_CTRY_CD" />
+		<!-- 家庭所在省ID -->
+		<result property="homeStateId" column="HOME_STATE_ID" />
+		<!-- 家庭所在市ID -->
+		<result property="homeCityId" column="HOME_CITY_ID" />
+		<!-- 家庭所在区/县ID -->
+		<result property="homeZoneId" column="HOME_ZONE_ID" />
+		<!-- 家庭所在省 -->
+		<result property="homeState" column="HOME_STATE" />
+		<!-- 家庭所在市 -->
+		<result property="homeCity" column="HOME_CITY" /> 
+		<!-- 家庭所在区/县 -->
+		<result property="homeZone" column="HOME_ZONE" />  
+		<!-- 家庭住址 -->
+		<result property="homeAddress" column="HOME_ADDRESS" />
+		<!-- 家庭住宅邮编 -->
+		<result property="homePostcode" column="HOME_POSTCODE"/>
+		<!-- 家庭住址是否同户籍地址 -->
+		<result property="homeSameRegistered" column="HOME_SAME_REGISTERED" />
+		<!-- 住宅电话1 -->
+		<result property="homePhone1" column="HOME_PHONE1" />
+		<!-- 住宅电话2 -->
+		<result property="homePhone2" column="HOME_PHONE2" />
+		<!-- 现住址居住起始年月 -->
+		<result property="homeStandFrom" column="HOME_STAND_FROM" />
+		<!-- 是否永久居住 -->
+		<result property="prOfCountry" column="PR_OF_COUNTRY" />
+		<!-- 是否私营业主 -->
+		<result property="privateOwnersFlag" column="PRIVATE_OWNERS_FLAG" />
+		<!-- 单位名称 -->
+		<result property="corpName" column="CORP_NAME" />
+		<!-- 公司性质 -->
+		<result property="corpStructure" column="CORP_STRUCTURE" />
+		<!-- 公司国家代码 -->
+		<result property="corpAddrCtryCd" column="CORP_ADDR_CTRY_CD" />
+		<!-- 公司所在省ID -->
+		<result property="corpProvinceId" column="CORP_PROVINCE_ID" />
+		<!-- 公司所在市 ID-->
+		<result property="corpCityId" column="CORP_CITY_ID" />
+		<!-- 公司所在区/县ID -->
+		<result property="corpZoneId" column="CORP_ZONE_ID" />
+		<!-- 公司所在省 -->
+		<result property="corpProvince" column="CORP_PROVINCE" />
+		<!-- 公司所在市 -->
+		<result property="corpCity" column="CORP_CITY" />
+		<!-- 公司所在区/县 -->
+		<result property="corpZone" column="CORP_ZONE" />  
+		<!-- 公司地址 -->
+		<result property="corpAddress" column="CORP_ADDRESS" /> 
+		<!-- 公司邮编 -->
+		<result property="corpPostcode" column="CORP_POSTCODE" />
+		<!-- 公司电话1 -->
+		<result property="corpPhone" column="CORP_PHONE" />
+		<!-- 公司电话2 -->
+		<result property="corpPhoneSec" column="CORP_PHONE_SEC" />
+		<!-- 公司传真 -->
+		<result property="corpFax" column="CORP_FAX" />
+		<!-- 任职部门 -->
+		<result property="corpDepapment" column="CORP_DEPAPMENT" />
+		<!-- 职务 -->
+		<result property="corpPost" column="CORP_POST" />
+		<!-- 现单位工作起始 -->
+		<result property="corpStandFrom" column="CORP_STAND_FROM" />
+		<!-- 工商网信息 -->
+		<result property="businessNetWork" column="BUSINESS_NET_WORK" />
+		<!-- 是否公司员工 -->
+		<result property="corpmemFlag" column="CORPMEM_FLAG" />
+		<!-- 本公司员工号 -->
+		<result property="corpmemNo" column="CORPMEM_NO" />
+		<!-- 公司行业类别 -->
+		<result property="corpType" column="CORP_TYPE" />
+		<!-- 本单位工作年限 -->
+		<result property="corpWorkyears" column="CORP_WORKYEARS" />
+		<!-- 工作稳定性 -->
+		<result property="corpStability" column="CORP_STABILITY" />
+		<!-- 职业 -->
+		<result property="occupation" column="OCCUPATION" />
+		<!-- 是否在职 -->
+		<result property="empStatus" column="EMP_STATUS" />
+		<!-- 发薪方式 -->
+		<result property="corpPayWay" column="CORP_PAY_WAY" />
+		<!-- 发薪日 -->
+		<result property="corpPayday" column="CORP_PAYDAY" />
+		<!-- 单位月收入/元 -->
+		<result property="monthSalary" column="MONTH_SALARY" />
+		<!-- 其他月收入 -->
+		<result property="otherIncome" column="OTHER_INCOME" />
+		<!-- 月总收入/元 -->
+		<result property="totalMonthSalary" column="TOTAL_MONTH_SALARY" />
+		<!-- 成立时间 -->
+		<result property="setupDate" column="SETUP_DATE" />
+		<!-- 可接受月最高还款 -->
+		<result property="monthMaxRepay" column="MONTH_MAX_REPAY" />
+		<!-- 占股比例/% -->
+		<result property="sharesScale" column="SHARES_SCALE" />
+		<!-- 注册资本/万元 -->
+		<result property="registerFunds" column="REGISTER_FUNDS" />
+		<!-- 私营企业类型 -->
+		<result property="priEnterpriseType" column="PRI_ENTERPRISE_TYPE" />
+		<!-- 经营场所 -->
+		<result property="businessPlace" column="BUSINESS_PLACE" />
+		<!-- 月租金/元 -->
+		<result property="monthRent" column="MONTH_RENT" />
+		<!-- 员工人数/人 -->
+		<result property="employeeNum" column="EMPLOYEE_NUM" />
+		<!-- 企业净利润率/%-->
+		<result property="enterpriseRate" column="ENTERPRISE_RATE" />
+		<!-- 股东姓名(除客户外最大股东) -->
+		<result property="sharesName" column="SHARES_NAME" />
+		<!-- 股东身份证 -->
+		<result property="sharesIdNo" column="SHARES_ID_NO" />
+		<!-- 每年净利润额/万元 -->
+		<result property="monthAmt" column="MONTH_AMT" />
+		<!-- 人行征信ID -->
+		<result property="reportId" column="REPORT_ID" />
+		<!-- 绑定记录信息 -->
+		<result property="reportMessage" column="REPORT_MESSAGE" />
+		<!-- 客户工作类型 -->
+		<result property="cusWorkType" column="CUS_WORK_TYPE" />
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="createdTime" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modifier" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedTime" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifierId" column="MODIFIER_ID" />
+	    <!-- 版本号 -->
+	    <result property="version" column="VERSION" />
+	    <!-- 是否删除 -->
+	    <result property="isDelete" column="IS_DELETE" />
+	    <!-- 流程状态 -->
+	   <!--  <result property="flowState" column="FLOW_STATE" /> -->
+	    <!-- 快照版本 -->
+	    <result property="snapVersion" column="SNAP_VERSION" />
+	   	<result property="idNo" column="ID_NO" />
+		<result property="name" column="name" />
+		<result property="theThirdpartyNote" column="THE_THIRDPARTY_NOTE"/>                        
+		<result property="theThirdpartyNoteDetails" column="THE_THIRDPARTY_NOTE_DETAILS"/>             
+		<result property="ifReportId" column="IF_REPORT_ID"/>                          
+<!-- 		<result property="cellphoneTimes" column="CELLPHONE_TIMEs"/>  -->                                                        
+		<result property="longOnlineId" column="LONG_ONLINE_ID"/>                                          
+		<result property="realNameAuthId" column="REAL_NAME_AUTH_ID"/>                                       
+		<result property="educationLoanId" column="Education_Loan_ID"/>                                          
+		<result property="hzReportChangeInfo" column="HZ_REPORT_CHANGE_INFO"/>     
+	</resultMap>
+ 	 
+ 	 
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSAppPersonInfoMap">
+		select 
+		      `ID`,
+             `LOAN_BASE_ID`,
+             `APP_NO`,
+             `LOAN_NO`,
+             `APPLY_PERSON_ID`,
+             `PERSON_ID`,
+             `ORG`,
+             `BIRTHDAY`,
+             `GENDER`,
+             `AGE`,
+             `ID_LAST_DATE`,
+             `ID_ISSUER_ADDRESS`,
+             `ISSUER_STATE_ID`,
+             `ISSUER_CITY_ID`,
+             `ISSUER_ZONE_ID`,
+             `ISSUER_STATE`,
+             `ISSUER_CITY`,
+             `ISSUER_ZONE`,
+             `ISSUER_POSTCODE`,
+             `NATIONALITY`,
+             `RESIDENCY_COUNTRY_CD`,
+             `MARITAL_STATUS`,
+             `CHILDREN_NUM`,
+             `QUALIFICATION`,
+             `GRADUATION_DATE`,
+             `HOUSE_OWNERSHIP`,
+             `HOUSE_TYPE`,
+             `HOUSE_RENT`,
+             `LIQUID_ASSET`,
+              SUBSTRING(`CELLPHONE`,-4) CELLPHONE,
+              SUBSTRING(`CELLPHONE_SEC`,-4) CELLPHONE_SEC,
+             `QQ_NUM`,
+             `WECHAT_NUM`,
+             `EMAIL`,
+             `FAMILY_MEMBER`,
+             `FAMILY_AVGE_VENUE`,
+             `FAMILY_MONTH_PAY`,
+             `HOME_ADDR_CTRY_CD`,
+             `HOME_STATE_ID`,
+             `HOME_CITY_ID`,
+             `HOME_ZONE_ID`,
+             `HOME_STATE`,
+             `HOME_CITY`,
+             `HOME_ZONE`,
+             `HOME_ADDRESS`,
+             `HOME_POSTCODE`,
+              SUBSTRING(`HOME_PHONE1`,-4) HOME_PHONE1,
+              SUBSTRING(`HOME_PHONE2`,-4) HOME_PHONE2,
+             `HOME_STAND_FROM`,
+             `PR_OF_COUNTRY`,
+             `PRIVATE_OWNERS_FLAG`,
+             `CORP_NAME`,
+             `CORP_STRUCTURE`,
+             `CORP_ADDR_CTRY_CD`,
+             `CORP_PROVINCE_ID`,
+             `CORP_CITY_ID`,
+             `CORP_ZONE_ID`,
+             `CORP_PROVINCE`,
+             `CORP_CITY`,
+             `CORP_ZONE`,
+             `CORP_ADDRESS`,
+             `CORP_POSTCODE`,
+              SUBSTRING(`CORP_PHONE`,-4) CORP_PHONE,
+              SUBSTRING(`CORP_PHONE_SEC`,-4) CORP_PHONE_SEC,
+             `CORP_FAX`,
+             `CORP_DEPAPMENT`,
+             `CORP_POST`,
+             `CORP_STAND_FROM`,
+             `BUSINESS_NET_WORK`,
+             `CORPMEM_FLAG`,
+             `CORPMEM_NO`,
+             `CORP_TYPE`,
+             `CORP_WORKYEARS`,
+             `CORP_STABILITY`,
+             `OCCUPATION`,
+             `EMP_STATUS`,
+             `CORP_PAY_WAY`,
+             `CORP_PAYDAY`,
+             `MONTH_SALARY`,
+             `OTHER_INCOME`,
+             `TOTAL_MONTH_SALARY`,
+             `SETUP_DATE`,
+             `MONTH_MAX_REPAY`,
+             `SHARES_SCALE`,
+             `REGISTER_FUNDS`,
+             `PRI_ENTERPRISE_TYPE`,
+             `BUSINESS_PLACE`,
+             `MONTH_RENT`,
+             `EMPLOYEE_NUM`,
+             `ENTERPRISE_RATE`,
+             `SHARES_NAME`,
+              SUBSTRING(`SHARES_ID_NO` ,-4) SHARES_ID_NO,
+             `MONTH_AMT`,
+             `REPORT_ID`,
+             `NFCS_ID`,
+             `HZZX_ID`,
+             `REPORT_MESSAGE`,
+             `CUS_WORK_TYPE`,
+             `CREATOR`,
+             `CREATED_TIME`,
+             `CREATOR_ID`,
+             `MODIFIER`,
+             `MODIFIED_TIME`,
+             `MODIFIER_ID`,
+             `VERSION`,
+             `IS_DELETE`,
+             `HOME_SAME_REGISTERED`,
+             `SNAP_VERSION`,
+             `NAME`,
+             `ID_NO`,
+	        THE_THIRDPARTY_NOTE,
+			THE_THIRDPARTY_NOTE_DETAILS,
+			IF_REPORT_ID,
+			LONG_ONLINE_ID,
+			REAL_NAME_AUTH_ID,
+			Education_Loan_ID,
+			HZ_REPORT_CHANGE_INFO
+		 from BMS_APP_PERSON_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by CREATED_TIME desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_APP_PERSON_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+ 	
+ 	<select id="byLoanNoQueryInfo" parameterType="Map" resultMap="BMSAppPersonInfoMap">
+		select * from BMS_APP_PERSON_INFO
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        <if test="appNo != null and appNo != ''">
+        	and APP_NO = #{appNo}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	 </sql>	
+	 <update id="updateByLoanNo" parameterType="java.util.Map">
+	   UPDATE BMS_APP_PERSON_INFO SET IF_REPORT_ID='N' where LOAN_NO=#{loanNo}
+	 </update>
+    
+</mapper> 

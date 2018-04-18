@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSPatchBoltDaoImpl">
+
+
+<select id="listPage" parameterType="Map" resultType="com.ymkj.cms.biz.entity.master.BMSPatchBolt">	
+		select 
+			blb.loan_no loanNo,
+			blb.status status,
+			blb.BRANCH_MANAGER_NAME branchManagerName,
+			blb.SERVICE_NAME serviceName,
+			blb.`name` customerName,
+			blb.ID_NO customerIDNO,
+			blp.PRODUCT_NAME productName,
+			blp.CONTRACT_LMT contractLmt,
+			blp.CONTRACT_TREM contractTerm,
+			blc.pact_money applyLmt		
+			from bms_loan_base blb
+			left join bms_loan_product blp on blp.loan_no=blb.loan_no
+			LEFT JOIN  (SELECT LOAN_BASE_ID, pact_money FROM bms_loan_contract WHERE is_deleted=0) blc ON blb.id=blc.LOAN_BASE_ID
+			where 1=1 
+			<if test="customerName!=null and customerName!=''">
+				and blb.`name` like CONCAT(CONCAT('%',#{customerName}),'%')
+			</if>
+			<if test="customerIDNO!=null and customerIDNO!=''">
+				and blb.ID_NO=#{customerIDNO}
+			</if>
+			and blb.RTF_NODE_STATE='FKQR-SUBMIT' AND blb.RTF_STATE='DHHK'
+</select>
+ <select id="listBy" parameterType="Map" resultType="com.ymkj.cms.biz.entity.master.BMSPatchBolt">
+ select 
+			blb.loan_no loanNo,
+			blb.status status,
+			blb.BRANCH_MANAGER_NAME branchManagerName,
+			blb.SERVICE_NAME serviceName,
+			blb.`name` customerName,
+			blb.ID_NO customerIDNO,
+			blp.PRODUCT_NAME productName,
+			blp.CONTRACT_LMT contractLmt,
+			blp.CONTRACT_TREM contractTerm,
+			blc.pact_money applyLmt		
+			from bms_loan_base blb
+			left join bms_loan_product blp on blp.loan_no=blb.loan_no
+			LEFT JOIN  (SELECT LOAN_BASE_ID, pact_money FROM bms_loan_contract WHERE is_deleted=0) blc ON blb.id=blc.LOAN_BASE_ID
+			where 1=1 
+			<if test="customerName!=null and customerName!=''">
+				and blb.`name` like CONCAT(CONCAT('%',#{customerName}),'%')
+			</if>
+			<if test="customerIDNO!=null and customerIDNO!=''">
+				and blb.ID_NO=#{customerIDNO}
+			</if>
+			and blb.RTF_NODE_STATE='FKQR-SUBMIT' AND blb.RTF_STATE='DHHK'
+ 
+ </select>
+
+
+<select id="countByPageParam" parameterType="Map" resultType="int">	
+		    select count(1) from bms_loan_base blb
+			left join bms_loan_product blp on blp.loan_no=blb.loan_no
+			LEFT JOIN  (SELECT LOAN_BASE_ID, pact_money FROM bms_loan_contract WHERE is_deleted=0) blc ON blb.id=blc.LOAN_BASE_ID
+			where 1=1 
+			<if test="customerName!=null and customerName!=''">
+				and blb.`name` like CONCAT(CONCAT('%',#{customerName}),'%')
+			</if>
+			<if test="customerIDNO!=null and customerIDNO!=''">
+				and blb.ID_NO=#{customerIDNO}
+			</if>
+			and blb.RTF_NODE_STATE='FKQR-SUBMIT' AND blb.RTF_STATE='DHHK'
+</select>
+</mapper>

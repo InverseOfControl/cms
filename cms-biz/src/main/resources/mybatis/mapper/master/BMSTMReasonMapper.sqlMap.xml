@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSTMReasonDaoImpl">
+
+	<resultMap id="BMSTMReasonMap" type="com.ymkj.cms.biz.entity.master.BMSTMReasonEntity">
+		<id property="id" column="ID" />
+		<result property="reason" column="REASON" />
+		<result property="code" column="CODE" />
+		<result property="reasonTexplain" column="REASON_TEXPLAIN" />
+		<result property="type" column="TYPE" />
+		<result property="parentId" column="PARENT_ID" />
+		<result property="level" column="LEVEL_ORDER" />
+		<result property="operationModule" column="OPERATION_MODULE" />
+		<result property="operationType" column="OPERATION_TYPE" />
+		<result property="remark" column="REMARK" />
+		<result property="isBlackList" column="IS_BLACKLIST" />
+		
+		<result property="conditionType" column="CONDITION_TYPE" />
+		<result property="canRequestDays" column="CAN_REQUEST_DAYS" />
+		<result property="id" column="id"/>
+		<result property="text" column="text"/>
+	</resultMap>
+
+
+	<sql id="condition_sql">
+		IS_DELETE=0 and IS_DISABLED=0 and operation_module IS NOT NULL
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="code!=null and code!=''">
+			and code = #{code}
+		</if>
+		<if test="type != null and type != ''">
+        	and TYPE = #{type}
+        </if>
+        <if test="parentId != null and parentId != ''">
+        	and PARENT_ID = #{parentId}
+        </if>
+        <if test="level != null and level != ''">
+        	and LEVEL_ORDER = #{level}
+        </if>
+        <if test="operationModule != null and operationModule != ''">
+        	and OPERATION_MODULE = #{operationModule}
+        </if>
+        <if test="operationType != null and operationType != ''">
+        	and OPERATION_TYPE = #{operationType}
+        </if>
+       <if test="reasonType == 1">
+            and REASON_TEXPLAIN=#{reasonType}
+        </if>
+       <!--  <choose>
+		   <when test="reasonType=='1' or reasonType==null or reasonType=='' ">
+			   and REASON_TEXPLAIN='1'
+		   </when>
+		   <otherwise>
+			   and REASON_TEXPLAIN='2'
+		   </otherwise>
+	    </choose> -->
+	</sql>
+	
+	
+	<select id="listBy" parameterType="java.util.Map" resultMap="BMSTMReasonMap">
+		select * from bms_reason
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	<select id="getByParam" parameterType="java.util.Map" resultMap="BMSTMReasonMap">
+		select * from bms_reason
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		LIMIT 1
+	</select>
+	
+	
+	<select id="twoLevelparents" parameterType="java.util.Map" resultMap="BMSTMReasonMap">
+		select * from bms_reason where 1=1
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="code!=null and code!=''">
+			and code = #{code}
+		</if>
+		<if test="type != null and type != ''">
+        	and TYPE = #{type}
+        </if>
+         <if test="reasonType == '1'">
+            and REASON_TEXPLAIN=#{reasonType}
+        </if>
+	<!-- <choose>
+		<when test="reasonType=='1' or reasonType==null or reasonType=='' ">
+			and REASON_TEXPLAIN='1'
+		</when>
+		<otherwise>
+			and REASON_TEXPLAIN='2'
+		</otherwise>
+	</choose> -->
+        <if test="parentIds!=null and parentIds.size()>0">
+				and PARENT_ID in(
+				<foreach item="parentId" index="index" collection="parentIds"
+				separator=",">
+					#{parentId}
+				</foreach>
+				) 
+		</if>
+        <if test="level != null and level != ''">
+        	and LEVEL_ORDER = #{level}
+        </if>
+        <if test="operationModule != null and operationModule != ''">
+        	and OPERATION_MODULE = #{operationModule}
+        </if>
+        <if test="operationType != null and operationType != ''">
+        	and OPERATION_TYPE = #{operationType}
+        </if>
+          and  IS_DELETE=0 and IS_DISABLED=0 and and operation_module IS NOT NULL
+	</select>
+  
+    <select id="findFirstReasonByOperType" resultMap="BMSTMReasonMap" parameterType="java.util.Map">
+      select id AS id,CODE code,reason AS text from bms_reason b where operation_type=#{operationType} AND operation_module=#{operationModule} AND parent_id = '0' AND is_delete=0 AND REASON_TEXPLAIN='1'
+    </select>
+    
+    <select id="findSecondReasonByOperType" resultMap="BMSTMReasonMap" parameterType="java.util.Map">
+      select id AS id,CODE code,reason AS text from bms_reason b where operation_type=#{operationType} AND operation_module=#{operationModule} AND parent_id = #{id} AND is_delete=0 AND REASON_TEXPLAIN='1'
+    </select>
+</mapper>

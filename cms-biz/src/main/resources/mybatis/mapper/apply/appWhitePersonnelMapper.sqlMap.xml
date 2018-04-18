@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPWhitePersonnelDaoImpl">
+	<resultMap id="appWhitePersonnelMap" type="com.ymkj.cms.biz.entity.apply.APPWhitePersonnelEntity">
+		<id property="id" column="ID"/>
+		<result property="userCode" column="USER_CODE"/>
+		<result property="validity" column="VALIDITY"/>
+		<result property="whiteType" column="WHITE_TYPE"/>
+		<result property="creatorId" column="CREATOR_ID"/>
+		<result property="creator" column="CREATOR"/>
+		<result property="createdTime" column="CREATED_TIME"/>
+		<result property="modifierId" column="MODIFIER_ID"/>
+		<result property="modifier" column="MODIFIER"/>
+		<result property="modifiedTime" column="MODIFIED_TIME"/>
+		<result property="isDelete" column="IS_DELETE"/>
+		<result property="verson" column="VERSION"/>
+	</resultMap>
+
+	<!-- 不允许接单客服的信息  -->
+	<select id="listBy" parameterType="java.util.Map" resultMap="appWhitePersonnelMap">
+		select * from BMS_WHITE_PERSONNEL
+		where VALIDITY = 0 and WHITE_TYPE = 1
+	</select>
+	
+	<!-- 删除接单管理的操作员 -->
+	<delete id="deleteVo" parameterType="com.ymkj.cms.biz.entity.apply.APPWhitePersonnelEntity">
+		delete from BMS_WHITE_PERSONNEL
+		where WHITE_TYPE = #{whiteType} and USER_CODE = #{userCode} and VALIDITY = #{validity}
+	</delete>
+
+	<insert id="batchInsert" useGeneratedKeys="true" parameterType="java.util.List">  
+	    <selectKey resultType="long" keyProperty="id" order="AFTER">  
+	        SELECT  
+	        LAST_INSERT_ID()  
+	    </selectKey>  
+	    	insert into BMS_WHITE_PERSONNEL
+	    		(USER_CODE,VALIDITY,WHITE_TYPE,CREATOR_ID,CREATOR,CREATED_TIME,MODIFIER_ID,MODIFIER,MODIFIED_TIME,IS_DELETE,VERSION) 
+			values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (#{item.userCode},#{item.validity},#{item.whiteType},#{item.creatorId}
+	        ,#{item.creator},#{item.createdTime},#{item.modifierId},#{item.modifier}
+	        ,#{item.modifiedTime},#{item.isDelete},#{item.verson})  
+	    </foreach>  
+	</insert>
+</mapper>

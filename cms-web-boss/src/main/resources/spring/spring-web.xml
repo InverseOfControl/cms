@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/aop       http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+	http://www.springframework.org/schema/beans     http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/mvc       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- 启用AspectJ形式的AOP，并强制指定直接代理目标对象。可参见AnnotationAwareAspectJAutoProxyCreator -->
+	<!--默认的注解映射支持 -->
+	<mvc:annotation-driven
+		content-negotiation-manager="contentNegotiationManager" />
+
+	<!-- 平台页面头部嵌入需要使用的拦截器 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <bean class="com.ymkj.sso.client.interceptor.SystemInterceptor">
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    
+    
+	<!-- 如果 web.xml中配置 路径 为 / 时, 用此过滤静态资源 -->
+	<!-- <mvc:resources location="/default/*" mapping="/default/**" /> -->
+
+	<!-- 请求数据转换, 如:json转为 实体类 -->
+	<bean id="contentNegotiationManager"
+		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="favorPathExtension" value="false" />
+		<property name="favorParameter" value="true" />
+		<property name="parameterName" value="mediaType" />
+		<property name="ignoreAcceptHeader" value="true" />
+		<property name="useJaf" value="false" />
+		<property name="defaultContentType" value="application/json" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />
+			</map>
+		</property>
+	</bean>
+
+	<!-- 配置JSP视图 开始 -->
+	 <bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+		<property name="contentType" value="text/html;charset=UTF-8" />
+		<property name="order" value="1" />
+	</bean> 
+	<!-- 配置JSP视图 结束 -->
+	
+	
+	<!-- 配置 freemarker视图  开始  -->
+	<!-- <bean id="viewResolver"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="order" value="1" />
+		<property name="cache" value="false" />
+		<property name="suffix" value=".html" />
+		<property name="exposeSpringMacroHelpers" value="true" />
+		<property name="contentType" value="text/html;charset=UTF-8"></property>
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.freemarker.FreeMarkerView" />
+	</bean>
+
+	<bean id="freemarkerConfigurer"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		配置多个模板路径
+		<property name="templateLoaderPaths">
+			<list>
+				<value>/WEB-INF/views</value>
+			</list>
+		</property>
+
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="template_update_delay">0</prop>
+				<prop key="defaultEncoding">UTF-8</prop>
+			</props>
+		</property>
+	</bean> -->
+	<!-- 配置 freemarker视图  结束  -->
+	
+	<!-- 文件上传配置   -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="utf-8"></property>
+		<property name="maxUploadSize" value="10485760000"></property>
+		<property name="maxInMemorySize" value="40960"></property>
+	</bean>
+	<!-- 添加配置支持shiro注解 start -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+	<!-- 添加配置支持shiro注解 end -->
+</beans>

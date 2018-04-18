@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPEstateInfoDaoImpl">
+   <resultMap id="appEstateInfoMap" type="com.ymkj.cms.biz.entity.apply.APPEstateInfoEntity">
+		<id property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="loanNo" column="LOAN_NO"/>
+		<result property="org" column="ORG" />
+		<result property="estateId" column="ESTATE_ID" />
+		<result property="estateType" column="ESTATE_TYPE" />
+		<result property="estateLoan" column="ESTATE_LOAN" />
+		<result property="estateBuyDate" column="ESTATE_BUY_DATE" />
+		<result property="estateAmt" column="ESTATE_AMT" />
+		<result property="referenceAmt" column="REFERENCE_AMT" />
+		<result property="estateLoanAmt" column="ESTATE_LOAN_AMT" />
+		<result property="hasRepaymentNum" column="HAS_REPAYMENT_NUM" />
+		<result property="builtupArea" column="BUILTUP_AREA" />
+		<result property="houseOwnership" column="HOUSE_OWNERSHIP" />
+		<result property="equityRate" column="EQUITY_RATE" />
+		<result property="estateStateId" column="ESTATE_STATE_ID" />
+		<result property="estateCityId" column="ESTATE_CITY_ID" />
+		<result property="estateZoneId" column="ESTATE_ZONE_ID" />
+		<result property="estateState" column="ESTATE_STATE" />
+		<result property="estateCity" column="ESTATE_CITY" />
+		<result property="estateZone" column="ESTATE_ZONE" />
+		<result property="estateAddress" column="ESTATE_ADDRESS" />
+		<result property="monthPaymentAmt" column="MONTH_PAYMENT_AMT" />
+		<result property="ifMe" column="IF_ME" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		
+		<result property="snapVersion" column="SNAP_VERSION" />
+		
+		<result property="estateLoanIssueDate" column="ESTATE_LOAN_ISSUE_DATE" />
+		<result property="estateSameRegistered" column="EATATE_SAME_REGISTERED" />
+	</resultMap>
+ 
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+        <if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+    
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.APPEstateInfoEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_TM_APP_ESTATE_INFO(LOAN_BASE_ID,APP_NO,LOAN_NO,ORG,ESTATE_ID
+         				, ESTATE_TYPE,ESTATE_LOAN,ESTATE_BUY_DATE, ESTATE_AMT,REFERENCE_AMT,ESTATE_LOAN_AMT
+         				,HAS_REPAYMENT_NUM,BUILTUP_AREA,HOUSE_OWNERSHIP,EQUITY_RATE,ESTATE_STATE_ID,ESTATE_CITY_ID,ESTATE_ZONE_ID
+         				,ESTATE_ADDRESS,MONTH_PAYMENT_AMT,IF_ME,CREATOR_ID,CREATOR,CREATED_TIME,SNAP_VERSION
+         				,ESTATE_STATE,ESTATE_CITY,ESTATE_ZONE,ESTATE_LOAN_ISSUE_DATE,EATATE_SAME_REGISTERED)
+         	 VALUES(#{loanBaseId},  #{appNo},#{loanNo},#{org},#{estateId}, #{estateType}, #{estateLoan}, #{estateBuyDate},
+         	 #{estateAmt}, #{referenceAmt},  #{estateLoanAmt}, #{hasRepaymentNum},  #{builtupArea}, #{houseOwnership}, 
+         	 	 #{equityRate}, #{estateStateId},  #{estateCityId}, 
+         	 	 #{estateZoneId},  #{estateAddress}, #{monthPaymentAmt},#{ifMe}, #{creatorId}, #{creator}, #{createdTime} ,#{snapVersion},
+         	 	 #{estateState},#{estateCity},#{estateZone},#{estateLoanIssueDate},#{estateSameRegistered})
+    </insert >
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="appEstateInfoMap">
+		select * from BMS_TM_APP_ESTATE_INFO
+		where id = #{id}
+	</select>
+        
+      <select id="listBy" parameterType="java.util.Map" resultMap="appEstateInfoMap">
+		select * from  BMS_TM_APP_ESTATE_INFO
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.APPEstateInfoEntity">
+		update 	BMS_TM_APP_ESTATE_INFO
+ 			set 	 
+ 	    <if test="estateType != null and estateType != ''">
+        	ESTATE_TYPE = #{estateType},
+        </if>
+        <if test="estateLoan != null and estateLoan != ''">
+        	ESTATE_LOAN = #{estateLoan},
+        </if>
+         <if test="estateBuyDate != null">
+        	ESTATE_BUY_DATE = #{estateBuyDate},
+        </if>
+         <if test="estateAmt != null">
+        	ESTATE_AMT = #{estateAmt},
+        </if>
+         <if test="referenceAmt != null">
+        	REFERENCE_AMT = #{referenceAmt},
+        </if>
+         <if test="estateLoanAmt != null">
+        	ESTATE_LOAN_AMT = #{estateLoanAmt},
+        </if>
+        <if test="hasRepaymentNum != null and hasRepaymentNum != ''">
+        	HAS_REPAYMENT_NUM = #{hasRepaymentNum},
+        </if>
+         <if test="builtupArea != null">
+        	BUILTUP_AREA = #{builtupArea},
+        </if>
+         <if test="houseOwnership != null and houseOwnership != ''">
+        	HOUSE_OWNERSHIP = #{houseOwnership},
+        </if>
+        <if test="equityRate != null">
+        	EQUITY_RATE = #{equityRate},
+        </if>
+         <if test="estateStateId != null and estateStateId != ''">
+        	ESTATE_STATE_ID = #{estateStateId},
+        </if>
+        
+         <if test="estateCityId != null and estateCityId != ''">
+        	ESTATE_CITY_ID = #{estateCityId},
+        </if>
+        <if test="estateZoneId != null and estateZoneId != ''">
+        	ESTATE_ZONE_ID = #{estateZoneId},
+        </if>
+         <if test="estateAddress != null and estateAddress != ''">
+        	ESTATE_ADDRESS = #{estateAddress},
+        </if>
+        
+         <if test="monthPaymentAmt != null">
+        	MONTH_PAYMENT_AMT = #{monthPaymentAmt},
+        </if>
+         <if test="ifMe != null and ifMe != ''">
+        	IF_ME = #{ifMe},
+        </if>
+        
+        <if test="estateState != null and estateState != ''">
+        	ESTATE_STATE = #{estateState},
+        </if>
+        <if test="estateCity != null and estateCity != ''">
+        	ESTATE_CITY = #{estateCity},
+        </if>
+        <if test="estateZone != null and estateZone != ''">
+        	ESTATE_ZONE = #{estateZone},
+        </if>
+        
+        	ESTATE_LOAN_ISSUE_DATE = #{estateLoanIssueDate},
+        
+        <if test="estateSameRegistered != null">
+        	EATATE_SAME_REGISTERED = #{estateSameRegistered},
+        </if>
+        
+ 		  	MODIFIER_ID = #{modifierId},
+ 		  	MODIFIER = #{modifier},
+ 		  	MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	<update id="updateAll" parameterType="com.ymkj.cms.biz.entity.apply.APPEstateInfoEntity">
+		update 	BMS_TM_APP_ESTATE_INFO
+ 			set 	 
+        	ESTATE_TYPE = #{estateType},
+        	ESTATE_LOAN = #{estateLoan},
+        	ESTATE_BUY_DATE = #{estateBuyDate},
+        	ESTATE_AMT = #{estateAmt},
+        	REFERENCE_AMT = #{referenceAmt},
+        	ESTATE_LOAN_AMT = #{estateLoanAmt},
+        	HAS_REPAYMENT_NUM = #{hasRepaymentNum},
+        	BUILTUP_AREA = #{builtupArea},
+        	HOUSE_OWNERSHIP = #{houseOwnership},
+        	EQUITY_RATE = #{equityRate},
+        	ESTATE_STATE_ID = #{estateStateId},
+        	ESTATE_CITY_ID = #{estateCityId},
+        	ESTATE_ZONE_ID = #{estateZoneId},
+        	ESTATE_ADDRESS = #{estateAddress},
+        	MONTH_PAYMENT_AMT = #{monthPaymentAmt},
+        	EATATE_SAME_REGISTERED = #{estateSameRegistered},
+        	IF_ME = #{ifMe},
+        	ESTATE_STATE = #{estateState},
+        	ESTATE_CITY = #{estateCity},
+        	ESTATE_ZONE = #{estateZone},
+        	ESTATE_LOAN_ISSUE_DATE = #{estateLoanIssueDate},
+ 		  	MODIFIER_ID = #{modifierId},
+ 		  	MODIFIER = #{modifier},
+ 		  	MODIFIED_TIME = #{modifiedTime}
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+</mapper> 

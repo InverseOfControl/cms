@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.BMSChannelBankDaoImpl">
+
+	<resultMap id="BMSChannelBankMap" type="com.ymkj.cms.biz.entity.apply.BMSChannelBank">
+		<id property="id" column="id" />
+		<result property="channelId" column="channel_id" />
+		<result property="bankId" column="bank_id" />
+		<result property="isDeleted" column="is_deleted" />
+		<result property="channeCode" column="channe_code" />
+		<result property="channeName" column="channe_name" />
+		<result property="bankName" column="bank_name" />
+		<result property="isDisabled" column="is_disabled" />
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="creatorDate" column="CREATOR_DATE" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modified" column="MODIFIED" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedDate" column="MODIFIED_DATE" />
+	    <!-- 修改用户Id -->
+	     <result property="modifiedId" column="MODIFIED_ID" />
+	     <result property="version"    column="VERSION"/>
+
+	</resultMap>
+
+	<sql id="table">bms_channel_bank</sql>
+
+	<sql id="condition_sql">
+		where bcb.bank_id=bb.ID AND
+		bcb.channel_id=bc.ID and bcb.is_deleted = 0
+		and bb.is_deleted = 0 and bc.is_deleted = 0
+		<if test="id != null and id != 0">
+			and bcb.id = #{id}
+		</if>
+		<if test="channelId != null and channelId !=''">
+			and bcb.channel_id = #{channelId}
+		</if>
+		<if test="bankId != null and bankId !=''">
+			and bcb.bank_id = #{bankId}
+		</if>
+	</sql>
+
+	<sql id="set_sql">
+		<trim prefix="set" suffixOverrides=",">
+			<if test="channelId != null">
+				channel_id = #{channelId},
+			</if>
+			<if test="bankId != null">
+				bank_id = #{bankId},
+			</if>
+			<if test="isDeleted != null">
+				is_deleted = #{isDeleted},
+			</if>
+			<if test="isDisabled != null">
+				is_disabled = #{isDisabled},
+			</if>
+		</trim>
+	</sql>
+
+	<!-- query -->
+	<select id="getById" parameterType="long" resultMap="BMSChannelBankMap">
+		select * from
+		<include refid="table" />
+		where id = #{id}
+	</select>
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSChannelBankMap">
+		select
+		bcb.*,bc.CODE AS channe_code,bc.NAME AS channe_name,bb.NAME AS
+		bank_name,bcb.is_disabled from
+		bms_channel bc,bms_bank
+		bb,bms_channel_bank bcb
+		<include refid="condition_sql" />
+		<![CDATA[ order by id desc]]>
+	</select>
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1) from
+		bms_channel bc,bms_bank
+		bb,bms_channel_bank bcb
+		<include refid="condition_sql" />
+	</select>
+
+	<select id="checkIsExits" parameterType="Map" resultType="int">
+		select count(1) from
+		<include refid="table"/>
+		<where>
+			channel_id=#{channelId} and bank_id=#{bankId} and is_deleted=0
+		</where>
+	</select>
+
+
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.BMSChannelBank"
+		keyProperty="id" useGeneratedKeys="true">
+
+		insert into bms_channel_bank
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != 0">
+				id,
+			</if>
+			<if test="channelId != null">
+				channel_id,
+			</if>
+			<if test="bankId != null">
+				bank_id,
+			</if>
+			<if test="isDeleted != null">
+				is_deleted,
+			</if>
+			<if test="isDisabled != null">
+				is_disabled,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null and id != 0">
+				#{id},
+			</if>
+			<if test="channelId != null">
+				#{channelId},
+			</if>
+			<if test="bankId != null">
+				#{bankId},
+			</if>
+			<if test="isDeleted != null">
+				#{isDeleted},
+			</if>
+			<if test="isDisabled != null">
+				#{isDisabled},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.BMSChannelBank">
+		update
+		<include refid="table" />
+		<!-- VERSION = #{version}+1 , -->
+		<include refid="set_sql" />
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	
+	<select id="checkParentIsStart" parameterType="java.util.Map" resultType="int">
+		select count(1) from BMS_BANK
+		where ID = #{id} and IS_DISABLED = 1
+	</select>
+	
+	<select id="listBy" parameterType="java.util.Map" resultMap="BMSChannelBankMap">
+		select * from
+		<include refid="table" />
+		where is_deleted =0
+		<if test="channelId != null">
+			AND CHANNEL_ID = #{channelId}
+		</if>
+	</select>
+	
+	<select id="checkParentIsChanel" parameterType="java.util.Map" resultType="int">
+		select count(1) from BMS_CHANNEL
+		where ID = #{id} and IS_DISABLED = 0
+ 	</select>
+ 	
+ 	<select id="listPageByParam" parameterType="java.util.Map" resultMap="BMSChannelBankMap">
+		select
+		bcb.*,bc.CODE AS channe_code,bc.NAME AS channe_name,bb.NAME AS
+		bank_name,bcb.is_disabled from
+		bms_channel bc,bms_bank
+		bb,bms_channel_bank bcb where bcb.bank_id=bb.ID AND
+		bcb.channel_id=bc.ID and bcb.is_deleted = 0
+		and bb.is_deleted = 0 and bc.is_deleted = 0
+		<if test="channelIds != null and channelIds !=''">
+			<![CDATA[ and bcb.channel_id in (${channelIds})]]>
+		</if>
+		<if test="bankIds != null and bankIds !=''">
+			<![CDATA[and bcb.bank_id in (${bankIds})]]>
+		</if>
+			<![CDATA[ order by id desc]]>
+	</select>
+	
+	<select id="countPageByParam" parameterType="java.util.Map" resultType="int">
+		select count(1) from <![CDATA[(]]>select
+		bcb.* from
+		bms_channel bc,bms_bank
+		bb,bms_channel_bank bcb where bcb.bank_id=bb.ID AND
+		bcb.channel_id=bc.ID and bcb.is_deleted = 0
+		and bb.is_deleted = 0 and bc.is_deleted = 0
+		<if test="channelIds != null and channelIds !=''">
+			<![CDATA[ and bcb.channel_id in (${channelIds})]]>
+		</if>
+		<if test="bankIds != null and bankIds !=''">
+			<![CDATA[and bcb.bank_id in (${bankIds})]]>
+		</if>
+				<![CDATA[)t]]>
+	</select>
+</mapper> 

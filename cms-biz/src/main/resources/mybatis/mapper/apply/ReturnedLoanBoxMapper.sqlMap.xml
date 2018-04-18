@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.ReturnedLoanBoxDaoImpl">
+
+	<resultMap id="returnedLoanBoxSearchMap" type="com.ymkj.cms.biz.entity.apply.ReturnedLoanBoxSearchEntity">
+		<result property="loanBaseId" column="id" />
+		<result property="personName" column="name" />
+		<result property="loanNo" column="loan_no" />
+		<result property="idNo" column="id_no" />
+		<result property="productName" column="product_name" />
+		<result property="initProductName" column="INIT_PRODUCT_NAME" />
+		<result property="applyLmt" column="apply_lmt" />
+		<result property="applyTerm" column="apply_term" />
+		<result property="remark" column="remark" />
+		<result property="returnType" column="handle_type" />
+		<result property="managerName" column="branch_manager_name" />
+		<result property="directorName" column="director" />
+		<result property="ifPri" column="if_pri" />
+		<result property="logoFlag" column="logo_flag" />
+		
+		<result property="ifPreferentialUser" column="IF_PREFERENTIAL_USER" />
+		
+	</resultMap>
+	
+	<sql id="condition_sql">
+		where 1 = 1 
+		<if test="loanNo != null and loanNo != ''"> and t.loan_no = #{loanNo} </if>
+		<if test="name != null and name != ''"> and t.name = #{name} </if>
+		<if test="idNo != null and idNo != ''"> and t.id_no = #{idNo} </if>
+		<choose>
+	      <when test="returnType != null and returnType == 'XSHJ'">
+	         and t.rtf_node_state IN ('XSCS-RETURN','CSFP-RETURN','XSZS-RETURN') 
+	      </when>
+	      <when test="returnType != null and returnType!='' and returnType!='XSHJ'">
+	         and t.rtf_node_state=#{returnType}
+	      </when>
+	    </choose>
+		order by t.if_pri desc,t.modified_time asc
+	</sql>
+	
+	<sql id="select_sql">
+		select * from (
+			select lb.id, lb.name,lb.loan_no,lb.id_no,lp.product_name,lp.INIT_PRODUCT_NAME,lp.apply_lmt,lp.apply_term,concat(le.primary_reason,'|',le.secode_reason) remark,
+			 ( case lb.rtf_node_state 
+			      when 'LRFH-RETURN' then '录入复核' 
+			      when 'XSCS-RETURN' then '信审环节' 
+			      WHEN 'CSFP-RETURN' THEN '信审环节'
+			      when 'XSZS-RETURN' then '信审环节' 
+			      when 'HTQR-RETURN' then '合同确认' 
+			      when 'FKSH-RETURN' then '放款审核'
+			      when 'FKQR-RETURN' then '放款确认'  
+			    end
+			  ) handle_type, 	
+			lb.branch_manager_name,lb.director,lp.if_pri,lb.rtf_node_state,lb.modified_time,lb.logo_flag,lb.IF_PREFERENTIAL_USER
+			from (
+				select * from bms_loan_base WHERE (rtf_node_state='LRFH-RETURN' or rtf_node_state='XSCS-RETURN' or rtf_node_state='XSZS-RETURN' or rtf_node_state='CSFP-RETURN')
+				and IS_DELETE = 0 and service_code = #{serviceCode}
+				union all
+				select * from bms_loan_base where (rtf_node_state='HTQR-RETURN' or rtf_node_state='FKSH-RETURN' or rtf_node_state='FKQR-RETURN')
+				and IS_DELETE = 0 and sign_code = #{serviceCode}
+			) lb
+			left join bms_loan_product lp on lb.id = lp.loan_base_id and lp.IS_DELETE = 0
+			left join bms_loan_ext le on lb.id = le.loan_base_id and le.IS_DELETE = 0 
+			left join bms_loan_audit bla on lb.loan_no = bla.loan_no 
+			where bla.check_node_state in ('NO_CHECK','CHECK_PASS') or bla.check_node_state is null
+		) t
+	</sql>
+	<!--left join bms_loan_audit 添加 审核无需复核的条件 -->
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="returnedLoanBoxSearchMap">
+		<include refid="select_sql" />
+		<include refid="condition_sql" />
+	</select>
+	
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from (
+		<include refid="select_sql" />
+		<include refid="condition_sql" />
+		) t
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="int">
+		select count(*) from (
+		select t.id from (
+		select id from bms_loan_base WHERE (rtf_node_state='LRFH-RETURN' or rtf_node_state='XSCS-RETURN' or rtf_node_state='XSZS-RETURN' or rtf_node_state='CSFP-RETURN') and IS_DELETE = 0 and service_code = #{userCode}
+		union all
+		select id from bms_loan_base where (rtf_node_state='HTQR-RETURN' or rtf_node_state='FKSH-RETURN' or rtf_node_state='FKQR-RETURN') and IS_DELETE = 0 and sign_code = #{userCode}
+		) t left join bms_loan_audit la on t.id = la.loan_base_id
+		where la.check_node_state in ('NO_CHECK','CHECK_PASS') or la.check_node_state is null) tt
+	</select>
+</mapper> 

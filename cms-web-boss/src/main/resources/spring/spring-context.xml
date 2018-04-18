@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd  
+           http://www.springframework.org/schema/aop   
+           http://www.springframework.org/schema/aop/spring-aop-4.3.xsd  
+           http://www.springframework.org/schema/tx  
+           http://www.springframework.org/schema/tx/spring-tx-4.3.xsd  
+           http://www.springframework.org/schema/context  
+           http://www.springframework.org/schema/context/spring-context-4.3.xsd"
+	default-autowire="byName" default-lazy-init="false">
+
+	<!-- 引用uflo源配置文件 -->
+ 	<import resource="classpath:uflo-console-context.xml" /> 
+
+	<!-- 配置要扫描的包 -->
+	<context:component-scan base-package="com.ymkj.cms.web.boss" />
+
+	<!-- 采用注释的方式配置bean -->
+	<context:annotation-config />
+
+	<!-- 读入配置属性文件 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<!-- 生产环境 -->
+				<value>file:${CMS_WEB_GLOBAL_CONF_PATH}/dubbo-base.properties</value>
+				<value>file:${CMS_WEB_GLOBAL_CONF_PATH}/cms.properties</value>
+				<value>file:${CMS_WEB_GLOBAL_CONF_PATH}/jdbc.properties</value>
+				<value>file:${CMS_WEB_GLOBAL_CONF_PATH}/shiro.properties</value>
+				<value>file:${CMS_WEB_GLOBAL_CONF_PATH}/redis.properties</value> 
+				
+				<!-- 开发环境 -->
+				<!-- <value>classpath:dubbo-base.properties</value>
+				<value>classpath:bms.properties</value>
+				<value>classpath:jdbc.properties</value>
+				<value>classpath:shiro.properties</value>
+				<value>classpath:redis.properties</value> --> 
+				
+			</list>
+		</property>
+	</bean>
+
+	<!-- proxy-target-class默认"false",更改为"ture"使用CGLib动态代理 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<!-- 默认异常拦截处理器 (建议保留, 可自行定义) -->
+	<bean id="webExceptionHandler" class="com.ymkj.base.core.web.handler.WebExceptionHandler">
+		<property name="errorPage" value="test_error"></property>
+	</bean>
+
+	<!--文件目录 -->
+	<bean id="fileProperties" class="com.ymkj.cms.web.boss.common.FileProperties">
+		<property name="uploadPath" value="${upload.path}" />
+		<property name="downloadPath" value="${download.path}" />
+		<property name="uploadContractTemPath" value="${upload.contract.template.path}" />
+		<property name="picfiledataUrl" value="${pic.filedataUrl}" />
+	</bean>
+	
+	<!-- 日志文件配置 -->
+	<bean id="log4jInitializer"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod">
+			<value>org.springframework.util.Log4jConfigurer.initLogging</value>
+		</property>
+		<property name="arguments">
+			<list>
+				 <value>file:${CMS_WEB_GLOBAL_CONF_PATH}/log4j.properties</value> 
+				 <!-- <value>classpath:log4j.properties</value> -->
+			</list>
+		</property>
+	</bean>
+
+	<import resource="classpath:spring/spring-dubbo-consumer.xml" />
+	<import resource="classpath:spring/spring-web.xml" />
+	<import resource="classpath:spring/spring-uflo.xml" />
+	<import resource="classpath:sso-client-context.xml"/>
+	<!-- 支持文件上传 -->
+	 <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+	 
+	 <!-- redis 配置开始 -->
+	<import resource="classpath:spring/spring-redis.xml"/>
+	<!-- redis 配置结束 -->
+	 
+	 
+</beans>

@@ -1,0 +1,771 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSOrgLimitChannelDaoImpl">
+
+	<sql id="table">bms_org_limit_channel</sql>
+
+	<sql id="condition_sql">
+		where IS_DELETED = 0
+		<if test="auditLimitId != null and auditLimitId != 0">
+			and AUDIT_LIMIT_ID = #{auditLimitId}
+		</if>
+		<if test="orgId != null and orgId != 0">
+			and ORG_ID = #{orgId}
+		</if>
+		<if test="channelId != null and channelId != 0">
+			and CHANNEL_ID = #{channelId}
+		</if>
+		<if test="productDeployCode != null and productDeployCode != ''">
+			and PRODUCT_DEPLOY_CODE = #{productDeployCode}
+		</if>
+		<if test="isDeleted != null and isDeleted !=''">
+			and IS_DELETED = #{isDeleted}
+		</if>
+	</sql>
+
+	<sql id="set_sql">
+		<trim prefix="set" suffixOverrides=",">
+			MODIFIED_DATE=SYSDATE()
+			<if test="auditLimitId != null and auditLimitId != 0">
+				,AUDIT_LIMIT_ID = #{auditLimitId}
+			</if>
+			<if test="orgId != null and orgId != 0">
+				,ORG_ID = #{orgId}
+			</if>
+			<if test="channelId != null and channelId != 0">
+				,CHANNEL_ID = #{channelId}
+			</if>
+			<if test="productDeployCode != null and productDeployCode != ''">
+				,PRODUCT_DEPLOY_CODE = #{productDeployCode}
+			</if>
+			<if test="isDeleted != null">
+				,IS_DELETED = #{isDeleted}
+			</if>
+			<if test="isDisabled != null">
+				,IS_DISABLED = #{isDisabled}
+			</if>
+			<if test="floorLimit != null">
+				,FLOOR_LIMIT = #{floorLimit}
+			</if>
+			<if test="upperLimit != null">
+				,UPPER_LIMIT = #{upperLimit}
+			</if>
+			<if test="creator != null and creator != ''">
+	        	,creator = #{creator}
+	        </if>
+	        <if test="creatorDate != null">
+	        	,creator_date = #{creatorDate}
+	        </if>
+	        <if test="configureConflict != null and configureConflict !=''">
+	        	,CONFIGURE_CONFLICT = #{configureConflict}
+	        </if>
+	        <if test="isCanPreferential != null">
+	        	,is_can_preferential = #{isCanPreferential}
+	        </if>
+		</trim>
+	</sql>
+
+	<resultMap id="BMSOrgLimitMap"
+		type="com.ymkj.cms.biz.entity.master.BMSOrgLimitChannel">
+		<id property="id" column="ID" />
+		<result property="auditLimitId" column="AUDIT_LIMIT_ID" />
+		<result property="orgId" column="ORG_ID" />
+		<result property="productId" column="PRODUCT_ID" />
+		<result property="channelId" column="CHANNEL_ID" />
+		<result property="productDeployCode" column="PRODUCT_DEPLOY_CODE" />
+		<result property="isDeleted" column="IS_DELETED" />
+		<result property="isDisabled" column="IS_DISABLED" />
+
+		<result property="channelCode" column="channelCode" />
+		<result property="channelName" column="channelName" />
+		<result property="productCode" column="productCode" />
+		<result property="productName" column="productName" />
+		<result property="auditLimit" column="auditLimit" />
+		<result property="floorLimit" column="floorLimit" />
+		<result property="upperLimit" column="upperLimit" />
+		<result property="proFloorLimit" column="proFloorLimit" />
+		<result property="proUpperLimit" column="proUpperLimit" />
+		<result property="proAdjustBase" column="proAdjustBase" />
+		<result property="version" column="VERSION" />
+		 <!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="creatorDate" column="CREATOR_DATE" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modified" column="MODIFIED" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedDate" column="MODIFIED_DATE" />
+	    <!-- 修改用户Id -->
+	     <result property="modifiedId" column="MODIFIED_ID" />
+	     <result property="configureConflict" column="configureConflict" />
+	    <!-- 优惠标识 -->
+	     <result property="isCanPreferential" column="IS_CAN_PREFERENTIAL" />
+	</resultMap>
+
+	<!-- query -->
+	<select id="getById" parameterType="long" resultMap="BMSOrgLimitMap">
+		select * from
+		<include refid="table" />
+		where ID = #{id} and IS_DELETED=0
+	</select>
+
+	<select id="listBy" parameterType="java.util.Map" resultMap="BMSOrgLimitMap">
+		SELECT 
+		  bolc.* 
+		FROM
+		  bms_org_limit_channel bolc 
+		  INNER JOIN bms_limit_channel blc 
+		    ON bolc.CHANNEL_ID = blc.CHANNEL_ID 
+		    AND blc.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_channel bc 
+		    ON bolc.CHANNEL_ID = bc.ID 
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON bpal.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+			WHERE bolc.IS_DELETED = 0 
+					  AND bc.IS_DELETED = 0 
+					  AND bpal.IS_DELETED = 0 
+					  AND bp.IS_DELETED = 0 
+					  AND blc.IS_DELETED = 0 		
+		  <if test="auditLimitId != null and auditLimitId != 0">
+			and bolc.AUDIT_LIMIT_ID = #{auditLimitId}
+		</if>
+		<if test="orgId != null and orgId != 0">
+			and bolc.ORG_ID = #{orgId}
+		</if>
+		<if test="channelId != null and channelId != 0">
+			and bolc.CHANNEL_ID = #{channelId}
+		</if>
+		<if test="productDeployCode != null and productDeployCode != ''">
+			and bolc.PRODUCT_DEPLOY_CODE = #{productDeployCode}
+		</if>
+		<if test="isDeleted != null and isDeleted !=''">
+			and bolc.IS_DELETED = #{isDeleted}
+		</if>
+		<if test="blcIsDisabled != null and blcIsDisabled !=''">
+			and blc.IS_DISABLED = #{blcIsDisabled}
+		</if>
+	</select>
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="BMSOrgLimitMap">
+		SELECT 
+		  bolc.id,
+		  bolc.AUDIT_LIMIT_ID,
+		  bolc.ORG_ID,
+		  bolc.CHANNEL_ID,
+		  bp.PRODUCT_ID,
+		  bolc.PRODUCT_DEPLOY_CODE,
+		  bolc.IS_DISABLED,
+		  bolc.CREATOR,
+		  bolc.CREATOR_ID,
+		  bolc.CREATOR_DATE,
+		  bolc.MODIFIED,
+		  bolc.MODIFIED_ID,
+		  bolc.MODIFIED_DATE,
+		  bolc.VERSION,
+		  bolc.IS_DELETED,
+		  bc.CODE AS channelCode,
+		  bc.NAME AS channelName,
+		  bp.CODE AS productCode,
+		  bp.NAME AS productName,
+		  bpal.AUDIT_LIMIT AS auditLimit,
+		  bolc.FLOOR_LIMIT AS floorLimit,
+		  bolc.UPPER_LIMIT AS upperLimit,
+		  bpal.FLOOR_LIMIT AS proFloorLimit,
+		  bpal.UPPER_LIMIT AS proUpperLimit,
+		  bp.ADJUST_BASE AS proAdjustBase,
+		  bolc.CONFIGURE_CONFLICT as configureConflict,
+		  bolc.IS_CAN_PREFERENTIAL
+		FROM
+		  bms_org_limit_channel bolc 
+		  INNER JOIN bms_limit_channel blc 
+		    ON bolc.CHANNEL_ID = blc.CHANNEL_ID 
+		    AND blc.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID
+		  INNER JOIN bms_channel bc 
+		    ON bolc.CHANNEL_ID = bc.ID 
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON bpal.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+		WHERE bolc.IS_DELETED = 0 
+				  AND bc.IS_DELETED = 0 
+				  AND bpal.IS_DELETED = 0 
+				  AND bp.IS_DELETED = 0 
+				  AND blc.IS_DELETED = 0 		
+		  <if test="orgs != null and orgs != ''">
+			<![CDATA[and bolc.ORG_ID in (${orgs})]]>	
+		</if>
+		<if test="channs != null and channs != ''">
+			<![CDATA[and bolc.CHANNEL_ID in (${channs})]]>	
+		</if>
+		<if test="prods != null and prods != ''">
+			<![CDATA[and bp.product_id in (${prods})]]>	
+		</if>
+		<if test="limits != null and limits != ''">
+			<![CDATA[and bpal.AUDIT_LIMIT in (${limits})]]>	
+		</if>
+		<if test="isDisabled != null and (isDisabled==1 or isDisabled==0)">
+			and bolc.IS_DISABLED = #{isDisabled}
+		</if>
+		<if test="configure != null and configure!=''">
+			and bolc.CONFIGURE_CONFLICT = #{configure}
+		</if>
+		
+		<![CDATA[ order by bolc.creator_date desc, bolc.id desc]]>		
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map"
+		resultType="long">
+		select count(1)
+		FROM
+		  bms_org_limit_channel bolc 
+		  INNER JOIN bms_limit_channel blc 
+		    ON bolc.CHANNEL_ID = blc.CHANNEL_ID 
+		    AND blc.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID
+		  INNER JOIN bms_channel bc 
+		    ON bolc.CHANNEL_ID = bc.ID 
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON bpal.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+		WHERE bolc.IS_DELETED = 0 
+				  AND bc.IS_DELETED = 0 
+				  AND bpal.IS_DELETED = 0 
+				  AND bp.IS_DELETED = 0 
+				  AND blc.IS_DELETED = 0 		
+		   <if test="orgs != null and orgs != ''">
+			<![CDATA[and bolc.ORG_ID in (${orgs})]]>	
+		</if>
+		<if test="channs != null and channs != ''">
+			<![CDATA[and bolc.CHANNEL_ID in (${channs})]]>	
+		</if>
+		<if test="prods != null and prods != ''">
+			<![CDATA[and bp.product_id in (${prods})]]>	
+		</if>
+		<if test="limits != null and limits != ''">
+			<![CDATA[and bpal.AUDIT_LIMIT in (${limits})]]>	
+		</if>
+		<if test="isDisabled != null and (isDisabled==1 or isDisabled==0)">
+			and bolc.IS_DISABLED = #{isDisabled}
+		</if>
+		<if test="configure != null and configure!=''">
+			and bolc.CONFIGURE_CONFLICT = #{configure}
+		</if>
+	</select>
+
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSOrgLimitChannel"
+		keyProperty="id" useGeneratedKeys="true">
+
+		insert into bms_org_limit_channel
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="auditLimitId != null and auditLimitId != 0">
+				AUDIT_LIMIT_ID,
+			</if>
+			<if test="orgId != null and orgId != 0">
+				ORG_ID,
+			</if>
+			<if test="channelId != null and channelId != 0">
+				CHANNEL_ID,
+			</if>
+			<if test="productDeployCode != null and productDeployCode != ''">
+				PRODUCT_DEPLOY_CODE,
+			</if>
+			<if test="isDeleted != null">
+				IS_DELETED,
+			</if>
+			<if test="floorLimit != null">
+				FLOOR_LIMIT,
+			</if>
+			<if test="upperLimit != null">
+				UPPER_LIMIT,
+			</if>
+			<if test="creator != null and creator != ''">
+	        	CREATOR,
+	        </if>
+	        <if test="creatorDate != null">
+	        	CREATOR_DATE,
+	        </if>
+			IS_DISABLED
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="auditLimitId != null and auditLimitId != 0">
+				#{auditLimitId},
+			</if>
+			<if test="orgId != null and orgId != 0">
+				#{orgId},
+			</if>
+			<if test="channelId != null and channelId != 0">
+				#{channelId},
+			</if>
+			<if test="productDeployCode != null and productDeployCode != ''">
+				#{productDeployCode},
+			</if>
+			<if test="isDeleted != null">
+				#{isDeleted},
+			</if>
+			<if test="floorLimit != null">
+				#{floorLimit},
+			</if>
+			<if test="upperLimit != null">
+				#{upperLimit},
+			</if>
+			<if test="creator != null and creator != ''">
+	        	 #{creator},
+	        </if>
+	        <if test="creatorDate != null">
+	        	 #{creatorDate},
+	        </if>
+			0
+		</trim>
+	</insert>
+
+	<!-- del -->
+	<delete id="deleteById" parameterType="long">
+		delete from
+		<include refid="table" />
+		where ID = #{id}
+	</delete>
+
+	<delete id="deletelAll">
+		delete from
+		<include refid="table" />
+	</delete>
+	<!-- 根据条件删除数据 -->
+	<delete id="deleteByCondition" parameterType="com.ymkj.cms.biz.entity.master.BMSOrgLimitChannel">
+		delete from
+		<include refid="table" />
+		where 1=1
+
+		<if test="id != null and id != 0">
+			and ID = #{id}
+		</if>
+		<if test="auditLimitId != null and auditLimitId != 0">
+			and AUDIT_LIMIT_ID = #{auditLimitId}
+		</if>
+		<if test="orgId != null and orgId != 0">
+			and ORG_ID = #{orgId}
+		</if>
+		<if test="channelId != null and channelId != 0">
+			and CHANNEL_ID = #{channelId}
+		</if>
+		<if test="productDeployCode != null and productDeployCode != ''">
+			and PRODUCT_DEPLOY_CODE = #{productDeployCode}
+		</if>
+		<if test="isDeleted != null">
+			and IS_DELETED = #{isDeleted}
+		</if>
+	</delete>
+	<!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.master.BMSOrgLimitChannel">
+		update
+		<include refid="table" />
+		<!-- VERSION = #{version}+1 , -->
+		<include refid="set_sql" />
+		<where>
+			ID = #{id}
+		</where>
+	</update>
+	<!-- 根据条件更新数据 -->
+	<update id="updateByCondition" parameterType="com.ymkj.cms.biz.entity.master.BMSOrgLimitChannel">
+		update
+		<include refid="table" />
+		SET IS_DELETED=1
+		<where>
+			<if test="auditLimitId != null and auditLimitId != 0">
+				AND AUDIT_LIMIT_ID = #{auditLimitId}
+			</if>
+			<if test="orgId != null and orgId != 0">
+				AND ORG_ID = #{orgId}
+			</if>
+			<if test="channelId != null and channelId != 0">
+				AND CHANNEL_ID = #{channelId}
+			</if>
+		</where>
+	</update>
+	<!-- 根据条件更新数据 -->
+	<update id="updateByParams" parameterType="com.ymkj.cms.biz.entity.master.BMSOrgLimitChannel">
+		update
+		<include refid="table" />
+		<set>
+			<if test="isCanPreferential != null ">
+				is_can_preferential = #{isCanPreferential},
+			</if>
+			<if test="modified != null and modified != ''">
+				MODIFIED = #{modified},
+			</if>
+			MODIFIED_DATE = NOW()
+		</set>
+		<where>
+			<if test="auditLimitId != null and auditLimitId != 0">
+				AND AUDIT_LIMIT_ID = #{auditLimitId}
+			</if>
+			<if test="orgId != null and orgId != 0">
+				AND ORG_ID = #{orgId}
+			</if>
+			<if test="channelId != null and channelId != 0">
+				AND CHANNEL_ID = #{channelId}
+			</if>
+		</where>
+	</update>
+
+	<!-- 根据条件更新数据(进行逻辑删除) -->
+	<update id="logicalDelete" parameterType="com.ymkj.cms.biz.entity.master.BMSOrgLimitChannel">
+		update
+		<include refid="table" />
+		SET IS_DELETED=1
+		<where>
+			<if test="auditLimitId != null and auditLimitId != 0">
+				AND AUDIT_LIMIT_ID = #{auditLimitId}
+			</if>
+			<if test="orgId != null and orgId != 0">
+				AND ORG_ID = #{orgId}
+			</if>
+			<if test="channelId != null and channelId != 0">
+				AND CHANNEL_ID = #{channelId}
+			</if>
+		</where>
+	</update>
+
+	<!-- 依据产品，查询配置的对应可用签约网点 -->
+	<select id="findByParams" parameterType="java.util.Map"
+		resultMap="BMSOrgLimitMap">
+		SELECT DISTINCT 
+		  bolc.ID,
+		  bolc.AUDIT_LIMIT_ID,
+		  bolc.PRODUCT_DEPLOY_CODE,
+		  bolc.ORG_ID,
+		  bolc.CHANNEL_ID,
+		  bolc.CREATOR,
+		  bolc.IS_DISABLED,
+		  bolc.CREATOR_ID,
+		  bolc.CREATOR_DATE,
+		  bolc.MODIFIED,
+		  bolc.MODIFIED_ID,
+		  bolc.MODIFIED_DATE,
+		  bolc.VERSION,
+		  bolc.IS_DELETED 
+		FROM
+		  bms_org_limit_channel bolc 
+		  INNER JOIN bms_limit_channel blc 
+		    ON bolc.CHANNEL_ID = blc.CHANNEL_ID 
+		    AND blc.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON bpal.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID
+		    INNER JOIN bms_channel bc 
+		    ON bolc.CHANNEL_ID = bc.ID 
+		WHERE bolc.IS_DELETED = 0 
+ 		  AND bpal.IS_DELETED = 0 
+ 		  AND bp.IS_DELETED = 0 
+		  AND blc.IS_DELETED = 0 
+		  AND bc.IS_DELETED = 0 
+ 		  AND bolc.IS_DISABLED = 0 
+ 		  AND bpal.IS_DISABLED = 0 
+		  AND blc.IS_DISABLED = 0 
+		<if test="productCodeList != null and productCodeList.size > 0">
+			AND bp.CODE in
+			<foreach item="productCodeItem" collection="productCodeList"
+				separator="," open="(" close=")">
+				#{productCodeItem}
+			</foreach>
+		</if>
+	</select>
+	<!-- 依据参数，查询配置的对应可用签约网点id ,多产品取交集 -->
+	<select id="findOrgIntersectByParams" parameterType="java.util.Map"
+		resultMap="BMSOrgLimitMap">
+		<if test="productCodeList != null and productCodeList.size > 0">
+			SELECT * FROM
+			<foreach item="productCodeItem" collection="productCodeList" separator=" UNION ALL " open="(" close=")">
+				SELECT DISTINCT 
+				  bolc.ORG_ID 
+				FROM
+				  bms_org_limit_channel bolc 
+				  INNER JOIN bms_limit_channel blc 
+				    ON bolc.CHANNEL_ID = blc.CHANNEL_ID 
+				    AND blc.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+				  INNER JOIN bms_product_audit_limit bpal 
+				    ON bpal.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+				  INNER JOIN bms_product bp 
+				    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+				  INNER JOIN bms_channel bc 
+				    ON bolc.CHANNEL_ID = bc.ID 
+				WHERE bolc.IS_DELETED = 0 
+ 				  AND bpal.IS_DELETED = 0 
+ 				  AND bp.IS_DELETED = 0 
+				  AND blc.IS_DELETED = 0 
+				  AND bc.IS_DELETED = 0 
+ 				  AND bolc.IS_DISABLED = 0 
+ 				  AND bpal.IS_DISABLED = 0 
+				  AND blc.IS_DISABLED = 0  
+				  AND bp.CODE = #{productCodeItem} 
+			</foreach>
+			AS tbl
+			where 1=1
+			<if test="orgIdList != null and orgIdList.size > 0">
+				and ORG_ID in
+				<foreach item="orgIdItem" collection="orgIdList" separator=","
+					open="(" close=")">
+					#{orgIdItem}
+				</foreach>
+			</if>
+			GROUP BY tbl.ORG_ID
+			HAVING COUNT(*) = #{productCodeListSize}
+		</if>
+	</select>
+	<!-- 校验产品-网点是否失效 -->
+	<select id="branchProductRelevanceCheck" parameterType="java.util.Map" resultType="java.lang.Long">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  bms_org_limit_channel bolc 
+		  INNER JOIN bms_limit_channel blc 
+		    ON bolc.CHANNEL_ID = blc.CHANNEL_ID 
+		    AND blc.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON bpal.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+		  INNER JOIN bms_channel bc 
+		    ON bolc.CHANNEL_ID = bc.ID  
+		WHERE bolc.IS_DELETED = 0 
+		  AND bpal.IS_DELETED = 0 
+		  AND bp.IS_DELETED = 0 
+		  AND blc.IS_DELETED = 0 
+		  AND bc.IS_DELETED = 0 
+		  AND bc.IS_DISABLED = 0
+		  AND bolc.IS_DISABLED = 0 
+		  AND bpal.IS_DISABLED = 0 
+		  AND blc.IS_DISABLED = 0 <!-- 启用0 ，禁用1 -->
+		  AND bolc.ORG_ID = #{orgId}
+		  AND bp.CODE = #{productCode} 
+	</select>
+	<update id="updateOrgLimitChannelAllByCondition" parameterType="java.util.Map">
+		update
+		<include refid="table" />
+		SET MODIFIED_DATE=SYSDATE()
+		<if test="isDisabled != null">
+			,IS_DISABLED = #{isDisabled}
+		</if>
+		<where>
+			IS_DELETED = 0
+			<if test="auditLimitId != null and auditLimitId != 0">
+				AND AUDIT_LIMIT_ID = #{auditLimitId}
+			</if>
+			<if test="orgId != null and orgId != 0">
+				AND ORG_ID = #{orgId}
+			</if>
+			<if test="channelId != null and channelId != 0">
+				AND CHANNEL_ID = #{channelId}
+			</if>
+		</where>
+	</update>
+	<!-- 签约环节校验产品是否被禁 -->
+	<select id="isDisabledInSign" parameterType="java.util.Map" resultType="java.lang.Long">
+		SELECT 
+		  COUNT(1) 
+		FROM
+		  bms_org_limit_channel bolc 
+		  INNER JOIN bms_limit_channel blc 
+		    ON bolc.CHANNEL_ID = blc.CHANNEL_ID 
+		    AND blc.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID
+		  INNER JOIN bms_channel bc 
+		    ON bolc.CHANNEL_ID = bc.ID 
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON bpal.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+		WHERE bolc.IS_DELETED = 0 
+		  AND bpal.IS_DELETED = 0 
+		  AND blc.IS_DELETED = 0
+		  AND bc.IS_DELETED = 0 
+		  AND bp.IS_DELETED = 0 
+		  AND bolc.IS_DISABLED = 0
+		  AND bpal.IS_DISABLED = 0 
+		  AND blc.IS_DISABLED = 0 
+		  <!-- hcr添加配置冲突代码开始 -->
+		  AND bolc.CONFIGURE_CONFLICT='N'
+		  <!-- hcr添加配置冲突代码结束 -->
+		<if test="orgId != null and orgId != 0">
+			and bolc.ORG_ID = #{orgId}
+		</if>
+		<if  test="channelCd != null and channelCd != 0">
+			AND bc.CODE= #{channelCd}
+		</if >
+		<if  test="productCd != null and productCd != 0">
+			AND bp.CODE = #{productCd}
+		</if >
+		<if test="contractTrem != null and contractTrem != 0">
+			AND bpal.AUDIT_LIMIT = #{contractTrem}
+		</if>
+		<if test="contractLmt != null and contractLmt != ''">
+		  and bpal.upper_limit &gt;= #{contractLmt} 
+		  and bpal.floor_limit &lt;= #{contractLmt}
+		  </if>
+	</select> 
+	
+	<!--  查询出所有的网点配置的产品期限(根据网点id，产品id，申请额度) -->
+	<select id="listOrgProductLimitByOrgProApp" parameterType="java.util.Map" resultMap="BMSOrgLimitMap">
+		SELECT DISTINCT 
+		  bpal.AUDIT_LIMIT AS auditLimit 
+		FROM
+		  bms_org_limit_channel bolc 
+		  INNER JOIN bms_channel bc 
+		    ON bolc.CHANNEL_ID = bc.ID 
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON bpal.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+		WHERE bolc.IS_DELETED = 0 
+		  AND bpal.IS_DELETED = 0 
+		  AND bc.IS_DELETED = 0 
+		  AND bp.IS_DELETED = 0 
+		  AND bolc.IS_DISABLED = 0 
+		  <!-- hcr添加配置冲突代码开始 -->
+		  AND bolc.CONFIGURE_CONFLICT='N'
+		  <!-- hcr添加配置冲突代码结束 -->
+		  <!-- 起止时间限制   &lt;等于<    &gt;等于>    -->
+		  AND bc.STOP_SALES_TIME &gt;= NOW() 
+		  AND bc.START_SALES_TIME &lt;= NOW()
+		<if test="orgId != null and orgId != 0">
+			and bolc.ORG_ID = #{orgId}
+		</if>
+		<if test="productId != null and productId != 0">
+			AND bpal.PRODUCT_ID = #{productId}
+		</if>
+		<if test="productCode != null and productCode != ''">
+			AND bp.CODE = #{productCode}
+		</if>
+		<if test="auditLimit != null">
+			AND bpal.AUDIT_LIMIT = #{auditLimit}
+		</if>
+		<!-- 满足网点产品配置的上下限 -->
+		<if test="applyLmt != null and applyLmt != 0">
+		  and bolc.upper_limit &gt;= #{applyLmt} 
+		  and bolc.floor_limit &lt;= #{applyLmt}
+		  </if>
+	</select> 
+<!-- 按条件更新数据(逻辑删除) -->
+	<update id="updateByOrgLimitId" parameterType="com.ymkj.cms.biz.entity.master.BMSOrgLimitChannel">
+	update
+	bms_org_limit_channel set IS_DISABLED = #{isDisabled} where
+	AUDIT_LIMIT_ID = #{auditLimitId}
+	</update>
+	
+	<!-- 查询配置历史数据，包含已删除配置数据数据 -->
+	<select id="findHistory" parameterType="java.util.Map" resultMap="BMSOrgLimitMap">
+		SELECT DISTINCT 
+		  bolc.*
+		FROM
+		  bms_org_limit_channel bolc 
+		  INNER JOIN bms_limit_channel blc 
+		    ON bolc.CHANNEL_ID = blc.CHANNEL_ID 
+		    AND blc.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_channel bc 
+		    ON bolc.CHANNEL_ID = bc.ID 
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON bpal.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+		WHERE bpal.IS_DELETED = 0 
+		  AND bc.IS_DELETED = 0 
+		  AND bp.IS_DELETED = 0 
+		  AND blc.IS_DELETED = 0 
+		 <if test="auditLimitId != null and auditLimitId != 0">
+				AND bolc.AUDIT_LIMIT_ID = #{auditLimitId}
+		</if>
+		<if test="orgId != null and orgId != 0">
+			AND bolc.ORG_ID = #{orgId}
+		</if>
+		<if test="channelId != null and channelId != 0">
+			AND bolc.CHANNEL_ID = #{channelId}
+		</if> 
+		<if test="isDeleted != null ">
+			AND bolc.IS_DELETED = #{isDeleted}
+		</if> 
+		<if test="isCanPreferential != null ">
+			AND bolc.is_can_preferential = #{isCanPreferential}
+		</if> 
+	 	ORDER BY id DESC
+	
+	</select>
+	<!--  查询出所有的网点配置的产品期限(根据网点id，产品id，申请额度) -->
+	<select id="findOrgLimitChannelLimitUnion" parameterType="java.util.Map" resultMap="BMSOrgLimitMap">
+		SELECT DISTINCT 
+		  max(bolc.UPPER_LIMIT) AS upperLimit,
+		  min(bolc.FLOOR_LIMIT) AS floorLimit
+		FROM
+		  bms_org_limit_channel bolc 
+		  INNER JOIN bms_channel bc 
+		    ON bolc.CHANNEL_ID = bc.ID 
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON bpal.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+		WHERE bolc.IS_DELETED = 0 
+		  AND bpal.IS_DELETED = 0 
+		  AND bc.IS_DELETED = 0 
+		  AND bp.IS_DELETED = 0 
+		  AND bolc.IS_DISABLED = 0  
+		  <!-- 起止时间限制   &lt;等于<    &gt;等于>    -->
+		  AND bc.STOP_SALES_TIME &gt;= NOW() 
+		  AND bc.START_SALES_TIME &lt;= NOW()
+		<if test="orgId != null and orgId != 0">
+			and bolc.ORG_ID = #{orgId}
+		</if>
+		<if test="productId != null and productId != 0">
+			AND bpal.PRODUCT_ID = #{productId}
+		</if>
+		<if test="productCode != null and productCode != ''">
+			AND bp.CODE = #{productCode}
+		</if>
+		<!-- 产品期限 -->
+		<if test="auditLimit != null and auditLimit != 0">
+		  AND bpal.AUDIT_LIMIT = #{auditLimit} 
+		</if>
+	</select> 
+	<select id="listOrgLimitChannelRateBy" parameterType="java.util.Map" resultMap="BMSOrgLimitMap">
+		SELECT DISTINCT
+		  bolc.AUDIT_LIMIT_ID,bolc.CHANNEL_ID 
+		FROM
+		  bms_org_limit_channel bolc 
+		  INNER JOIN bms_limit_channel blc 
+		    ON bolc.CHANNEL_ID = blc.CHANNEL_ID 
+		    AND blc.AUDIT_LIMIT_ID = bolc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_channel bc 
+		    ON blc.CHANNEL_ID = bc.ID 
+		  INNER JOIN bms_product_audit_limit bpal 
+		    ON bpal.AUDIT_LIMIT_ID = blc.AUDIT_LIMIT_ID 
+		  INNER JOIN bms_product bp 
+		    ON bp.PRODUCT_ID = bpal.PRODUCT_ID 
+			WHERE bolc.IS_DELETED = 0 
+					  AND bc.IS_DELETED = 0 
+					  AND bpal.IS_DELETED = 0 
+					  AND bp.IS_DELETED = 0 
+					  AND blc.IS_DELETED = 0 		
+		  <if test="auditLimitId != null and auditLimitId != 0">
+			and bolc.AUDIT_LIMIT_ID = #{auditLimitId}
+		</if>
+		<if test="orgId != null and orgId != 0">
+			and bolc.ORG_ID = #{orgId}
+		</if>
+		<if test="channelId != null and channelId != 0">
+			and bolc.CHANNEL_ID = #{channelId}
+		</if>
+		<if test="productDeployCode != null and productDeployCode != ''">
+			and bolc.PRODUCT_DEPLOY_CODE = #{productDeployCode}
+		</if>
+		<if test="isDeleted != null and isDeleted !=''">
+			and bolc.IS_DELETED = #{isDeleted}
+		</if>
+		<if test="blcIsDisabled != null and blcIsDisabled !=''">
+			and blc.IS_DISABLED = #{blcIsDisabled}
+		</if>
+	</select>
+</mapper> 

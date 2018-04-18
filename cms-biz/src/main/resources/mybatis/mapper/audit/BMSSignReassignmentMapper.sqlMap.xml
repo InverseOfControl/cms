@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.audit.impl.SignReassignmentDaoImpl">
+	
+	<!-- 获取需要同步的数据 -->
+	<select id="getSignReassignList" resultType="com.ymkj.cms.biz.entity.apply.LoanBaseEntity">
+		select loan_no as loanNo,service_code as serviceCode,service_name as serviceName,apply_input_flag as applyInputFlag,
+		owning_branch_id as owningBranchId,sign_code as signCode,sign_name as signName,
+  		CONTRACT_BRANCH_ID AS contractBranchId	 from bms_loan_base 
+		where rtf_node_state='XSZS-PASS'
+	</select>
+	
+	<!-- 获取已经签约的客服列表 -->
+	<select id="getSignCodeListByOrgId" parameterType="java.lang.String" resultType="java.util.Map">
+		select count(sign_code) count, sign_code from bms_loan_base 
+		where owning_branch_id = #{orgId} and rtf_node_state='HTQY-ASSIGN' and is_delete = 0 group by sign_code
+	</select>
+	
+	<!-- 签约改派 -->
+	<update id="signReassign" useGeneratedKeys="true" parameterType="com.ymkj.cms.biz.entity.apply.LoanBaseEntity">
+		update bms_loan_base set sign_code=#{signCode},sign_name=#{signName},contract_branch_id=#{contractBranchId},
+		rtf_state='HTQY',rtf_node_state='HTQY-ASSIGN',status='PASS',modified_time=SYSDATE()  
+		where loan_no = #{loanNo}
+	</update>
+
+	<!-- 客服黑名单 -->	
+	<select id="getWhitePerson" resultType="java.util.Map">
+		select user_code from bms_white_personnel
+	</select>
+	<!-- 获取已经签约的客服列表 -->
+	<select id="getSignCodeListBy" parameterType="java.util.Map" resultType="java.util.Map">
+		select count(sign_code) count, sign_code from bms_loan_base 
+		where rtf_node_state='HTQY-ASSIGN' and is_delete = 0 
+		<if test="contractBranchId != null">
+			and contract_branch_id = #{contractBranchId} 
+		</if>
+		<if test="signCodeList!=null and signCodeList.size>0">
+			AND sign_code IN
+			<foreach collection="signCodeList" item="signCodeItem" open="(" close=")" separator=",">
+				#{signCodeItem}
+			</foreach>
+		</if>
+		
+		group by sign_code
+		
+		
+		
+	</select>
+</mapper> 

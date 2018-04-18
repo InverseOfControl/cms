@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSLoanChangeLogEntityDaoImpl">
+<!-- 借款信息变更日志表 -->
+   <resultMap id="BMSLoanChangeLogEntityMap" type="com.ymkj.cms.biz.entity.apply.BmsLoanChangeLogEntity">
+      	<!-- ID -->
+      	<result column ="ID"  property ="id"/>
+      	<!-- 借款编号 -->
+      	<result column ="LOAN_NO"  property ="loanNo"/>
+      	<!-- LOAN_BASE_ID -->
+		<result column ="LOAN_BASE_ID"  property ="loanBaseId"/>
+		<!-- 操作模块Code -->
+		<result column ="OPERATION_MODULE"  property ="operationModule"/>
+		<!-- 操作人 -->
+		<result column ="OPERATOR"  property ="operator"/>
+		<!-- 操作人工号 -->
+		<result column ="OPERATOR_CODE"  property ="operatorCode"/>
+		<!-- 操作时间 -->
+		<result column ="OPERATION_START"  property ="operationStart"/>
+		<!-- 变更内容 -->
+		<result column ="CONTENT"  property ="content"/>
+		<!-- 创建时间 -->
+		<result column ="CREATED_TIME"  property ="createdTime"/>
+		<!-- 版本号 -->
+		<result column ="VERSION"  property ="version"/>
+		<!-- 是否逻辑删除 -->
+		<result column ="IS_DELETE"  property ="isDelete"/>
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+		</if>
+		<if test="operationModule != null and operationModule != ''">
+        	and OPERATION_MODULE = #{operationModule}
+        </if>
+        <if test="startDate != null and startDate != ''">
+        	and OPERATION_START &gt;= str_to_date(#{startDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	and OPERATION_START &lt;= str_to_date(#{endDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+	</sql>	
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSLoanChangeLogEntityMap">
+		     select 
+		     ID,
+		     LOAN_NO,
+             LOAN_BASE_ID,
+             OPERATION_MODULE,
+             OPERATOR,
+             OPERATOR_CODE,
+             OPERATION_START,
+             CONTENT,
+             CREATED_TIME,
+             VERSION,
+             IS_DELETE
+		      from BMS_LOAN_CHANGE_LOG 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by ID desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_LOAN_CHANGE_LOG
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.audit.impl.BMSAPPHistoryDaoImpl">
+   <resultMap id="appHistoryMap" type="com.ymkj.cms.biz.entity.audit.BMSAPPHistoryEntity">
+		<id property="id" column="ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="loanNo" column="LOAN_NO" />
+		<result property="rtfState" column="RTF_STATE" />
+		<result property="refuseCode" column="REFUSE_CODE" />
+		<result property="checkPerson" column="CHECK_PERSON" />	
+		<result property="checkPersonCode" column="CHECK_PERSON_CODE" />
+		<result property="finalPerson" column="FINAL_PERSON" />
+		<result property="finalPersonCode" column="FINAL_PERSON_CODE" />
+		<result property="approvalPerson" column="APPROVAL_PERSON" />
+		<result property="approvalPersonCode" column="APPROVAL_PERSON_CODE" />
+		<result property="finalRole" column="FINAL_ROLE" />
+		<result property="patchBolt" column="PATCH_BOLT" />
+		<result property="remark" column="REMARK" />
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="VERSION" />
+		<result property="verson" column="IS_DELETE" /> 
+	</resultMap>
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+        <if test="rtfState != null and rtfState != ''">
+        	and RTF_STATE = #{rtfState}
+        </if>
+        <if test="statusList !=null and statusList.size() > 0">
+				   RTF_STATE IN(
+					<foreach item="guard" index="index" collection="statusList" separator=",">
+						#{guard}
+					</foreach>
+					)
+			</if>
+        
+	</sql>	
+    <!-- query -->
+    <select id="listBy" parameterType="java.util.Map" resultMap="appHistoryMap">
+		select * from  BMS_TM_APP_HISTORY
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+    <select id="findTmAppHistoryByParams" parameterType="java.util.Map" resultMap="appHistoryMap">
+		SELECT 
+		  * 
+		FROM
+		  bms_tm_app_history tah 
+		  INNER JOIN bms_loan_base lb 
+		    ON tah.LOAN_BASE_ID = lb.ID 
+		WHERE tah.IS_DELETE = '0'
+		<if test="appNo != null and appNo != ''">
+        	and tah.APP_NO = #{appNo}
+        </if>
+		<if test="rtfState != null and rtfState != ''">
+        	and tah.rtf_state = #{rtfState}
+        </if>
+		<if test="idNo != null and idNo != ''">
+        	and lb.ID_NO = #{idNo}
+        </if>
+		<if test="orderBy != null and orderBy != ''">
+        	ORDER BY  #{orderBy}
+        </if>
+	</select>
+	
+    
+</mapper> 

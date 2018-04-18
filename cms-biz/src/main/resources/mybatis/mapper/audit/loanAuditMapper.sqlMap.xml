@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.ymkj.cms.biz.dao.audit.impl.LoanAuditDaoImpl">
+
+	<resultMap id="LoanAuditMap" type="com.ymkj.cms.biz.entity.audit.LoanAuditEntity" >
+		<id property="id" 					column="ID" />
+		<result property="loan_base_id" 	column="LOAN_BASE_ID"/>
+		<result property="acc_lmt" 			column="ACC_LMT"/>
+		<result property="acc_term" 		column="ACC_TERM"/>
+		<result property="acc_date" 		column="ACC_DATE"/>
+		<result property="app_no" 			column="APP_NO"/>
+		<result property="point_result"	 	column="POINT_RESULT"/>
+		<result property="loanNo" 			column="LOAN_NO"/>
+		<result property="pro_num" 			column="PRO_NUM"/>
+		<result property="pro_name" 		column="PRO_NAME"/>
+		<result property="check_node_state" column="CHECK_NODE_STATE"/>
+		<result property="rtf_state" 		column="RTF_STATE"/>
+		<result property="refuse_code" 		column="REFUSE_CODE"/>
+		<result property="check_person" 	column="CHECK_PERSON"/>
+		<result property="check_person_code" column="CHECK_PERSON_CODE"/>
+		<result property="check_allot_date" column="CHECK_ALLOT_DATE"/>
+		<result property="final_person" 	column="FINAL_PERSON"/>
+		<result property="final_person_code" column="FINAL_PERSON_CODE"/>
+		<result property="final_role" 		column="FINAL_ROLE"/>
+		<result property="final_allot_date" column="FINAL_ALLOT_DATE"/>
+		<result property="appeoval_person"	column="APPROVAL_PERSON"/>
+		<result property="amout_income" 	column="AMOUT_INCOME"/>
+		<result property="sys_check_lmt" 	column="SYS_CHECK_LMT"/>
+		<result property="sys_acc_trem" 	column="SYS_ACC_TREM"/>
+		<result property="sys_acc_lmt" 		column="SYS_ACC_LMT"/>
+		<result property="isrollback" 		column="ISROLLBACK"/>
+		<result property="min_approval_amt" column="MIN_APPROVAL_AMT"/>
+		<result property="if_credit_record" column="IF_CREDIT_RECORD"/>
+		<result property="max_approval_amt" column="MAX_APPROVAL_AMT"/>
+		<result property="creator_id" 		column="CREATOR_ID"/>
+		<result property="creator" 			column="CREATOR"/>
+		<result property="created_time" 	column="CREATED_TIME"/>
+		<result property="modifier_id" 		column="MODIFIER_ID"/>
+		<result property="modifier" 		column="MODIFIER"/>
+		<result property="modified_time" 	column="MODIFIED_TIME"/>
+		<result property="version" 			column="VERSION"/>
+		<result property="is_delete" 		column="IS_DELETE"/>
+		<result property="start_date" 		column="START_DATE"/>
+		<result property="end_date" 		column="END_DATE"/>
+		<result property="refuse_date" 		column="refuse_date"/>
+		
+		<result property="adviceVerifyIncome" 		column="ADVICE_VERIFY_INCOME"/>
+		<result property="adviceAuditLines" 		column="ADVICE_AUDIT_LINES"/>
+		<result property="internalDebtRatio" 		column="INTERNAL_DEBT_RATIO"/>
+		<result property="totalDebtRatio" 		column="TOTAL_DEBT_RATIO"/>
+		<result property="scorecardScore" 		column="SCORECARD_SCORE"/>
+		<result property="ccRuleSet" 		column="CC_RULE_SET"/>
+	</resultMap>
+	
+	
+	<sql id="condition_sql">
+		where 1=1
+		<if test="id != null and id != 0">
+        	and ID = #{id}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+		</if>
+		<if test="loanBaseId != null">
+        	and LOAN_BASE_ID = #{loanBaseId}
+		</if>
+	</sql>
+
+    <select id="listBy" parameterType="java.util.Map" resultMap="LoanAuditMap">
+		select * from bms_loan_audit 
+		<include refid="condition_sql"/>
+	</select>
+	
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.audit.LoanAuditEntity"  keyProperty="id" useGeneratedKeys="true">
+		insert into BMS_LOAN_AUDIT(LOAN_BASE_ID,ACC_LMT,ACC_TERM,ACC_DATE,APP_NO,POINT_RESULT,
+								LOAN_NO,PRO_NUM,PRO_NAME,CHECK_NODE_STATE,RTF_STATE,REFUSE_CODE,CHECK_PERSON,
+								CHECK_PERSON_CODE,CHECK_ALLOT_DATE,FINAL_PERSON,FINAL_PERSON_CODE,FINAL_ROLE,
+								FINAL_ALLOT_DATE,APPROVAL_PERSON,AMOUT_INCOME,SYS_CHECK_LMT,SYS_ACC_TREM,SYS_ACC_LMT,
+								ISROLLBACK,MIN_APPROVAL_AMT,IF_CREDIT_RECORD,MAX_APPROVAL_AMT,CREATOR_ID,CREATOR,
+								CREATED_TIME,MODIFIER_ID,MODIFIER,MODIFIED_TIME,VERSION,START_DATE,END_DATE,
+								refuse_date)
+		VALUES(#{loan_base_id},#{acc_lmt},#{acc_term},#{acc_date},#{app_no},#{point_result},#{loanNo},
+				#{pro_num},#{pro_name},#{check_node_state},#{rtf_state},#{refuse_code},#{check_person},
+				#{check_person_code},#{check_allot_date},#{final_person},#{final_person_code},#{final_role},
+				#{final_allot_date},#{appeoval_person},#{amout_income},#{sys_check_lmt},#{sys_acc_trem},
+				#{sys_acc_lmt},#{isrollback},#{min_approval_amt},#{if_credit_record},#{max_approval_amt},
+				#{creator_id},#{creator},#{created_time},#{modifier_id},#{modifier},#{modified_time},
+				#{version},#{start_date},#{end_date},#{refuse_date})
+	</insert>
+	
+	<update id="update"  parameterType="com.ymkj.cms.biz.entity.audit.LoanAuditEntity">
+		update BMS_LOAN_AUDIT 
+		set 
+		<if test="rtf_state != null and rtf_state != ''">
+			CHECK_NODE_STATE = #{check_node_state},
+		</if>
+		MODIFIER_ID = #{modifier_id},
+ 		MODIFIER = #{modifier},
+ 		MODIFIED_TIME = #{modified_time},
+ 		IF_CHECK_RETURN = #{ifCheckReturn}, 
+ 		IF_LASTCHECK_RETURN = #{ifLastCheckReturn}
+		<where>
+			ID = #{id}
+		</where>
+	</update>
+		<select id="findByAudit" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.audit.LoanAuditEntity">
+		select CREATED_TIME as created_time,AMOUT_INCOME as amout_income,IF_CREDIT_RECORD as if_credit_record,CC_RULE_SET as ccRuleSet,ADVICE_VERIFY_INCOME as adviceVerifyIncome,INTERNAL_DEBT_RATIO as internalDebtRatio,TOTAL_DEBT_RATIO as totalDebtRatio from bms_loan_audit 
+		where LOAN_NO= #{loanNo}
+	</select>
+	
+	
+	<update id="updaeAudittRulesData" parameterType="com.ymkj.cms.biz.entity.audit.LoanAuditEntity">
+		update bms_loan_audit
+		<set>
+			<if test="adviceVerifyIncome!=null">
+				ADVICE_VERIFY_INCOME=#{adviceVerifyIncome},
+			</if>
+			<if test="adviceAuditLines!=null">
+				ADVICE_AUDIT_LINES=#{adviceAuditLines},
+			</if>
+			<if test="internalDebtRatio!=null">
+				INTERNAL_DEBT_RATIO=#{internalDebtRatio},
+			</if>
+			<if test="totalDebtRatio!=null">
+				TOTAL_DEBT_RATIO=#{totalDebtRatio},
+			</if>
+			<if test="scorecardScore!=null">
+				SCORECARD_SCORE=#{scorecardScore},
+			</if>
+			<if test="ccRuleSet!=null and ccRuleSet!=''">
+				CC_RULE_SET=#{ccRuleSet},
+			</if>
+			<if test="isAntifraud!=null and isAntifraud!=''">
+				IS_ANTIFRAUD=#{isAntifraud},
+			</if>
+		</set>
+		<where>
+			LOAN_NO=#{loanNo}
+		</where>
+	</update>
+</mapper> 

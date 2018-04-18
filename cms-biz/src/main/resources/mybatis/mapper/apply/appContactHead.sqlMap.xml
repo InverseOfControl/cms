@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.APPContactHeadDaoImpl">
+
+<resultMap id ="baseResultMap"  type="com.ymkj.cms.biz.entity.apply.AppContactHeadEntity">
+		<result column ="id"  property ="id"/>
+		<result column ="LOAN_NO"  property ="loanNo"/>
+		<result column ="APP_NO"  property ="appNo"/>
+		<result column ="LOAN_BASE_ID"  property ="loanBaseId"/>
+		<result column ="PERSON_ID"  property ="personId"/>
+		<result column ="CREATOR"  property ="creator"/>
+		<result column ="CREATED_TIME"  property ="createdTime"/>
+		<result column ="CREATOR_ID"  property ="creatorId"/>
+		<result column ="FLOW_STATE"  property ="flowState"/>
+		<result column ="VERSION"  property ="version"/>
+		<result column ="SNAP_VERSION"  property ="snapVersion"/>
+		<result column ="IS_DELETE"  property ="isDelete"/>
+</resultMap>
+	<!-- 通用查询结果列-->
+	<sql id="Base_Column_List">
+		 	id,	LOAN_NO,	APP_NO,	LOAN_BASE_ID,	PERSON_ID,	
+		 	CREATOR,	CREATED_TIME,	CREATOR_ID,	FLOW_STATE,	
+		 	VERSION,	SNAP_VERSION,	IS_DELETE
+	</sql>
+
+	<!-- 查询（根据主键ID查询） -->
+	<select id="findById" resultType="com.ymkj.cms.biz.entity.apply.AppContactHeadEntity"  parameterType="java.lang.String" resultMap ="baseResultMap">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM BMS_TM_APP_CONTACT_HEAD
+		 WHERE id = #{id}
+	</select>
+
+
+	<select id="findListBy" resultType="com.ymkj.cms.biz.entity.apply.AppContactHeadEntity" parameterType="java.util.HashMap" resultMap ="baseResultMap">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM BMS_TM_APP_CONTACT_HEAD
+		 WHERE 1=1  
+			<if test="id != null    and   !''.equals(id) ">
+				  and  id = #{id}  
+			</if>
+			<if test="loanNo != null    and   !''.equals(loanNo) ">
+				  and  LOAN_NO = #{loanNo}  
+			</if>
+			<if test="appNo != null    and   !''.equals(appNo) ">
+				  and  APP_NO = #{appNo}  
+			</if>
+			<if test="loanBaseId != null    and   !''.equals(loanBaseId) ">
+				  and  LOAN_BASE_ID = #{loanBaseId}  
+			</if>
+			<if test="personId != null    and   !''.equals(personId) ">
+				  and  PERSON_ID = #{personId}  
+			</if>
+			<if test="creator != null    and   !''.equals(creator) ">
+				  and  CREATOR = #{creator}  
+			</if>
+			<if test="createdTime != null    and   !''.equals(createdTime) ">
+				  and  CREATED_TIME = #{createdTime}  
+			</if>
+			<if test="creatorId != null    and   !''.equals(creatorId) ">
+				  and  CREATOR_ID = #{creatorId}  
+			</if>
+			<if test="flowState != null    and   !''.equals(flowState) ">
+				  and  FLOW_STATE = #{flowState}  
+			</if>
+			<if test="version != null    and   !''.equals(version) ">
+				  and  VERSION = #{version}  
+			</if>
+			<if test="snapVersion != null    and   !''.equals(snapVersion) ">
+				  and  SNAP_VERSION = #{snapVersion}  
+			</if>
+			<if test="isDelete != null    and   !''.equals(isDelete) ">
+				  and  IS_DELETE = #{isDelete}  
+			</if>
+	</select>
+
+
+	<select id="findPageBy" resultType="com.ymkj.cms.biz.entity.apply.AppContactHeadEntity" parameterType="java.util.HashMap" resultMap ="baseResultMap">
+		 SELECT
+		 <include refid="Base_Column_List" />
+		 FROM BMS_TM_APP_CONTACT_HEAD
+		 WHERE 1=1  
+			<if test="id != null    and   !''.equals(id) ">
+				  and  id = #{id}  
+			</if>
+			<if test="loanNo != null    and   !''.equals(loanNo) ">
+				  and  LOAN_NO = #{loanNo}  
+			</if>
+			<if test="appNo != null    and   !''.equals(appNo) ">
+				  and  APP_NO = #{appNo}  
+			</if>
+			<if test="loanBaseId != null    and   !''.equals(loanBaseId) ">
+				  and  LOAN_BASE_ID = #{loanBaseId}  
+			</if>
+			<if test="personId != null    and   !''.equals(personId) ">
+				  and  PERSON_ID = #{personId}  
+			</if>
+			<if test="creator != null    and   !''.equals(creator) ">
+				  and  CREATOR = #{creator}  
+			</if>
+			<if test="createdTime != null    and   !''.equals(createdTime) ">
+				  and  CREATED_TIME = #{createdTime}  
+			</if>
+			<if test="creatorId != null    and   !''.equals(creatorId) ">
+				  and  CREATOR_ID = #{creatorId}  
+			</if>
+			<if test="flowState != null    and   !''.equals(flowState) ">
+				  and  FLOW_STATE = #{flowState}  
+			</if>
+			<if test="version != null    and   !''.equals(version) ">
+				  and  VERSION = #{version}  
+			</if>
+			<if test="snapVersion != null    and   !''.equals(snapVersion) ">
+				  and  SNAP_VERSION = #{snapVersion}  
+			</if>
+			<if test="isDelete != null    and   !''.equals(isDelete) ">
+				  and  IS_DELETE = #{isDelete}  
+			</if>
+	</select>
+
+	<!--删除：根据主键ID删除-->
+	<delete id="deleteById" parameterType="java.lang.String">
+		 DELETE FROM BMS_TM_APP_CONTACT_HEAD
+		 WHERE id = #{id}
+	</delete>
+
+	<!--删除：根据主键ID删除-->
+	<delete id="delete" parameterType="java.util.HashMap">
+		 DELETE FROM BMS_TM_APP_CONTACT_HEAD
+		 WHERE 1=1 
+			<if test="id != null    and   !''.equals(id) ">
+				  and  id in (${id})  
+			</if>
+			<if test="loanNo != null    and   !''.equals(loanNo) ">
+				  and  LOAN_NO = #{loanNo}  
+			</if>
+			<if test="appNo != null    and   !''.equals(appNo) ">
+				  and  APP_NO = #{appNo}  
+			</if>
+			<if test="loanBaseId != null    and   !''.equals(loanBaseId) ">
+				  and  LOAN_BASE_ID = #{loanBaseId}  
+			</if>
+			<if test="personId != null    and   !''.equals(personId) ">
+				  and  PERSON_ID = #{personId}  
+			</if>
+			<if test="creator != null    and   !''.equals(creator) ">
+				  and  CREATOR = #{creator}  
+			</if>
+			<if test="createdTime != null    and   !''.equals(createdTime) ">
+				  and  CREATED_TIME = #{createdTime}  
+			</if>
+			<if test="creatorId != null    and   !''.equals(creatorId) ">
+				  and  CREATOR_ID = #{creatorId}  
+			</if>
+			<if test="flowState != null    and   !''.equals(flowState) ">
+				  and  FLOW_STATE = #{flowState}  
+			</if>
+			<if test="version != null    and   !''.equals(version) ">
+				  and  VERSION = #{version}  
+			</if>
+			<if test="snapVersion != null    and   !''.equals(snapVersion) ">
+				  and  SNAP_VERSION = #{snapVersion}  
+			</if>
+			<if test="isDelete != null    and   !''.equals(isDelete) ">
+				  and  IS_DELETE = #{isDelete}  
+			</if>
+	</delete>
+
+	<!-- 添加 -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.AppContactHeadEntity" keyProperty="id" useGeneratedKeys="true">
+		 INSERT INTO BMS_TM_APP_CONTACT_HEAD
+ 		(LOAN_NO,APP_NO,LOAN_BASE_ID,PERSON_ID,CREATOR,CREATED_TIME,CREATOR_ID,FLOW_STATE,VERSION,SNAP_VERSION,IS_DELETE) 
+		 VALUES 
+ 		(#{loanNo},#{appNo},#{loanBaseId},#{personId},#{creator},#{createdTime},#{creatorId},#{flowState},#{version},#{snapVersion},#{isDelete}) 
+	</insert>
+
+	<!-- 添加 （匹配有值的字段）-->
+	<insert id="insertSelective" parameterType="java.util.HashMap">
+		 INSERT INTO BMS_TM_APP_CONTACT_HEAD
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null  and   !''.equals(id) ">
+				 id,
+			</if>
+			<if test="loanNo != null  and   !''.equals(loanNo) ">
+				 LOAN_NO,
+			</if>
+			<if test="appNo != null  and   !''.equals(appNo) ">
+				 APP_NO,
+			</if>
+			<if test="loanBaseId != null  and   !''.equals(loanBaseId) ">
+				 LOAN_BASE_ID,
+			</if>
+			<if test="personId != null  and   !''.equals(personId) ">
+				 PERSON_ID,
+			</if>
+			<if test="creator != null  and   !''.equals(creator) ">
+				 CREATOR,
+			</if>
+			<if test="createdTime != null  and   !''.equals(createdTime) ">
+				 CREATED_TIME,
+			</if>
+			<if test="creatorId != null  and   !''.equals(creatorId) ">
+				 CREATOR_ID,
+			</if>
+			<if test="flowState != null  and   !''.equals(flowState) ">
+				 FLOW_STATE,
+			</if>
+			<if test="version != null  and   !''.equals(version) ">
+				 VERSION,
+			</if>
+			<if test="snapVersion != null  and   !''.equals(snapVersion) ">
+				 SNAP_VERSION,
+			</if>
+			<if test="isDelete != null  and   !''.equals(isDelete) ">
+				 IS_DELETE,
+			</if>
+
+		 </trim>
+		 <trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id!=null  and  ! ''.equals(id) ">
+				 #{id},
+			</if>
+			<if test="loanNo!=null  and  ! ''.equals(loanNo) ">
+				 #{loanNo},
+			</if>
+			<if test="appNo!=null  and  ! ''.equals(appNo) ">
+				 #{appNo},
+			</if>
+			<if test="loanBaseId!=null  and  ! ''.equals(loanBaseId) ">
+				 #{loanBaseId},
+			</if>
+			<if test="personId!=null  and  ! ''.equals(personId) ">
+				 #{personId},
+			</if>
+			<if test="creator!=null  and  ! ''.equals(creator) ">
+				 #{creator},
+			</if>
+			<if test="createdTime!=null  and  ! ''.equals(createdTime) ">
+				 #{createdTime},
+			</if>
+			<if test="creatorId!=null  and  ! ''.equals(creatorId) ">
+				 #{creatorId},
+			</if>
+			<if test="flowState!=null  and  ! ''.equals(flowState) ">
+				 #{flowState},
+			</if>
+			<if test="version!=null  and  ! ''.equals(version) ">
+				 #{version},
+			</if>
+			<if test="snapVersion!=null  and  ! ''.equals(snapVersion) ">
+				 #{snapVersion},
+			</if>
+			<if test="isDelete!=null  and  ! ''.equals(isDelete) ">
+				 #{isDelete},
+			</if>
+		 </trim>
+	</insert>
+
+	<!-- 修 改-->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.AppContactHeadEntity">
+		 UPDATE BMS_TM_APP_CONTACT_HEAD
+ 		 <set> 
+			<if test="loanNo != null    ">
+				 LOAN_NO = #{loanNo},
+			</if>
+			<if test="appNo != null    ">
+				 APP_NO = #{appNo},
+			</if>
+			<if test="loanBaseId != null    ">
+				 LOAN_BASE_ID = #{loanBaseId},
+			</if>
+			<if test="personId != null    ">
+				 PERSON_ID = #{personId},
+			</if>
+			<if test="creator != null    ">
+				 CREATOR = #{creator},
+			</if>
+			<if test="createdTime != null    ">
+				 CREATED_TIME = #{createdTime},
+			</if>
+			<if test="creatorId != null    ">
+				 CREATOR_ID = #{creatorId},
+			</if>
+			<if test="flowState != null    ">
+				 FLOW_STATE = #{flowState},
+			</if>
+			<if test="version != null    ">
+				 VERSION = #{version},
+			</if>
+			<if test="snapVersion != null    ">
+				 SNAP_VERSION = #{snapVersion},
+			</if>
+			<if test="isDelete != null    ">
+				 IS_DELETE = #{isDelete},
+			</if>
+
+ 		 </set>
+		 WHERE id = #{id}
+	</update>
+
+	<!-- 修 改-->
+	<update id="updateById"  parameterType="com.ymkj.cms.biz.entity.apply.AppContactHeadEntity">
+		 UPDATE BMS_TM_APP_CONTACT_HEAD
+		 SET 
+			 LOAN_NO = #{loanNo},
+			 APP_NO = #{appNo},
+			 LOAN_BASE_ID = #{loanBaseId},
+			 PERSON_ID = #{personId},
+			 CREATOR = #{creator},
+			 CREATED_TIME = #{createdTime},
+			 CREATOR_ID = #{creatorId},
+			 FLOW_STATE = #{flowState},
+			 VERSION = #{version},
+			 SNAP_VERSION = #{snapVersion},
+			 IS_DELETE = #{isDelete}
+		 WHERE id = #{id}
+	</update>
+
+</mapper>

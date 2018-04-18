@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.apply.impl.LoanExtDaoImpl">
+   <resultMap id="loanExtMap" type="com.ymkj.cms.biz.entity.apply.LoanExtEntity">
+		<id property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="appNo" column="APP_NO" />
+		<result property="loanNo" column="LOAN_NO"/>
+		<result property="specialOrg" column="SPECIAL_ORG" />
+		<result property="creditApplication" column="CREDIT_APPLICATION" />
+		<result property="sugLmt" column="SUG_LMT" />
+		<result property="customerSource" column="CUSTOMER_SOURCE"/>
+		<result property="appOrgName" column="APP_ORG_NAME" />
+		<result property="priority" column="PRIORITY" />
+		<result property="clientType" column="CLIENT_TYPE" />
+		
+		<result property="applyStartTime" column="APPLY_START_TIME" />
+		<result property="applyEndTime" column="APPLY_END_TIME" />
+		<result property="auditStartTime" column="AUDIT_START_TIME" />
+		<result property="auditEndTime" column="AUDIT_END_TIME" />
+		
+		<result property ="primaryReason"  column ="PRIMARY_REASON"/>
+		<result property ="secodeReason"  column ="SECODE_REASON"/>
+		<result property ="firstLevleReasonsCode"  column ="FIRST_LEVLE_REASONS_CODE"/>
+		<result property ="twoLevleReasonsCode"  column ="TWO_LEVLE_REASONS_CODE"/>
+		<result property ="rejectPersonName"  column ="REJECT_PERSON_NAME"/>
+		<result property ="rejectPersonCode"  column ="REJECT_PERSON_CODE"/>
+		
+		<result property="creatorId" column="CREATOR_ID" />
+		<result property="creator" column="CREATOR" />
+		<result property="createdTime" column="CREATED_TIME" />
+		<result property="modifierId" column="MODIFIER_ID" />
+		<result property="modifier" column="MODIFIER" />
+		<result property="modifiedTime" column="MODIFIED_TIME" />
+		<result property="isDelete" column="IS_DELETE" />
+		<result property="verson" column="VERSION" />
+		
+		<result property="loggedArea" column="LOGGED_AREA" />
+		<result property="loggedAreaName" column="LOGGED_AREA_NAME" />
+		
+		<result property="peviewSnapVersion" column="REVIEW_SNAP_VERSION" />
+		<result property="auditSnapVersion" column="AUDIT_SNAP_VERSION" />
+		<result property="auditBackSnapVersion" column="AUDIT_BACK_SNAP_VERSION" />
+		<result property="finalAuditBackSnapVersion" column="FINALAUDIT_BACK_SNAP_VERSION" />
+		
+		<result property="blackListId" column="BLACKLIST_ID" />
+		<result property="antiFraudScore" column="ANTI_FRAUD_SCORE" />
+		<result property="antiFraudWarning" column="ANTI_FRAUD_WARNING" />
+		<result property="antiRiskRate" column="ANTI_RISK_RATE" />
+	</resultMap>
+ 
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+        
+        <if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+	</sql>	
+    <sql id="set_sql">
+        <if test="id != null and id != 0">
+        	id = #{id},
+        </if>
+       <if test="status != null and status != ''">
+        	and status = #{status}
+        </if>
+    </sql>
+ 
+   <!-- add -->
+    <insert id="insert" parameterType="com.ymkj.cms.biz.entity.apply.LoanExtEntity" keyProperty="id" useGeneratedKeys="true">
+         insert into BMS_LOAN_EXT(LOAN_BASE_ID,APP_NO,LOAN_NO
+         				, SPECIAL_ORG,CREDIT_APPLICATION,SUG_LMT, APP_ORG_NAME,PRIORITY,CLIENT_TYPE,CUSTOMER_SOURCE
+         				,CREATOR_ID,CREATOR,CREATED_TIME,
+         				APPLY_START_TIME,APPLY_END_TIME,AUDIT_START_TIME,AUDIT_END_TIME,VERSION,LOGGED_AREA,LOGGED_AREA_NAME
+         				,REVIEW_SNAP_VERSION,AUDIT_SNAP_VERSION)
+         	 VALUES(#{loanBaseId},  #{appNo},#{loanNo},#{specialOrg}, #{creditApplication}, #{sugLmt}, #{appOrgName},
+         	 #{priority}, #{clientType}, #{customerSource},
+         	  #{creatorId}, #{creator}, #{createdTime},
+         	  #{applyStartTime},#{applyEndTime},#{auditStartTime},#{auditEndTime},#{verson},#{loggedArea},#{loggedAreaName}
+         	  ,#{peviewSnapVersion},#{auditSnapVersion})
+    </insert >
+    <!-- query -->
+	<select id="getById" parameterType="long" resultMap="loanExtMap">
+		select * from BMS_LOAN_EXT
+		where id = #{id}
+	</select>
+        
+      <select id="listBy" parameterType="java.util.Map" resultMap="loanExtMap">
+		select * from  BMS_LOAN_EXT
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+	
+	
+	
+    <!-- 更新:version+1 实现乐观锁 -->
+	<update id="update" parameterType="com.ymkj.cms.biz.entity.apply.LoanExtEntity">
+		update  BMS_LOAN_EXT
+ 			set 	
+
+ 	    <if test="creditApplication != null and creditApplication != ''">
+        	CREDIT_APPLICATION = #{creditApplication},
+        </if>
+        <if	test="customerSource != null and customerSource !=''">
+       	 	CUSTOMER_SOURCE = #{customerSource},
+        </if>
+        <if test="sugLmt != null and sugLmt != ''">
+        	SUG_LMT = #{sugLmt},
+        </if>
+         <if test="appOrgName != null and appOrgName != ''">
+        	APP_ORG_NAME = #{appOrgName},
+        </if>
+         <if test="priority != null and priority != ''">
+        	PRIORITY = #{priority},
+        </if>
+        <if test="clientType != null and clientType != ''">
+        	CLIENT_TYPE = #{clientType},
+        </if>
+        <if test="applyStartTime != null">
+        	APPLY_START_TIME = #{applyStartTime},
+        </if>
+        <if test="applyEndTime != null">
+        	APPLY_END_TIME = #{applyEndTime},
+        </if>
+        <if test="auditStartTime != null">
+        	AUDIT_START_TIME = #{auditStartTime},
+        </if>
+        <if test="auditEndTime != null">
+        	AUDIT_END_TIME = #{auditEndTime},
+        </if>
+	 	<if test="loggedArea != null">
+        	LOGGED_AREA = #{loggedArea},
+        </if>
+        <if test="loggedAreaName != null">
+        	LOGGED_AREA_NAME = #{loggedAreaName},
+        </if>
+        
+        
+        <if test='primaryReason != null and primaryReason != "0"'>
+        	PRIMARY_REASON = #{primaryReason},
+        </if>
+        <if test='secodeReason != null and secodeReason != "0"'>
+        	SECODE_REASON = #{secodeReason},
+        </if>
+        <if test='firstLevleReasonsCode != null and firstLevleReasonsCode != "0"'>
+        	FIRST_LEVLE_REASONS_CODE = #{firstLevleReasonsCode},
+        </if>
+        <if test='twoLevleReasonsCode != null and twoLevleReasonsCode != "0"'>
+        	TWO_LEVLE_REASONS_CODE = #{twoLevleReasonsCode},
+         </if>
+         <if test="modifierId != null">
+ 		  MODIFIER_ID = #{modifierId},
+ 		  </if>
+ 		  
+ 		 <if test="peviewSnapVersion != null and peviewSnapVersion != ''">
+        	REVIEW_SNAP_VERSION = #{peviewSnapVersion},
+         </if>
+         <if test="auditSnapVersion != null and auditSnapVersion != ''">
+        	AUDIT_SNAP_VERSION = #{auditSnapVersion},
+         </if>
+         
+         <if test="auditBackSnapVersion != null and auditBackSnapVersion != ''">
+        	AUDIT_BACK_SNAP_VERSION = #{auditBackSnapVersion},
+         </if>
+         <if test="finalAuditBackSnapVersion != null and finalAuditBackSnapVersion != ''">
+        	FINALAUDIT_BACK_SNAP_VERSION = #{finalAuditBackSnapVersion},
+         </if>
+         
+         
+         <if test="antiFraudScore != null and antiFraudScore != ''">
+        	ANTI_FRAUD_SCORE = #{antiFraudScore},
+         </if>
+         <if test="antiFraudWarning != null and antiFraudWarning != ''">
+        	ANTI_FRAUD_WARNING = #{antiFraudWarning},
+         </if>
+         <if test="antiRiskRate != null and antiRiskRate != ''">
+        	ANTI_RISK_RATE = #{antiRiskRate},
+         </if>
+ 		   <if test="blackListId != null and blackListId != ''">
+        	BLACKLIST_ID = #{blackListId},
+         </if>
+         <if test="lujsLoanReqId != null and lujsLoanReqId != ''">
+			lujs_loan_req_id = #{lujsLoanReqId},
+		</if>
+         <if test="lujsName != null and lujsName != ''">
+			lujs_name = #{lujsName},
+		</if>
+		 <if test="modifier != null and modifier != ''">
+			 MODIFIER = #{modifier},
+		</if>
+		MODIFIED_TIME = NOW()
+		<where>
+		<if test="loanBaseId != null and loanBaseId != ''">
+			and LOAN_BASE_ID = #{loanBaseId}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+			and LOAN_NO = #{loanNo}
+		</if>
+		<if test="id != null and id != ''">
+			and id = #{id}
+		</if>
+		</where>
+	</update>
+    
+    
+    
+    <select id="queryCheckNewData" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.apply.checkNewDataEntity">
+					SELECT
+					a.LOAN_NO as loanNo,
+					b. NAME AS NAME,
+					b.ID_NO AS idNo,
+					(
+						CASE a.APPLY_TYPE
+						WHEN 'NEW' THEN
+							'Y'
+						WHEN 'TOPUP' THEN
+							'N'
+						WHEN 'RELOAN' THEN
+							'N'
+						ELSE
+							NULL
+						END
+					) AS ifOldOrNewLogo,
+					(
+						CASE a.APPLY_TYPE
+						WHEN 'NEW' THEN
+							NULL
+						WHEN 'TOPUP' THEN
+							'N'
+						WHEN 'RELOAN' THEN
+							'Y'
+						ELSE
+							NULL
+						END
+					) AS ifLoanAgain,
+					c.PRODUCT_CD AS productCd,
+					c.PRODUCT_NAME AS productName,
+					c.CONTRACT_SOURCE AS contractSource,
+				  (select name from BMS_CHANNEL where code=c.CONTRACT_SOURCE) AS ContractSourceName,
+					a.APPLY_TYPE AS applyType,
+					c.APPLY_LMT AS applyLmt,
+					c.APPLY_TERM AS applyTerm,
+					a.APPLY_DATE AS applyDate,
+					d.ACC_LMT AS accLmt,
+					e.PACT_MONEY AS contractLmt,
+					e.SIGN_DATE AS signDate,
+					c.APPLY_TERM AS contractTrem,
+					e.STARTRDATE AS repayDate,
+					c.APPLY_BANK_NAME AS applyBankName,
+					c.APPLY_BANK_NAME_ID AS applyBankCode,
+					c.APPLY_BANK_CARD_NO AS applyBankCardNo,
+					a.STATUS AS previousStatus,
+					a.RTF_NODE_STATE AS previousRtfState,
+					a.ENTER_BRANCH AS owningBranch,
+					a.ENTER_BRANCH_ID AS owningBranchCode,
+					a.CONTRACT_BRANCH AS contractBranch,
+				  a.CONTRACT_BRANCH_ID AS contractBranchCode,
+					a.LOAN_BRANCH AS loanBranch,
+				  a.LOAN_BRANCH_ID AS loanBranchCode,
+					(case a.STATUS when 'REFUSE' then 'Y' else 'N' END) AS ifRefuse,
+					d.REFUSE_DATE AS refuseDate,
+					f.FIRST_LEVLE_REASONS_CODE AS RefuseCode,
+					f.PRIMARY_REASON as RefuseName,
+					(
+						CASE a.APP_INPUT_FLAG
+						WHEN 'app_input' THEN
+							'Y'
+						ELSE
+							'N'
+						END
+					) AS appApplyInput
+				FROM
+					bms_loan_base a inner join
+					bms_app_person_info b on a.loan_no = b.loan_no inner join 
+					BMS_LOAN_PRODUCT c on a.loan_no = c.loan_no left join
+					BMS_LOAN_AUDIT d  on a.loan_no = d.loan_no left join
+					BMS_LOAN_CONTRACT e on a.id = e.loan_base_id inner join 
+					bms_loan_ext f on a.loan_no=f.loan_no
+				WHERE 1=1
+				<if test="name != null and name != ''">
+        			and b.NAME=#{name}
+         		</if>
+         		<if test="idNo != null and idNo != ''">
+        			and b.ID_NO=#{idNo}
+         		</if>
+         		and a.version &lt;=999
+         		order by a.id desc
+	</select>
+    
+</mapper> 

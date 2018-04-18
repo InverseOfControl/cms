@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSLoanReviewDaoImpl">
+<!-- 借款复议表 -->
+   <resultMap id="BMSLoanReviewMap" type="com.ymkj.cms.biz.entity.master.BMSLoanReview">
+       <!--ID  -->
+		<id property="id" column="ID" />
+		<!-- LOAN_BASE_ID -->
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<!-- 客户主表ID  -->
+		<result property="perosnId" column="PERSON_ID" />
+		<!-- 借款编号 -->
+		<result property="loanNo" column="LOAN_NO" />
+		<!-- 申请件编号 -->
+		<!-- <result property="appNo" column="APP_NO" /> -->
+		<!-- 机构号 -->
+		<!-- <result property="org" column="ORG" /> -->
+		<!-- 客户姓名 -->
+		<result property="name" column="NAME" />
+		<!-- 证件号码 -->
+		<result property="idNo" column="ID_NO" />
+		<!-- 申请期限 -->
+		<result property="applyTerm" column="APPLY_TERM" />
+		<!-- 申请产品 -->
+		<result property="productCd" column="PRODUCT_CD" />
+		<!-- 申请产品名称 -->
+		<result property="productName" column="PRODUCT_NAME" />
+		<!-- 被拒绝时间 -->
+		<result property="refuseDate" column="REFUSE_DATE" />
+		<!-- 拒绝一级原因 -->
+		<result property="primaryReason" column="PRIMARY_REASON" />
+		<!-- 客户经理code -->
+		<result property="branchManagerCode" column="BRANCH_MANAGER_CODE" />
+		<!-- 客户经理名称 -->
+		<result property="branchManagerName" column="BRANCH_MANAGER_NAME" />
+		<!-- 状态 -->
+		<result property="status" column="STATUS" />
+		<!-- 是否已读 -->
+		<result property="isRead" column="IS_READ" />
+		<!-- 复议理由 -->
+		<result property="reviewReason" column="REVIEW_REASON" />
+		<!-- 备注 -->
+		<!-- <result property="remark" column="remark" /> -->
+	    
+		<!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="createdTime" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modifier" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedTime" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifierId" column="MODIFIER_ID" />
+	    <!-- 版本号 -->
+	    <result property="version" column="VERSION" />
+	    <!-- 是否删除 -->
+	    <result property="isDelete" column="IS_DELETE" />
+	    <!-- 复议原因 -->
+	    
+	    
+	    <!-- 流程状态 -->
+		<!-- <result property="flowState" column="FLOW_STATE" /> -->
+		<!-- 快照版本 -->
+		<!-- <result property="snapVersion" column="SNAP_VERSION" /> -->
+	</resultMap>
+	  
+	<sql id="condition_sql">
+		<if test="id != null and id != 0">
+        	and id = #{id}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO = #{loanNo}
+        </if>
+       <!--  <if test="appNo != null and appNo != ''">
+        	and APP_NO = #{appNo}
+        </if> -->
+        <if test="loanBaseId != null and loanBaseId != ''">
+        	and LOAN_BASE_ID = #{loanBaseId}
+        </if>
+	 </sql>	
+	
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSLoanReviewMap">
+		     select 
+		     `ID`,
+             `LOAN_BASE_ID`,
+             `LOAN_NO`,
+             `NAME`,
+             `ID_NO`,
+             `PERSON_ID`,
+             `APPLY_TERM`,
+             `PRODUCT_CD`,
+             `PRODUCT_NAME`,
+             `REFUSE_DATE`,
+             `PRIMARY_REASON`,
+             `BRANCH_MANAGER_CODE`,
+             `BRANCH_MANAGER_NAME`,
+             `STATUS`,
+             `IS_READ`,
+             `CREATOR`,
+             `CREATED_TIME`,
+             `CREATOR_ID`,
+             `MODIFIER`,
+             `MODIFIED_TIME`,
+             `MODIFIER_ID`,
+             `VERSION`,
+             `IS_DELETE`,
+             `REVIEW_REASON`,
+             `REVIEW_REMARK`,
+             `REVIEW_RESULT`
+		      from BMS_LOAN_REVIEW
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+		<![CDATA[ order by CREATED_TIME desc]]>
+	</select>
+
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1) from BMS_LOAN_REVIEW
+	 
+		<where>
+			<include refid="condition_sql" />
+		</where>
+	</select>
+     
+</mapper> 

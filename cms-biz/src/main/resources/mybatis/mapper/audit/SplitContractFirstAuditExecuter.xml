@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymkj.cms.biz.dao.audit.impl.BMSSplitContractFirstAuditExecuterDaoImpl">
+	<!-- 初审派单SQL -->
+	<!-- <select id="queryCsAutomaticDis" parameterType="Map"
+		resultType="com.ymkj.cms.biz.entity.audit.BMSAutomaticDispatchEntity">
+		select
+		blb.LOAN_NO loanNo,
+		blp.PRODUCT_CD productCode,
+		blb.OWNING_BRANCH_ID owningBranchId,
+		blb.APP_INPUT_FLAG appInputFlag,
+		blp.IF_PRI ifPri,
+		blp.IF_SUSPECT_CHEAT ifSuspectCheatis,
+		blb.RTF_STATE rtfStatus,
+		blb.RTF_NODE_STATE rtfNodeStatus,
+		bla.CHECK_PERSON_CODE checkPersonCode,
+		bla.FINAL_PERSON_CODE finalPersonCode,
+		bla.ACC_LMT accLmt,
+		blb.VERSION version,
+		bap.ID personId,
+		bap.ID_NO custmerIDNo,
+		bap.`NAME`custmerName,
+		bla.FIRST_SUB_ZS_DATE firstSubZsDate,
+		bla.APPROVAL_PERSON_CODE apppovalPersonCode,
+		blb.APPLY_DATE applyDate,
+		blb.IF_NEW_LOAN_NO ifNewLoanNo,
+		blb.ZS_IF_NEW_LOAN_NO zSIfNewLoanNo,
+		ble.LOGGED_AREA areaCode,
+		blb.APPLY_TYPE applyType
+		from BMS_APP_PERSON bap
+		INNER JOIN bms_loan_base blb
+		on bap.ID = blb.PERSON_ID
+		INNER join bms_loan_product blp
+		on blp.loan_no=blb.LOAN_NO
+		INNER join bms_loan_audit bla on bla.loan_no = blp.loan_no
+		inner join BMS_LOAN_EXT ble on ble.loan_no=blb.LOAN_NO
+		<where>
+				blb.RTF_STATE= 'CSFP' and blb.RTF_NODE_STATE='CSFP-SUBMIT'
+				or blb.RTF_NODE_STATE ='XSZS-RTNCS' 
+				or blb.RTF_NODE_STATE ='XSCS-RETURN' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+				or blb.RTF_NODE_STATE ='XSCS-REJECT' and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+				or blb.RTF_NODE_STATE ='XSCS-PASS'   and bla.CHECK_NODE_STATE='CHECK_NO_PASS'
+				or blb.RTF_STATE= 'HIGH-PASS' and blb.RTF_NODE_STATE='CHECK_NO_PASS'
+				order by blb.IF_NEW_LOAN_NO asc,blp.IF_PRI desc,blb.APPLY_DATE asc 
+
+		</where>
+	</select> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

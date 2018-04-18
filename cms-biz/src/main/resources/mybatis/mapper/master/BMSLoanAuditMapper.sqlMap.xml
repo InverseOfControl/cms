@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSLoanAuditEntityDaoImpl">
+   <resultMap id="BMSLoanAuditMap" type="com.ymkj.cms.biz.entity.master.BMSLoanAudit">
+   
+	<!-- 借款审批表 -->
+	<!-- 主键Id -->
+        <id property="id" column="ID" />
+	    <!-- LOAN_BASE_ID -->
+	    <result property="loanBaseId" column="LOAN_BASE_ID" />
+	  <!-- 借款编号 -->
+	    <result property="loanNo" column="LOAN_NO" />
+	    <!-- 申请件编号 -->
+        <result property="appNo" column="APP_NO" />
+	    <!-- 审批额度 -->
+	    <result property="accLmt" column="ACC_LMT" />
+	    <!-- 审批期限 -->
+	    <result property="accTerm" column="ACC_TERM" />
+	    <!-- 审批日期 -->
+	    <result property="accDate" column="ACC_DATE" />
+	    <!-- 评分值 -->
+	    <result property="pointResult" column="POINT_RESULT" />
+	    <!-- 流程实例号 -->
+	    <result property="proNum" column="PRO_NUM" />
+	    <!-- 流程节点名称 -->
+	    <result property="proName" column="PRO_NAME" />
+	    <!-- 复核节点状态 -->
+	    <result property="checkNodeState" column="CHECK_NODE_STATE" />
+	    <!-- 拒绝原因码 -->
+	    <result property="refuseCode" column="REFUSE_CODE" />
+	    <!-- 初审员code -->
+	    <result property="checkPersonCode" column="CHECK_PERSON_CODE" />
+	    <!-- 初审员 -->
+	    <result property="checkPerson" column="CHECK_PERSON" />
+	    <!-- 初审分配时间 -->
+	    <result property="checkAllotDate" column="CHECK_ALLOT_DATE" />
+	    <!-- 终审员Code -->
+	    <result property="finalPersonCode" column="FINAL_PERSON_CODE" />
+	    <!-- 终审员 -->
+	    <result property="finalPerson" column="FINAL_PERSON" />
+	    <!-- 终审权限 -->
+	    <result property="finalRole" column="FINAL_ROLE" />
+	    <!-- 终审分配时间 -->
+	    <result property="finalAllotDate" column="FINAL_ALLOT_DATE" />
+	    <!-- 协审员 -->
+	    <result property="approvalPerson" column="APPROVAL_PERSON" />
+	    <!-- 收入证明金额 -->
+	    <result property="amoutIncome" column="AMOUT_INCOME" />
+	    <!-- 系统建议核实收入 -->
+	    <result property="sysCheckLmt" column="SYS_CHECK_LMT" />
+	    <!-- 系统建议审批期限 -->
+	    <result property="sysAccTrem" column="SYS_ACC_TREM" />
+	    <!-- 系统建议审批金额 -->
+	    <result property="sysAccLmt" column="SYS_ACC_LMT" />
+	    <!-- 是否刚回退到录入修改 -->
+	    <result property="isRollback" column="ISROLLBACK" />
+	    <!-- 最小可审批金额 -->
+	        <result property="minApprovalAmt" column="MIN_APPROVAL_AMT" />
+	    <!-- 有无信用记录 -->
+		<result property="ifCreditRecord" column="IF_CREDIT_RECORD" />
+		<!-- 最大可审批金额 -->
+		<result property="maxApprovalAmt" column="MAX_APPROVAL_AMT" />
+		<!-- 起始完成时间 -->
+		<result property="startDate" column="START_DATE" />
+		<!-- 截止完成时间 -->
+		<result property="endDate" column="END_DATE" />
+		  <!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="createdTime" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modifier" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedTime" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifierId" column="MODIFIER_ID" />
+	    <!-- 版本号 -->
+	    <result property="version" column="VERSION" />
+	    <!-- 是否删除 -->
+	    <result property="isDelete" column="IS_DELETE" />
+        <result property="approvalPersonCode" column="APPROVAL_PERSON_CODE"/>
+        <result property="refuseDate" column="REFUSE_DATE"/>
+        <result property="auditReviewTime" column="AUDIT_REVIEW_TIME"/>
+        <result property="adviceVerifyIncome" column="ADVICE_VERIFY_INCOME"/>
+        <result property="adviceAuditLines" column="ADVICE_AUDIT_LINES"/>
+        <result property="internalDebtRadio" column="INTERNAL_DEBT_RATIO"/>
+        <result property="toalDebtRadio" column="TOTAL_DEBT_RATIO"/>
+        <result property="scoreCardScore" column="SCORECARD_SCORE"/>
+        <result property="ccRuleSet" column="CC_RULE_SET"/>
+        <result property="ifCheckReturn" column="IF_CHECK_RETURN"/>
+        <result property="ifLastCheckReturn" column="IF_LASTCHECK_RETURN"/>
+
+	</resultMap> 
+	
+    
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSLoanAuditMap">
+		SELECT
+		a.ID,
+		a.LOAN_BASE_ID,
+		a.LOAN_NO,
+		a.APP_NO,
+		a.ACC_LMT,
+		a.ACC_TERM,
+		a.ACC_DATE,
+		a.POINT_RESULT,
+		a.PRO_NUM,
+		a.PRO_NAME,
+		a.CHECK_NODE_STATE,
+		a.REFUSE_CODE,
+		a.CHECK_PERSON_CODE,
+		a.CHECK_PERSON,
+		a.CHECK_ALLOT_DATE,
+		a.FINAL_PERSON_CODE,
+		a.FINAL_PERSON,
+		a.FINAL_ROLE,
+		a.FINAL_ALLOT_DATE,
+		a.APPROVAL_PERSON,
+		a.AMOUT_INCOME,
+		a.SYS_CHECK_LMT,
+		a.SYS_ACC_TREM,
+		a.SYS_ACC_LMT,
+		a.ISROLLBACK,
+		a.MIN_APPROVAL_AMT,
+		a.IF_CREDIT_RECORD,
+		a.MAX_APPROVAL_AMT,
+		a.START_DATE,
+		a.END_DATE,
+		a.CREATOR,
+		a.CREATED_TIME,
+		a.CREATOR_ID,
+		a.MODIFIER,
+		a.MODIFIED_TIME,
+		a.MODIFIER_ID,
+		a.VERSION,
+		a.IS_DELETE,
+		a.APPROVAL_PERSON_CODE,
+		a.REFUSE_DATE,
+		a.AUDIT_REVIEW_TIME,
+		a.ADVICE_VERIFY_INCOME,
+		a.ADVICE_AUDIT_LINES,
+		a.INTERNAL_DEBT_RATIO,
+		a.TOTAL_DEBT_RATIO,
+		a.SCORECARD_SCORE,
+		a.CC_RULE_SET,
+		a.IF_CHECK_RETURN,
+		a.IF_LASTCHECK_RETURN
+		<!-- e.PRIMARY_REASON,
+		e.SECODE_REASON -->
+		FROM  bms_loan_audit a
+		where a.IS_DELETE = 0
+	<if test="appNo != null and appNo != ''">
+        
+        	and  a.APP_NO =#{appNo}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        
+        	and  a.LOAN_NO =#{loanNo}
+		</if>
+		<if test="version != null and version !=''">
+			and b.VERSION = #{version}
+		</if>
+		<if test="loanBaseId != null and loanBaseId !=''">
+			and a.LOAN_BASE_ID = #{loanBaseId}
+		</if>
+		<![CDATA[ order by a.CREATED_TIME desc]]>
+		
+	</select>
+	
+	
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1)
+		FROM  bms_loan_audit a
+		 
+		where a.IS_DELETE = 0
+		<if test="appNo != null and appNo != ''">
+        
+        	and  a.APP_NO =#{appNo}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        
+        	and  a.LOAN_NO =#{loanNo}
+		</if>
+		<if test="version != null and version !=''">
+			and a.VERSION = #{version}
+		</if>
+		<if test="loanBaseId != null and loanBaseId !=''">
+			and a.LOAN_BASE_ID = #{loanBaseId}
+		</if>
+		<![CDATA[ order by a.CREATED_TIME desc]]>
+	</select>
+
+	<select id="findBmsLoanAuditByLoanNo" parameterType="java.util.Map" resultMap="BMSLoanAuditMap">
+		select * from bms_loan_audit where IS_DELETE= 0
+		<if test="loanNo !=null and loanNo != ''">
+			and LOAN_NO=#{loanNo}
+		</if>
+	</select>
+
+
+
+</mapper> 

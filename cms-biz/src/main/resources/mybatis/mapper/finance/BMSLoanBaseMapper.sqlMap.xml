@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">   
+<mapper namespace="com.ymkj.cms.biz.dao.finance.impl.BMSLoanBaseDaoImpl">
+   <resultMap id="loanBaseMap" type="com.ymkj.cms.biz.entity.finance.BMSLoanBase">
+   	  <result property="id" column="LOAN_BASE_ID" /> <!-- //借款编号 -->
+   	  <result property="loanNo" column="LOAN_NO" /> <!-- //借款编号 -->
+   	  <result property="channelCd" column="CHANNEL_CD" />		<!-- // 渠道名称 -->
+	  <result property="productCd" column="PRODUCT_CD" /><!-- ;// 产品名称 -->
+	  <result property="channelName" column="CHANNEL_NAME" />		<!-- // 渠道名称 -->
+	  <result property="productName" column="PRODUCT_NAME" /><!-- ;// 产品名称 -->
+	  <result property="contractLmt" column="CONTRACT_LMT" /> <!-- ; // 签约额度 -->
+	  <result property="pactMoney" column="PACT_MONEY" /><!-- ; // 合同额度 -->
+	  <result property="contractTrem" column="CONTRACT_TREM" /><!--  // 签约期限 -->
+	  <result property="name" column="NAME" /><!-- // 客户姓名 -->
+	  <result property="idNo" column="ID_NO" /><!-- // 身份证号码 -->
+	  <result property="applyBankName" column="APPLY_BANK_NAME" /><!-- //银行名称 -->
+	  <result property="applyBankBranch" column="APPLY_BANK_BRANCH" /> <!-- // 开户银行 -->
+	  <result property="applyBankCardNo" column="APPLY_BANK_CARD_NO" /> <!-- //银行卡号 -->
+	  <result property="bankPhone" column="BANK_PHONE" />  	<!-- // 手机号码 -->
+	  <result property="contractBranch" column="CONTRACT_BRANCH" />	 <!-- //  签约网点 -->
+	  <result property="contractBranchId" column="CONTRACT_BRANCH_ID" />
+	  <result property="loanBranch" column="LOAN_BRANCH" />      <!-- 放款营业部 -->
+	  <result property="loanBranchId" column="LOAN_BRANCH_ID" />   <!-- 放款营业部ID -->
+	  <result property="manageBranch" column="MANAGE_BRANCH" />     <!-- 管理营业部 -->
+	  <result property="manageBranchId" column="MANAGE_BRANCH_ID" /> <!-- 管理营业部ID -->
+	  <result property="owningBranchId" column="OWNING_BRANCH_ID" />
+	  <result property="applyType" column="APPLY_TYPE" />		<!--   //申请类型 -->
+	  <result property="applyInputFlag" column="APPLY_INPUT_FLAG" />	  <!--  //     交件类型*/ -->
+	  <result property="appInputFlag" column="APP_INPUT_FLAG" />
+	  <result property="oprateType" column="OPRATE_TYPE" />		<!--   //处理类型-->
+	  <result property="taskId" column="TASK_ID" />
+	  <result property="ifPri" column="IF_PRI" />
+  
+	<!-- result property="contractBranch" column="CONTRACT_BRANCH" />
+    <result property="name" column="NAME" />
+	<result property="productName" column="PRODUCT_NAME" />
+	<result property="contractTrem" column="CONTRACT_TREM" />
+	<result property="idNo" column="ID_NO" />
+	<result property="channelName" column="CHANNEL_NAME" /> -->
+	<result property="contractNum" column="CONTRACT_NUM" />
+	<result property="pactMoney" column="PACT_MONEY" />
+	<result property="grantMoney" column="GRANT_MONEY" />
+	<result property="bank" column="BANK" />
+	<result property="bankFullName" column="BANK_FULL_NAME" />
+	<result property="account" column="ACCOUNT" />
+	<result property="signDate" column="SIGN_DATE" />
+	<result property="startrdate" column="STARTRDATE" />
+	<result property="endrdate" column="ENDRDATE" />
+	<result property="referRate" column="REFER_RATE" />
+	<result property="manageRate" column="MANAGE_RATE" />
+	<result property="managerRateForPartyc" column="MANAGER_RATE_FOR_PARTYC" />
+	<result property="managerRateForPartyd" column="MANAGER_RATE_FOR_PARTYD" />
+	<result property="evalRate" column="EVAL_RATE" />
+	<result property="risk" column="RISK" />
+	<result property="rateSum" column="RATE_SUM" />
+	<result property="confirmEndDate" column="CONFIRM_END_DATE" />
+	<result property="financeAuditTimeStr" column="FINANCE_AUDIT_TIME_STR" />
+	 <result property="version" column="VERSION"/>
+     <result property="ifPreferentialUser" column="IF_PREFERENTIAL_USER"/>
+	
+	</resultMap>
+
+
+ 	<sql id="loan_undoneColumn_sql">
+		l.LOAN_BASE_ID,
+		l.LOAN_NO,
+		l.PRODUCT_NAME,
+		l.CHANNEL_NAME,
+		l.PRODUCT_CD,
+		l.CHANNEL_CD,
+		lc.pact_money,	
+		l.CONTRACT_LMT CONTRACT_LMT,
+		l.CONTRACT_TREM,
+		l.NAME,
+		l.ID_NO,	
+		l.APPLY_BANK_NAME,	
+		l.APPLY_BANK_BRANCH,	
+		l.APPLY_BANK_CARD_NO,	
+		l.CONTRACT_BRANCH,
+		l.CONTRACT_BRANCH_ID,
+		l.OWNING_BRANCH_ID,
+		l.BANK_PHONE,	
+		l.APPLY_TYPE,
+		l.IF_PRI,
+		l.APP_INPUT_FLAG,
+		l.APPLY_INPUT_FLAG,
+		l.VERSION,
+		l.IF_PREFERENTIAL_USER
+	</sql>	
+	
+	
+	<sql id="loan_doneColumn_sql">
+	l.LOAN_BASE_ID,
+	l.LOAN_NO,l.PRODUCT_NAME,l.CHANNEL_NAME,
+	lc.pact_money,l.CONTRACT_LMT,l.CONTRACT_TREM,l.NAME,l.ID_NO,l.IF_PRI,
+	l.APPLY_BANK_NAME,l.APPLY_BANK_BRANCH,l.APPLY_BANK_CARD_NO,
+	l.CONTRACT_BRANCH,l.BANK_PHONE,l.APPLY_TYPE,l.APP_INPUT_FLAG,l.APPLY_INPUT_FLAG,l.LOAN_DATE,l.FINANCE_AUDIT_TIME,l.VERSION,
+	l.IF_PREFERENTIAL_USER,
+	</sql>	
+
+	<select id="listPage" parameterType="java.util.Map" resultMap="loanBaseMap">
+		SELECT 
+		<include refid="loan_undoneColumn_sql" />
+		FROM v_bms_loan l  LEFT JOIN uflo_task t
+		ON l.LOAN_BASE_ID = t.business_id_
+		LEFT JOIN BMS_LOAN_CONTRACT lc
+		ON l.loan_base_id = lc.loan_base_id
+		<!-- left join BMS_LOAN_BATCHNUM b on b.LOAN_NO=l.lOAN_NO -->
+		<!-- left join BMS_LINE_OFFER o on o.LOAN_NO=l.lOAN_NO -->
+		WHERE l.IS_DELETE = 0
+		AND lc.IS_DELETED=0
+		<!-- <if test="batchNum != null and batchNum !=''">
+		  and b.BACTH_NUM = #{batchNum}
+	    </if> -->
+	   <!--<if test="state !=null and state !=''">
+	      and o.state = #{state}
+	    </if> -->
+		<if test="rtfState ==  'FKSH' ">
+		AND (t.task_name_  IN ('放款审核') OR t.task_name_ IS NULL) 
+		</if>
+		<if test="rtfState ==  'FKQR' ">
+		AND (t.task_name_  IN ('放款确认','生成报盘','导出报盘','导入回盘','放款确认(核心)')  OR t.task_name_ IS NULL)
+		</if>
+		and  l.RTF_NODE_STATE =#{rtfNodeState}
+		AND l.RTF_STATE = #{rtfState}
+		 <include refid="condition_sql" />
+		  ORDER BY l.IF_PRI DESC,l.CONFIRM_END_DATE ASC
+	</select>
+	
+	
+	    
+    <select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		SELECT 
+		count(1)
+		FROM v_bms_loan l  LEFT JOIN uflo_task t
+		ON l.LOAN_BASE_ID = t.business_id_
+		where l.IS_DELETE = 0
+		<if test="rtfState ==  'FKSH' ">
+		AND (t.task_name_  IN ('放款审核') OR t.task_name_ IS NULL)
+		</if>
+		<if test="rtfState ==  'FKQR' ">
+		AND (t.task_name_  IN ('放款确认','生成报盘','导出报盘','导入回盘','放款确认(核心)') OR t.task_name_ IS NULL)
+		</if>
+		and  l.RTF_NODE_STATE =#{rtfNodeState}
+		AND l.RTF_STATE = #{rtfState}
+		 <include refid="condition_sql" />
+	</select>
+	
+	<!-- <select id="doneListPage" parameterType="java.util.Map" resultMap="loanBaseMap">
+	SELECT * FROM (SELECT
+	<include refid="loan_doneColumn_sql" />
+	'退回' OPRATE_TYPE
+	 FROM V_BMS_LOAN l 
+	  LEFT JOIN BMS_LOAN_CONTRACT lc ON l.loan_base_id = lc.loan_base_id
+	  AND lc.IS_DELETED=0
+	left join BMS_LOAN_BATCHNUM b on b.LOAN_NO=l.lOAN_NO
+	left join BMS_LINE_OFFER o on o.LOAN_NO=l.lOAN_NO
+	WHERE   l.IS_DELETE = 0
+	AND lc.IS_DELETED=0
+	<if test="rtfState ==  'FKSH' ">
+	AND l.RTF_NODE_STATE = 'FKSH-RETURN'
+	</if>
+	<if test="rtfState ==  'FKQR' ">
+	AND l.RTF_NODE_STATE = 'FKQR-RETURN'
+	</if>
+	<if test="batchNum != null and batchNum != '' ">
+		and b.BACTH_NUM = #{batchNum}
+	</if>
+	<if test="state !=null and state !=''">
+	      and o.state = #{state}
+	</if>
+	<include refid="condition_sql" />
+	UNION ALL 
+	SELECT 
+	  <include refid="loan_doneColumn_sql" />
+	  '通过' OPRATE_TYPE
+	FROM
+	   V_BMS_LOAN l
+	  LEFT JOIN BMS_LOAN_CONTRACT lc ON l.loan_base_id = lc.loan_base_id
+	  AND lc.IS_DELETED=0
+	left join BMS_LOAN_BATCHNUM b on b.LOAN_NO=l.lOAN_NO
+	left join BMS_LINE_OFFER o on o.LOAN_NO=l.lOAN_NO
+	WHERE l.IS_DELETE = 0
+	<if test="rtfState == 'FKSH' ">
+	AND l.RTF_STATE IN ('FKQR','DHHK')
+	</if>
+	<if test="rtfState == 'FKQR' ">
+	AND  l.RTF_STATE = 'DHHK'
+	</if>
+	<if test="batchNum != null and batchNum !=''">
+		and b.BACTH_NUM=#{batchNum}
+	</if>
+	<if test="state !=null and state !=''">
+	      and o.state = #{state}
+	</if>
+	 <include refid="condition_sql" />)t
+    <if test="rtfState == 'FKSH' ">
+		 ORDER BY t.FINANCE_AUDIT_TIME DESC 
+	</if> 
+	<if test="rtfState == 'FKQR' ">
+		ORDER BY t.LOAN_DATE DESC
+	</if>
+	</select> -->
+	
+<select id="doneListPage" parameterType="java.util.Map" resultMap="loanBaseMap">
+	SELECT 
+    *
+	FROM(
+	SELECT
+        <include refid="loan_doneColumn_sql" />
+	'通过' OPRATE_TYPE
+	 FROM V_BMS_LOAN l 
+	 LEFT JOIN BMS_LOAN_CONTRACT lc ON l.loan_base_id = lc.loan_base_id
+	AND lc.IS_DELETED=0
+	WHERE 1=1
+	<if test="rtfState == 'FKSH' ">  
+	 AND l.RTF_STATE != 'FKSH' 
+     AND  (l.RTF_STATE IN ('FKQR', 'DHHK') OR l.HANDLE_TYPE LIKE '%50' OR l.HANDLE_TYPE LIKE '%5030')
+	 </if> 
+	  <if test="rtfState == 'FKQR' ">
+	 AND l.RTF_STATE != 'FKQR'
+	 AND  l.RTF_STATE = 'DHHK'
+	  </if> 
+	  <include refid="condition_sql" />
+         UNION ALL
+      SELECT
+      <include refid="loan_doneColumn_sql" />
+	 '退回'  OPRATE_TYPE
+	 FROM V_BMS_LOAN l 
+	 LEFT JOIN BMS_LOAN_CONTRACT lc ON l.loan_base_id = lc.loan_base_id
+	WHERE   
+	 lc.IS_DELETED=0
+	<if test="rtfState == 'FKSH' ">
+	AND l.RTF_STATE != 'FKSH'
+	AND  l.HANDLE_TYPE LIKE '%40%'
+	 </if> 
+	<if test="rtfState == 'FKQR' ">
+	AND l.RTF_STATE != 'FKQR'
+	AND  l.HANDLE_TYPE LIKE '%50%'
+	 </if> 
+	<include refid="condition_sql" />
+	)t
+	<if test="rtfState == 'FKSH' ">
+		 ORDER BY t.FINANCE_AUDIT_TIME DESC 
+	</if> 
+	<if test="rtfState == 'FKQR' ">
+		ORDER BY t.LOAN_DATE DESC
+	</if>
+	
+	</select>
+    
+    <select id="doneCountByPageParam" parameterType="java.util.Map" resultType="long">
+   SELECT 
+   sum(cnt) count
+	FROM(
+	SELECT
+       count(1) cnt
+	 FROM V_BMS_LOAN l 
+	 LEFT JOIN BMS_LOAN_CONTRACT lc ON l.loan_base_id = lc.loan_base_id
+	AND lc.IS_DELETED=0
+	WHERE   
+	 <if test="rtfState == 'FKSH' ">
+	 l.RTF_STATE != 'FKSH'
+     AND  (l.RTF_STATE IN ('FKQR', 'DHHK') OR l.HANDLE_TYPE LIKE '%50' OR l.HANDLE_TYPE LIKE '%5030')
+	 </if>
+	 <if test="rtfState == 'FKQR' ">
+	  l.RTF_STATE != 'FKQR'
+	 AND  l.RTF_STATE = 'DHHK'
+	  </if> 
+	  <include refid="condition_sql" />
+         UNION ALL
+      SELECT
+       count(1) cnt
+	 FROM V_BMS_LOAN l 
+	 LEFT JOIN BMS_LOAN_CONTRACT lc ON l.loan_base_id = lc.loan_base_id
+	WHERE   
+	 lc.IS_DELETED=0
+	 <if test="rtfState == 'FKSH' ">
+	AND   l.RTF_STATE != 'FKSH'
+	AND  l.HANDLE_TYPE LIKE '%40%'
+	</if> 
+	<if test="rtfState == 'FKQR' ">
+	 AND   l.RTF_STATE != 'FKQR'
+	 AND  l.HANDLE_TYPE LIKE '%50%'
+	 </if> 
+	<include refid="condition_sql" />
+	)t 
+  </select>
+    
+    <sql id="condition_sql">
+    
+    	<if test="loanNo != null and loanNo != ''">
+         and l.LOAN_NO = #{loanNo}
+		</if>
+		<if test="loanNos != null and loanNos.size() > 0">
+        and	l.LOAN_NO in 
+        <foreach collection="loanNos" item="loanNo" index="index" open="(" separator="," close=")">
+        #{loanNo}
+		</foreach>
+		</if>
+		<if test="name != null and name != ''">
+        and  l.NAME = #{name}
+        </if>
+        <if test="idNo != null and idNo != ''">
+        and  l.ID_NO = #{idNo}
+        </if>
+      
+        <if test="productId != null and productId != ''">
+       	 and l.PRODUCT_ID =#{productId}
+        </if>
+        <if test="contractBranchId != null and contractBranchId != ''">
+        and	l.CONTRACT_BRANCH_ID=#{contractBranchId}
+        </if>
+ 	 	<!--  <if test="signDate != null and signDate != ''">
+       	 and DATE_FORMAT(l.SIGN_END_DATE, '%Y-%m-%d')=#{signDate}
+        </if> -->
+         <if test="confirmDate != null and confirmDate != ''">
+       		and  l.CONFIRM_END_DATE >=CONCAT(#{confirmDate},' 00:00:00')
+        </if>
+        <if test="confirmDate2 != null and confirmDate2 != ''">
+           <![CDATA[and  l.CONFIRM_END_DATE <= CONCAT(#{confirmDate2},' 23:59:59')]]>
+        </if>
+          <if test="financeAuditDate != null and financeAuditDate != ''">
+       		and  l.FINANCE_AUDIT_TIME >= CONCAT(#{financeAuditDate},' 00:00:00')
+        </if>
+        <if test="financeAuditDate2 != null and financeAuditDate2 != ''">
+           <![CDATA[and  l.FINANCE_AUDIT_TIME <= CONCAT(#{financeAuditDate2},' 23:59:59')]]>
+        </if>
+          <if test="loanDate != null and loanDate != ''">
+       		and  l.LOAN_DATE >= CONCAT( #{loanDate},' 00:00:00')
+        </if>
+        <if test="loanDate2 != null and loanDate2 != ''">
+           <![CDATA[and  l.LOAN_DATE <= CONCAT(#{loanDate2},' 23:59:59')]]>
+        </if>
+         <if test="applyInputFlag != null and applyInputFlag != ''">
+           and  l.APPLY_INPUT_FLAG = #{applyInputFlag}
+        </if>
+        <if test="orgAuditState != null and orgAuditState != ''">
+           and  l.ORG_AUDIT_STATE = #{orgAuditState}
+        </if>
+          <if test="channelCd != null and channelCd != ''">
+         and	l.CHANNEL_CD =#{channelCd}
+        </if>
+       
+        
+	</sql>	
+
+    
+    <update id="update" parameterType="com.ymkj.cms.biz.entity.finance.BMSLoanBase">
+		update  bms_loan_base
+ 			set 
+ 			MODIFIED_TIME = SYSDATE()
+		<if test=" status == 'NORMAL'">
+		,LOAN_BRANCH = CONTRACT_BRANCH
+       	,LOAN_BRANCH_ID = CONTRACT_BRANCH_ID
+       	,MANAGE_BRANCH = CONTRACT_BRANCH
+       	,MANAGE_BRANCH_ID = CONTRACT_BRANCH_ID
+       	</if>
+ 	    <if test="status != null and status != ''">
+        	 ,STATUS = #{status}
+        </if>
+        <if test="rtfState != null and rtfState != ''">
+        	, RTF_STATE = #{rtfState}
+        </if>
+        <if test="rtfNodeState != null and rtfNodeState != ''">
+        	, RTF_NODE_STATE = #{rtfNodeState}
+        </if>
+         <if test="lockTarget != null and lockTarget != ''">
+        	,LOCK_TARGET = #{lockTarget}
+        </if>
+         <if test="financeAuditTime != null ">
+        	,FINANCE_AUDIT_TIME = #{financeAuditTime}
+         </if>
+         <if test="loanDate != null ">
+        	,LOAN_DATE = #{loanDate}
+        </if>	
+         <if test="modifiedId != null and modifiedId != ''">
+ 		  ,MODIFIER_ID = #{modifiedId}
+ 		  </if>
+ 		<if test="modified != null and modified != ''">
+ 		  ,MODIFIER = #{modified}
+ 		  </if>
+ 		 <if test=" rtfNodeState == 'FKSH-SUBMIT'">
+            ,HANDLE_TYPE = replace(HANDLE_TYPE,'40','')
+        </if>
+         <if test="rtfNodeState == 'FKSH-RETURN'">
+            ,HANDLE_TYPE = IF(LOCATE('40', HANDLE_TYPE) > 0,HANDLE_TYPE, CONCAT(HANDLE_TYPE,'40'))
+        </if>
+        <if test=" rtfNodeState == 'FKQR-SUBMIT'">
+            ,HANDLE_TYPE = replace(HANDLE_TYPE,'50','')
+        </if>
+         <if test="rtfNodeState == 'FKQR-RETURN'">
+            ,HANDLE_TYPE = IF(LOCATE('50', HANDLE_TYPE) > 0,HANDLE_TYPE, CONCAT(HANDLE_TYPE,'50'))
+        </if>
+ 		  <if test="version != null and version != ''">
+        	,VERSION= VERSION+1
+        </if>
+		<where>
+		
+		<if test="loanNo != null and loanNo != ''">
+        	and LOAN_NO= #{loanNo}
+        </if>
+        <if test="id != null and id != ''">
+        	and id= #{id}
+        </if>
+		<if test="version != null and version != ''">
+        	and VERSION= #{version}
+        </if>
+		</where>
+	</update>
+    
+  	<select id="auditCommit" parameterType="java.util.Map" resultType="com.ymkj.cms.biz.entity.master.BMSLoanConfirmationQuery">
+		select a.id as id,b.ACC_LMT as accLmt,d.PACT_MONEY as pactMoney,a.LOAN_NO as loanNo,a.CONTRACT_BRANCH_ID as contractBranchId,a.CONTRACT_BRANCH as contractBranch,a.APPLY_DATE as applyDate from bms_loan_base a,bms_loan_audit b,bms_loan_product c,BMS_LOAN_CONTRACT d where a.id=b.LOAN_BASE_ID and a.id=c.LOAN_BASE_ID and a.id=d.LOAN_BASE_ID and a.RTF_NODE_STATE='FKSH-SUBMIT' and d.CONTRACT_NUM=#{accountNo} and c.CONTRACT_SOURCE='00014'
+	</select>
+    
+	<select id="findLoanIdbyFeeInfo" parameterType="int" resultType="int">
+		select  count(1) from BMS_LOAN_FEE_INFO where LOAN_ID=#{id}
+	</select>
+	
+	
+	<select id="listBy" parameterType="java.util.Map" resultMap="loanBaseMap">
+	<!-- 签约网点	客户姓名	借款产品	签约期限	身份证号码	渠道名称	合同编号	合同金额	放款金额	所属银行	所属分行	银行卡号	签约日期	还款起日	还款止日	咨询费	管理费	丙方管理费	丁方管理费	评估费	费用合计	风险金	合同确认时间 -->
+		SELECT 
+		l.LOAN_BASE_ID,
+		l.CONTRACT_BRANCH,
+		l.NAME,
+		l.PRODUCT_NAME,
+		l.CONTRACT_TREM,
+		l.ID_NO,	
+		l.CHANNEL_NAME,
+		l.contract_num,
+		lc.pact_money,
+		cl.GRANT_MONEY,
+		lc.BANK,
+		lc.BANK_FULL_NAME,
+		l.APPLY_BANK_CARD_NO,	
+		lc.ACCOUNT,
+		lc.SIGN_DATE,
+		lc.STARTRDATE,
+		lc.ENDRDATE,
+		lc.REFER_RATE,
+		lc.MANAGE_RATE,
+		lc.MANAGER_RATE_FOR_PARTYC,
+		0.00 MANAGER_RATE_FOR_PARTYD,
+		lc.EVAL_RATE,
+		lc.RISK,
+		lc.RATE_SUM,
+		DATE_FORMAT(l.CONFIRM_END_DATE, '%Y-%m-%d  %H:%i:%s') CONFIRM_END_DATE,
+		DATE_FORMAT(l.FINANCE_AUDIT_TIME, '%Y-%m-%d  %H:%i:%s') FINANCE_AUDIT_TIME_STR,
+		l.loan_no,
+		l.CONTRACT_BRANCH_id
+		FROM v_bms_loan l  
+		LEFT JOIN uflo_task t
+		ON l.LOAN_BASE_ID = t.business_id_
+		LEFT JOIN BMS_CONTRACT_LOAN cl
+		ON l.loan_base_id= cl.loan_base_id
+		LEFT JOIN BMS_LOAN_CONTRACT lc
+		ON l.loan_base_id = lc.loan_base_id
+		WHERE
+		 l.IS_DELETE=0
+		AND lc.IS_DELETED=0
+		AND cl.IS_DELETED=0
+		<if test="rtfState ==  'FKSH' ">
+		AND (t.task_name_  IN ('放款审核') OR t.task_name_ IS NULL) 
+		</if>
+		<if test="rtfState ==  'FKQR' ">
+		AND (t.task_name_  IN ('放款确认','生成报盘','导出报盘','导入回盘','放款确认(核心)')  OR t.task_name_ IS NULL)
+		</if>
+		<if test="rtfNodeState != null ">
+		and  l.RTF_NODE_STATE =#{rtfNodeState}
+		</if>
+		<if test="rtfState != null ">
+		AND l.RTF_STATE = #{rtfState}
+		</if>
+		 <include refid="condition_sql" />
+		 <if test="rtfState ==  'FKSH' ">
+		ORDER BY l.IF_PRI DESC,l.CONFIRM_END_DATE ASC
+		</if>
+		<if test="rtfState ==  'FKQR' ">
+		ORDER BY l.IF_PRI DESC,l.finance_audit_time ASC
+		</if>
+		  
+	</select>
+		
+</mapper> 

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSSysLoanLogDaoImpl">
+	<sql id="table">BMS_LOAN_LOG</sql>
+
+	<resultMap id="BMSSysLoanLogMap" type="com.ymkj.cms.biz.entity.master.BMSSysLoanLog">
+		<id property="id" column="ID" />
+		<result property="loanBaseId" column="LOAN_BASE_ID" />
+		<result property="operationModule" column="OPERATION_MODULE" />
+		<result property="operationType" column="OPERATION_TYPE" />
+	    <result property="operator" column="OPERATOR" />
+	    <result property="operatorCode" column="OPERATOR_CODE" />
+	   	<result property="firstLevleReasons" column="FIRST_LEVLE_REASONS" />
+	   	<result property="twoLevleReasons" column="TWO_LEVLE_REASONS" />
+       	<result property="operationTime" column="OPERATION_TIME" />
+	   	<result property="remark" column="REMARK" />
+	   
+	    <result property="loanNo" column="LOAN_NO" />
+	    <result property="appNo" column="APP_NO" />
+	    <result property="rtfState" column="RTF_STATE" />
+	    <result property="rtfNodeState" column="RTF_NODE_STATE" />
+	    <result property="checkNodeState" column="CHECK_NODE_STATE" />
+	    <result property="checkPersonCode" column="CHECK_PERSON_CODE" />
+	    <result property="checkPerson" column="CHECK_PERSON" />
+	    <result property="finalPersonCode" column="FINAL_PERSON_CODE" />
+	    <result property="finalPerson" column="FINAL_PERSON" />
+	    <result property="apppovalPersonCode" column="APPPOVAL_PERSON_CODE" />
+	    <result property="apppovalPerson" column="APPPOVAL_PERSON" />
+	    <result property="complexPersonCode" column="COMPLEX_PERSON_CODE" />
+	    <result property="complexPerson" column="COMPLEX_PERSON" />
+	    <result property="firstLevleReasonsCode" column="FIRST_LEVLE_REASONS_CODE" />
+	    <result property="twoLevleReasonsCode" column="TWO_LEVLE_REASONS_CODE" />
+	   	<result property="status" column="STATUS" />
+	    <result property="applyLmt" column="APPLY_LMT"/>
+	    <result property="applyTerm" column="APPLY_TERM"/>
+	   
+	</resultMap>
+	<sql id="condition_sql">
+		where 1=1
+		<if test="id != null and id != 0">
+			and ID = #{id}
+		</if>
+		<if test="loanBaseId != null and loanBaseId != 0">
+			and LOAN_BASE_ID = #{loanBaseId}
+		</if>
+		<if test="rtfState!=null and rtfState!=''">
+			and RTF_STATE = #{rtfState}
+		</if>
+		
+		<if test="loanNo!=null and loanNo!=''">
+			and LOAN_NO = #{loanNo}
+		</if>
+		<if test="status!=null and status!=''">
+			and STATUS = #{status}
+		</if>
+		<if test="orderBy!=null and orderBy !=''">
+			order by ID desc
+		</if>
+	</sql>
+
+	
+
+	<select id="listBy" parameterType="java.util.Map" resultMap="BMSSysLoanLogMap">
+		select * from
+		<include refid="table" />
+		<include refid="condition_sql" />
+	</select>
+ 	<!-- 分页查询借款日志信息SQL -->
+	<select id="listPage" parameterType="Map" resultMap="BMSSysLoanLogMap">
+		select 
+			LOAN_NO,
+			STATUS,
+			RTF_STATE,
+			RTF_NODE_STATE,
+			CHECK_NODE_STATE,
+			CHECK_PERSON_CODE,
+			FINAL_PERSON_CODE,
+			APPPOVAL_PERSON_CODE,
+			COMPLEX_PERSON_CODE,
+			FIRST_LEVLE_REASONS,
+			TWO_LEVLE_REASONS,
+			FIRST_LEVLE_REASONS_CODE,
+			TWO_LEVLE_REASONS_CODE,
+			OPERATOR_CODE,
+			OPERATION_START_TIME,
+			IS_DELETE from bms_loan_log
+			where 1=1
+				<if test="loanNo!=null and loanNo!=''">
+					and loan_no=#{loanNo}
+				</if>
+				<if test="operatorStartTime!=null and operatorStartTime!=''">
+					and OPERATION_START_TIME &gt;=#{operatorStartTime}
+				</if>
+				<if test="operatorEndTime!=null and operatorEndTime!=''">
+					and OPERATION_START_TIME &lt;=loan_no=#{operatorEndTime}
+				</if>
+			order by OPERATION_START_TIME desc		
+	</select>
+	<!-- 借款日志数量count -->
+	<select id="countByPageParam" parameterType="Map" resultType="int">
+		select count(1) from bms_loan_log where 1=1
+				<if test="loanNo!=null and loanNo!=''">
+					and loan_no=#{loanNo}
+				</if>
+				<if test="operatorStartTime!=null and operatorStartTime!=''">
+					and OPERATION_START_TIME &gt;=#{operatorStartTime}
+				</if>
+				<if test="operatorEndTime!=null and operatorEndTime!=''">
+					and OPERATION_START_TIME &lt;=loan_no=#{operatorEndTime}
+				</if>
+	</select>
+	<!-- add -->
+	<insert id="insert" parameterType="com.ymkj.cms.biz.entity.master.BMSSysLoanLog"  keyProperty="id" useGeneratedKeys="true">
+		insert into BMS_LOAN_LOG
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="loanBaseId != null and loanBaseId != ''">
+				LOAN_BASE_ID,
+			</if>
+			<if test="loanNo!=null and loanNo!=''">
+				LOAN_NO,
+			</if>
+			<if test="operationModule != null and operationModule !=''">
+				OPERATION_MODULE,
+			</if>
+			 <if test="operationType != null and operationType != ''">  
+				OPERATION_TYPE,
+			  </if>
+			<if test="operator != null and operator != ''">
+				OPERATOR,
+			 </if>
+			<if test="operatorCode != null  and operatorCode != ''">
+				OPERATOR_CODE,
+		   </if>  
+			<if test="firstLevleReasons != null and firstLevleReasons != ''">
+				FIRST_LEVLE_REASONS,
+			</if>
+			 <if test="twoLevleReasons != null  and twoLevleReasons != ''">
+				TWO_LEVLE_REASONS,
+		   </if>  
+			
+				OPERATION_TIME,
+			
+			<if test="remark != null and remark != ''">
+				REMARK,
+			</if>
+			<if test="status!=null and status!=''">
+				STATUS,
+			</if>
+			<if test="rtfState != null and rtfState != ''">
+				RTF_STATE,
+			</if>
+			<if test="rtfNodeState != null and rtfNodeState != ''">
+				RTF_NODE_STATE,
+			</if>
+			<if test="checkNodeState!=null and checkNodeState!=''">
+				CHECK_NODE_STATE,
+			</if>
+			
+			<if test="checkPerson!=null and checkPerson!=''">
+				CHECK_PERSON,
+			</if>
+			
+			<if test="checkPersonCode!=null and checkPersonCode!=''">
+				CHECK_PERSON_CODE,
+			</if>
+			
+			<if test="finalPerson!=null and finalPerson!=''">
+				FINAL_PERSON,
+			</if>
+			
+			<if test="finalPersonCode!=null and finalPersonCode!=''">
+				FINAL_PERSON_CODE,
+			</if>
+			
+			<if test="firstLevleReasonsCode!=null and firstLevleReasonsCode!=''">
+				FIRST_LEVLE_REASONS_CODE,
+			</if>
+			
+			<if test="twoLevleReasonsCode!=null and twoLevleReasonsCode!=''">
+				TWO_LEVLE_REASONS_CODE,
+			</if>
+			
+			<if test="apppovalPersonCode!=null and apppovalPersonCode!=''">
+				APPPOVAL_PERSON_CODE,
+			</if>
+			
+			<if test="apppovalPerson!=null and apppovalPerson!=''">
+				APPPOVAL_PERSON,
+			</if>
+			
+			<if test="complexPerson!=null and complexPerson!=''">
+				COMPLEX_PERSON,
+			</if>
+			<if test="complexPersonCode!=null and complexPersonCode!=''">
+				COMPLEX_PERSON_CODE,
+			</if>
+			<if test="smallGroupId!=null">
+			    SMALL_GROUP_ID,
+			</if>
+			<if test="largeGroupId!=null">
+			   LARGE_GROUP_ID,
+			</if>
+			<if test="handleGroupId!=null">
+			   HANDLE_GROUP_ID,
+			</if>
+			<if test="applyLmt!=null">
+			  APPLY_LMT,
+			</if>
+			<if test="applyTerm!=null">
+			 APPLY_TERM,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="loanBaseId != null and loanBaseId != ''">
+				#{loanBaseId},
+			</if>
+			<if test="loanNo!=null and loanNo!=''">
+				#{loanNo},
+			</if>
+			<!-- <if test="code != null and code != ''">
+				#{code},
+			</if> -->
+		   <if test="operationModule != null and operationModule != ''">
+				#{operationModule},
+			</if> 
+			<if test="operationType != null and operationType != ''">
+				#{operationType},
+			</if>  
+		   <if test="operator != null and operator != ''">
+				#{operator},
+			</if>
+		   <if test="operatorCode != null and operatorCode != ''">
+				#{operatorCode},
+			</if> 
+			<if test="firstLevleReasons != null and firstLevleReasons != ''">
+				#{firstLevleReasons},
+			</if>  
+			 <if test="twoLevleReasons != null and twoLevleReasons != ''">
+				#{twoLevleReasons},
+			</if> 	
+				#{operationTime},		
+			<if test="remark != null and remark != ''">
+				#{remark},
+			</if>
+			<if test="status!=null and status!=''">
+				#{status},
+			</if>
+			<if test="rtfState != null and rtfState != ''">
+				#{rtfState},
+			</if>  
+			<if test="rtfNodeState != null and rtfNodeState != ''">
+				#{rtfNodeState},
+			</if>
+			<if test="checkNodeState!=null and checkNodeState!=''">
+				#{checkNodeState},
+			</if> 
+			
+			<if test="checkPerson!=null and checkPerson!=''">
+				#{checkPerson},
+			</if>	
+			<if test="checkPersonCode!=null and checkPersonCode!=''">
+				#{checkPersonCode},
+			</if>
+			<if test="finalPerson!=null and finalPerson!=''">
+				#{finalPerson},
+			</if>
+			
+			<if test="finalPersonCode!=null and finalPersonCode!=''">
+				#{finalPersonCode},
+			</if>
+			
+			<if test="firstLevleReasonsCode!=null and firstLevleReasonsCode!=''">
+				#{firstLevleReasonsCode},
+			</if>
+			
+			<if test="twoLevleReasonsCode!=null and twoLevleReasonsCode!=''">
+				#{twoLevleReasonsCode},
+			</if>
+			
+			<if test="apppovalPersonCode!=null and apppovalPersonCode!=''">
+				#{apppovalPersonCode},
+			</if>
+			
+			<if test="apppovalPerson!=null and apppovalPerson!=''">
+				#{apppovalPerson},
+			</if>
+			
+			<if test="complexPerson!=null and complexPerson!=''">
+				#{complexPerson},
+			</if>
+			<if test="complexPersonCode!=null and complexPersonCode!=''">
+				#{complexPersonCode},
+			</if>
+			<if test="smallGroupId!=null and smallGroupId!='' ">
+			    #{smallGroupId},
+			</if>
+			<if test="largeGroupId!=null and largeGroupId!=''">
+			   #{largeGroupId},
+			</if>
+			<if test="handleGroupId!=null and handleGroupId!=''">
+			   #{handleGroupId},
+			</if>
+			<if test="applyLmt!=null">
+			   #{applyLmt},
+			</if>
+			<if test="applyTerm!=null">
+			   #{applyTerm},
+			</if>
+		</trim>
+	</insert>
+
+ 
+ 
+	<select id="queryCommitOperationTime" parameterType="Map" resultMap="BMSSysLoanLogMap">
+		select * from BMS_LOAN_LOG where 1=1 
+		<if test="loanNo!=null and loanNo!=''">
+			and LOAN_NO = #{loanNo}
+		</if>
+		and status='APPLY'
+		and rtf_state='APPSQLR'
+		and rtf_node_state='SQLR-SAVE'
+		and OPERATION_TYPE= '101'
+	</select>
+
+ 
+ 
+	<select id="findFirstOldPassTime" parameterType="Map" resultMap="BMSSysLoanLogMap">
+		select * from BMS_LOAN_LOG where 1=1 
+		<if test="loanNo!=null and loanNo!=''">
+			and LOAN_NO = #{loanNo}
+		</if>
+		and status='APPLY'
+		and rtf_state='XSZS'
+		and rtf_node_state='XSZS-PASS'
+		order by OPERATION_TIME desc limit 1	
+	</select>
+</mapper>

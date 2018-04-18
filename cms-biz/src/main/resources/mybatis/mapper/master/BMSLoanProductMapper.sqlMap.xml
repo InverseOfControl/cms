@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.ymkj.cms.biz.dao.master.impl.BMSLoanProductEntityDaoImpl">
+   <resultMap id="BMSLoanProductMap" type="com.ymkj.cms.biz.entity.master.BMSLoanProduct">
+	<!-- 借款信息产品表 -->
+	    <!-- 主键Id -->
+        <id property="id" column="ID" />
+	    <!-- LOAN_BASE_ID -->
+	    <result property="loanBaseId" column="LOAN_BASE_ID" />
+	    <!-- 借款编号 -->
+	    <result property="loanNo" column="LOAN_NO" />
+	    <!-- 申请件编号 -->
+        <result property="appNo" column="APP_NO" />
+	    <!-- 还款日 -->
+	    <result property="repayDate" column="REPAY_DATE" />
+	    <!-- 是否在灰名单中 -->
+	    <result property="ifGrey" column="IF_GREY" />
+	    <!-- 是否新老客户标识 -->
+	    <result property="ifOldOrNewLogo" column="IF_OLD_OR_NEW_LOGO" />
+	    <!-- 银行预留手机号 -->
+	    <result property="bankPhone" column="BANK_PHONE" />
+	    <!-- 银行卡号 -->
+	    <result property="applyBankCardNo" column="APPLY_BANK_CARD_NO" />
+	    <!-- 开户行 -->
+	    <result property="applyBankBranch" column="APPLY_BANK_BRANCH" />
+	    <!-- 开户行Id -->
+	    <result property="applyBankBranchId" column="APPLY_BANK_BRANCH_ID" />
+	    <!-- 所属银行 -->
+	    <result property="applyBankName" column="APPLY_BANK_NAME" />
+	    <!-- 所属银行Id -->
+	    <result property="applyBankNameId" column="APPLY_BANK_NAME_ID" />
+	    <!-- 合同编号 -->
+	    <result property="contractNum" column="CONTRACT_NUM" />
+	    <!-- 合同来源 -->
+	    <result property="contractSource" column="CONTRACT_SOURCE" />
+	    <!-- 原产品 -->
+	    <result property="initProductCd" column="INIT_PRODUCT_CD" />
+	    <!-- 申请产品 -->
+	    <result property="productCd" column="PRODUCT_CD" />
+	    <!-- 申请额度 -->
+	    <result property="applyLmt" column="APPLY_LMT" />
+	    <!-- 申请期限 -->
+	    <result property="applyTerm" column="APPLY_TERM" />
+	    <!-- 合同金额 -->
+	    <result property="contractLmt" column="CONTRACT_LMT" />
+	    <!-- 合同期限 -->
+	    <result property="contractTrem" column="CONTRACT_TREM" />
+	    <!-- 是否处理完成件 -->
+	    <result property="ifEnd" column="IF_END" />
+	    <!-- 是否疑似欺诈 -->
+	    <result property="ifSuspectCheat" column="IF_SUSPECT_CHEAT" />
+	    <!-- 是否结清再贷 -->
+	    <result property="ifLoanAgain" column="IF_LOAN_AGAIN" />
+	    <!-- 是否拒绝 -->
+	    <result property="fRefuse" column="IF_REFUSE" />
+	    <!-- 费率 -->
+	    <result property="applyRate" column="APPLY_RATE" />
+	    <!-- 是否补件 -->
+	    <result property="ifPatchBolt" column="IF_PATCH_BOLT" />
+	    <!-- 是否加急 -->
+	    <result property="ifPri" column="IF_PRI" />
+	    <!-- 加急等级 -->
+	    <result property="ifUrgent" column="IF_URGENT" />
+	    
+	    <!-- 原产品金额 -->
+	    <result property="initApplyLmt" column="INIT_APPLY_LMT" />
+	    <!-- 原产品期限 -->
+	    <result property="initApplyTerm" column="INIT_APPLY_TERM" />
+	    <!-- 借款银行 -->
+	    <result property="loanBankIdBorrow" column="LOAN_BANK_ID_BORROW" />
+	    <!-- 还款用户 -->
+	    <result property="loanBankIdStill" column="LOAN_BANK_ID_STILL" />
+	    <!-- 合同类型 -->
+	    <result property="contractType" column="contract_type" />
+	      <!-- 创建用户 -->
+	     <result property="creator" column="CREATOR" />
+	    <!-- 创建时间 -->
+	     <result property="createdTime" column="CREATED_TIME" />
+	    <!-- 创建用户Id -->
+	     <result property="creatorId" column="CREATOR_ID" />
+	    <!-- 修改用户 -->
+	     <result property="modifier" column="MODIFIER" />
+	    <!-- 修改时间 -->
+	     <result property="modifiedTime" column="MODIFIED_TIME" />
+	    <!-- 修改用户Id -->
+	     <result property="modifierId" column="MODIFIER_ID" />
+	    <!-- 版本号 -->
+	    <result property="version" column="VERSION" />
+	    <!-- 是否删除 -->
+	    <result property="isDelete" column="IS_DELETE" />
+	    
+	    
+	    
+
+	</resultMap> 
+    
+    <select id="listPage" parameterType="java.util.Map" resultMap="BMSLoanProductMap">
+		SELECT
+		p.ID,
+		P.LOAN_BASE_ID,
+		p.LOAN_NO,
+		p.APP_NO,
+		p.REPAY_DATE,
+		p.IF_GREY,
+		p.IF_OLD_OR_NEW_LOGO,
+		SUBSTRING(p.BANK_PHONE,-4) BANK_PHONE,
+		SUBSTRING(p.APPLY_BANK_CARD_NO,-4) APPLY_BANK_CARD_NO,
+		p.APPLY_BANK_BRANCH,
+		p.APPLY_BANK_BRANCH_ID,
+		p.APPLY_BANK_NAME,
+		p.APPLY_BANK_NAME_ID,
+		p.CONTRACT_NUM,
+		p.CONTRACT_SOURCE,
+		p.INIT_PRODUCT_CD,
+		p.PRODUCT_CD,
+		p.APPLY_LMT,
+		p.APPLY_TERM,
+		p.CONTRACT_LMT,
+		p.CONTRACT_TREM,
+		p.IF_END,
+		p.IF_SUSPECT_CHEAT,
+		p.IF_LOAN_AGAIN,
+		p.IF_REFUSE,
+		p.APPLY_RATE,
+		p.IF_PATCH_BOLT,
+		p.IF_PRI,
+		p.IF_URGENT,
+		p.INIT_APPLY_LMT,
+		p.INIT_APPLY_TERM,
+		p.LOAN_BANK_ID_BORROW,
+		p.LOAN_BANK_ID_STILL,
+		p.contract_type,
+		p.CREATOR,
+		p.CREATED_TIME,
+		p.CREATOR_ID,
+		p.MODIFIER,
+		p.MODIFIED_TIME,
+		p.MODIFIER_ID,
+		p.VERSION,
+		p.IS_DELETE
+		FROM bms_loan_product p
+		  
+		where p.IS_DELETE = 0
+		<if test="appNo != null and appNo != ''">
+        
+        	and  p.APP_NO =#{appNo}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        
+        	and  p.LOAN_NO =#{loanNo}
+		</if>
+		<if test="version != null and version !=''">
+			and p.VERSION = #{version}
+		</if>
+		<if test="loanBaseId != null and loanBaseId !=''">
+			and p.LOAN_BASE_ID = #{loanBaseId}
+		</if>
+		<![CDATA[ order by p.CREATED_TIME desc]]>
+		
+	</select>
+	
+	
+	<select id="countByPageParam" parameterType="java.util.Map" resultType="long">
+		select count(1)
+		FROM  bms_loan_product p
+		
+		where p.IS_DELETE = 0
+		<if test="appNo != null and appNo != ''">
+        
+        	and  p.APP_NO =#{appNo}
+		</if>
+		<if test="loanNo != null and loanNo != ''">
+        
+        	and  p.LOAN_NO =#{loanNo}
+		</if>
+		<if test="version != null and version !=''">
+			and p.VERSION = #{version}
+		</if>
+		<if test="loanBaseId != null and loanBaseId !=''">
+			and p.LOAN_BASE_ID = #{loanBaseId}
+		</if>
+		<![CDATA[ order by p.CREATED_TIME desc]]>
+	</select>
+    
+ 
+	
+    
+		
+</mapper> 
